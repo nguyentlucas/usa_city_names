@@ -80,6 +80,11 @@ button {
   grid-template-rows: auto auto auto;
   justify-items: stretch;
   align-content: center;
+  transition: opacity 320ms ease;
+}
+
+.focus-rail-shell.is-intro-ready {
+  pointer-events: none;
 }
 
 .rail-control-stack {
@@ -111,6 +116,19 @@ button {
     transform 180ms ease,
     filter 180ms ease;
   cursor: pointer;
+}
+
+.rail-arrow.is-intro-hidden {
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
+.rail-arrow.is-intro-entered {
+  transition:
+    opacity 260ms cubic-bezier(0.2, 0.92, 0.32, 1),
+    transform 320ms cubic-bezier(0.2, 0.92, 0.32, 1),
+    filter 180ms ease;
 }
 
 .rail-arrow::before {
@@ -221,6 +239,20 @@ button {
     color 180ms ease;
 }
 
+.rail-row.is-intro-hidden {
+  opacity: 0;
+  transform: translateY(calc(var(--rail-row-y, 0px) - 6px));
+  pointer-events: none;
+}
+
+.rail-row.is-intro-entered {
+  transition:
+    opacity 280ms cubic-bezier(0.18, 0.9, 0.34, 1),
+    transform 340ms cubic-bezier(0.18, 0.9, 0.34, 1),
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
 .rail-row:disabled {
   cursor: default;
   pointer-events: none;
@@ -264,6 +296,31 @@ button {
   font-size: clamp(1rem, 1.15vw, 1.26rem);
   letter-spacing: 0.02em;
   line-height: 1.16;
+}
+
+.intro-small.is-intro-hidden,
+.title-prefix.is-intro-hidden,
+.search-shell.is-intro-hidden,
+.title-question.is-intro-hidden {
+  opacity: 0;
+  transform: translateY(7px);
+}
+
+.search-shell,
+.title-question {
+  transition:
+    opacity 360ms cubic-bezier(0.2, 0.92, 0.32, 1),
+    transform 420ms cubic-bezier(0.2, 0.92, 0.32, 1);
+}
+
+.title-question {
+  display: inline-block;
+}
+
+.search-shell.is-intro-entered,
+.title-question.is-intro-entered {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .title-line {

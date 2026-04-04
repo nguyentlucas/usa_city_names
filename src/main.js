@@ -19,12 +19,28 @@ const MAP_HEIGHT = 760;
 const SEARCH_DEFAULT = "Franklin";
 const ROW_TRANSITION_MS = 240;
 const JUMP_TRANSITION_MS = 520;
-const INITIAL_TYPING_STAGGER_MS = 18;
-const INITIAL_TYPING_MIN_DURATION_MS = 260;
-const INITIAL_TYPING_MAX_DURATION_MS = 620;
-const INITIAL_MAP_STAGGER_MS = 8;
-const INITIAL_MAP_STATE_DURATION_MS = 280;
-const INITIAL_HIGHLIGHT_REVEAL_DELAY_MS = 620;
+const INTRO_TYPING_STAGGER_MS = 34;
+const INTRO_TYPING_MIN_DURATION_MS = 420;
+const INTRO_TYPING_MAX_DURATION_MS = 980;
+const INTRO_GAP_AFTER_EDITORIAL_MS = 180;
+const INTRO_GAP_AFTER_PREFIX_MS = 130;
+const INTRO_SEARCH_REVEAL_MS = 420;
+const INTRO_GAP_BEFORE_CITY_MS = 170;
+const INTRO_GAP_BEFORE_QUESTION_MS = 110;
+const INTRO_QUESTION_REVEAL_MS = 280;
+const INTRO_GAP_BEFORE_MAP_MS = 150;
+const INITIAL_MAP_STAGGER_MS = 14;
+const INITIAL_MAP_STATE_DURATION_MS = 420;
+const INITIAL_MAP_SETTLE_MS = 220;
+const INITIAL_HIGHLIGHT_REVEAL_DELAY_MS = 170;
+const INTRO_GAP_BEFORE_RAIL_MS = 180;
+const INTRO_RAIL_ARROW_REVEAL_MS = 260;
+const INTRO_RAIL_ROW_INITIAL_GAP_MS = 230;
+const INTRO_RAIL_ROW_GAP_DECAY_MS = 24;
+const INTRO_RAIL_ROW_MIN_GAP_MS = 92;
+const INTRO_RAIL_ROW_TYPING_STAGGER_MS = 22;
+const INTRO_RAIL_ROW_MIN_DURATION_MS = 340;
+const INTRO_RAIL_ROW_MAX_DURATION_MS = 760;
 const INTRO_COPY = "Some city names appear again and again.";
 const TITLE_PREFIX_COPY = "How common is";
 
@@ -96,7 +112,7 @@ app.html(`
               />
               <span class="title-caret" aria-hidden="true"></span>
             </span>
-            <span>?</span>
+            <span id="title-question" class="title-question">?</span>
           </h1>
         </header>
 
@@ -136,8 +152,10 @@ const searchShell = d3.select("#search-shell");
 const introSmall = d3.select("#intro-small");
 const titlePrefix = d3.select("#title-prefix");
 const searchEntranceText = d3.select("#search-entrance-text");
+const titleQuestion = d3.select("#title-question");
 const svg = d3.select("#map-svg");
 const stateLabels = d3.select("#state-labels");
+const railShell = d3.select(".focus-rail-shell");
 const mapPlane = svg.append("g").attr("class", "map-plane");
 const baseStatesLayer = mapPlane.append("g").attr("class", "base-states-layer");
 const highlightedStatesLayer = mapPlane.append("g").attr("class", "highlighted-states-layer");
@@ -187,9 +205,9 @@ function pulseSelection(selection, className) {
 
 function getTypingDuration(text) {
   return clamp(
-    text.length * INITIAL_TYPING_STAGGER_MS + 120,
-    INITIAL_TYPING_MIN_DURATION_MS,
-    INITIAL_TYPING_MAX_DURATION_MS,
+    text.length * INTRO_TYPING_STAGGER_MS + 120,
+    INTRO_TYPING_MIN_DURATION_MS,
+    INTRO_TYPING_MAX_DURATION_MS,
   );
 }
 
@@ -232,6 +250,88 @@ function animateTypingText(selection, text, options = {}) {
 
   window.requestAnimationFrame(frame);
   return delay + duration;
+}
+
+function wait(duration) {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, duration);
+  });
+}
+
+function animateTypingTextAsync(selection, text, options = {}) {
+  return new Promise((resolve) => {
+    animateTypingText(selection, text, {
+      ...options,
+      onComplete: resolve,
+    });
+  });
+}
+
+function revealIntroNode(selection) {
+  selection.classed("is-intro-hidden", false).classed("is-intro-entered", true);
+}
+
+function revealRailRow(rowSelection, slot) {
+  rowSelection.classed("is-intro-hidden", false).classed("is-intro-entered", true);
+  rowSelection
+    .interrupt()
+    .transition()
+    .duration(340)
+    .ease(d3.easeCubicOut)
+    .style("opacity", 1)
+    .style("transform", `translateY(${slot * ROW_HEIGHT}px)`);
+}
+
+function animateRailRowText(rowSelection, record) {
+  const node = rowSelection.node();
+  if (!node || !record) {
+    return Promise.resolve();
+  }
+
+  const countNode = rowSelection.select(".rail-count").node();
+  const nameNode = rowSelection.select(".rail-name").node();
+  if (!countNode || !nameNode) {
+    return Promise.resolve();
+  }
+
+  const countText = String(record.count);
+  const fullText = `${countText} ${record.displayName}`;
+  const duration = clamp(
+    fullText.length * INTRO_RAIL_ROW_TYPING_STAGGER_MS + 140,
+    INTRO_RAIL_ROW_MIN_DURATION_MS,
+    INTRO_RAIL_ROW_MAX_DURATION_MS,
+  );
+  const startAt = performance.now();
+
+  countNode.textContent = "";
+  nameNode.textContent = "";
+
+  return new Promise((resolve) => {
+    function frame(now) {
+      const progress = Math.min((now - startAt) / duration, 1);
+      const nextLength = Math.ceil(progress * fullText.length);
+      const nextText = fullText.slice(0, nextLength);
+      const countSlice = nextText.slice(0, countText.length);
+      const nameSlice =
+        nextText.length > countText.length ? nextText.slice(countText.length + 1) : "";
+
+      if (countNode.textContent !== countSlice) {
+        countNode.textContent = countSlice;
+      }
+      if (nameNode.textContent !== nameSlice) {
+        nameNode.textContent = nameSlice;
+      }
+
+      if (progress < 1) {
+        window.requestAnimationFrame(frame);
+        return;
+      }
+
+      resolve();
+    }
+
+    window.requestAnimationFrame(frame);
+  });
 }
 
 Promise.all([
@@ -278,6 +378,7 @@ Promise.all([
     let interactionLocked = false;
     let initialEntranceActive = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let initialHighlightRevealPending = false;
+    let initialRailRevealPending = initialEntranceActive;
     const longestDisplayName = nameFrequency.reduce(
       (longest, record) =>
         record.displayName.length > longest.length ? record.displayName : longest,
@@ -318,6 +419,10 @@ Promise.all([
               .append("button")
               .attr("type", "button")
               .attr("class", "rail-row")
+              .call((selection) => {
+                selection.append("span").attr("class", "rail-count");
+                selection.append("span").attr("class", "rail-name");
+              })
               .style("transform", (d) => {
                 const startY = d.slot * ROW_HEIGHT + travel;
                 return `translateY(${startY}px)`;
@@ -348,11 +453,6 @@ Promise.all([
         .attr("aria-label", (d) =>
           d.record ? `${d.record.displayName}, ${d.record.count} occurrences` : "Empty row",
         )
-        .html((d) =>
-          d.record
-            ? `<span class="rail-count">${d.record.count}</span><span class="rail-name">${d.record.displayName}</span>`
-            : "",
-        )
         .on("click", (_, d) => {
           if (!d.record || interactionLocked) {
             return;
@@ -364,6 +464,14 @@ Promise.all([
         .ease(ease)
         .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT}px)`)
         .style("opacity", (d) => (d.record ? 1 : 0));
+
+      rowSelection.each(function (d) {
+        const row = d3.select(this);
+        row.select(".rail-count").text(d.record && !initialRailRevealPending ? d.record.count : "");
+        row
+          .select(".rail-name")
+          .text(d.record && !initialRailRevealPending ? d.record.displayName : "");
+      });
 
       railArrowUp.classed("is-dimmed", focusedIndex <= 0);
       railArrowTop.classed("is-dimmed", focusedIndex <= 0);
@@ -741,23 +849,48 @@ Promise.all([
       setFocusedIndex(matchedIndex);
     }
 
-    function playInitialEntrance() {
+    async function playInitialEntrance() {
       const focused = getFocusedRecord();
       const cityName = focused?.displayName ?? SEARCH_DEFAULT;
       const stateEntranceOrder = [...stateFeatures]
         .map((state) => ({ state, centroid: path.centroid(state) }))
         .sort((a, b) => a.centroid[1] - b.centroid[1] || a.centroid[0] - b.centroid[0])
         .map(({ state }) => state);
+      const railRows = railTrack
+        .selectAll(".rail-row")
+        .filter((d) => d.record)
+        .classed("is-intro-hidden", true)
+        .style("opacity", 0)
+        .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT - 6}px)`);
+      railArrowTop.classed("is-intro-hidden", true);
+      railArrowUp.classed("is-intro-hidden", true);
+      railArrowDown.classed("is-intro-hidden", true);
+      railArrowBottom.classed("is-intro-hidden", true);
 
       introSmall.attr("aria-label", INTRO_COPY);
       titlePrefix.attr("aria-label", TITLE_PREFIX_COPY);
       interactionLocked = true;
+      introSmall.classed("is-intro-hidden", false);
+      titlePrefix.classed("is-intro-hidden", false);
       searchShell.classed("is-entrance-active", true);
+      searchShell.classed("is-intro-hidden", true);
+      titleQuestion.classed("is-intro-hidden", true);
+      railShell.classed("is-intro-ready", true);
       searchInput.attr("disabled", true);
+      searchInput.property("value", "");
+      searchEntranceText.text("");
 
-      animateTypingText(introSmall, INTRO_COPY);
-      animateTypingText(titlePrefix, TITLE_PREFIX_COPY, { delay: 70 });
-      animateTypingText(searchEntranceText, cityName, { delay: 120 });
+      await animateTypingTextAsync(introSmall, INTRO_COPY);
+      await wait(INTRO_GAP_AFTER_EDITORIAL_MS);
+      await animateTypingTextAsync(titlePrefix, TITLE_PREFIX_COPY);
+      await wait(INTRO_GAP_AFTER_PREFIX_MS);
+
+      revealIntroNode(searchShell);
+      await wait(INTRO_SEARCH_REVEAL_MS + INTRO_GAP_BEFORE_CITY_MS);
+      await animateTypingTextAsync(searchEntranceText, cityName);
+      await wait(INTRO_GAP_BEFORE_QUESTION_MS);
+      revealIntroNode(titleQuestion);
+      await wait(INTRO_QUESTION_REVEAL_MS + INTRO_GAP_BEFORE_MAP_MS);
 
       svg.classed("is-entrance-active", true);
       entranceBordersLayer
@@ -775,20 +908,60 @@ Promise.all([
         .attr("transform", "translate(0,0)")
         .style("opacity", 1);
 
-      window.setTimeout(() => {
-        initialEntranceActive = false;
-        initialHighlightRevealPending = true;
-        svg.classed("is-entrance-active", false);
-        searchShell.classed("is-entrance-active", false);
-        searchEntranceText.text("");
-        searchInput.attr("disabled", null);
-        interactionLocked = false;
-        render(0);
-      }, INITIAL_HIGHLIGHT_REVEAL_DELAY_MS);
+      await wait(
+        (stateEntranceOrder.length - 1) * INITIAL_MAP_STAGGER_MS +
+          INITIAL_MAP_STATE_DURATION_MS +
+          INITIAL_MAP_SETTLE_MS,
+      );
 
-      window.setTimeout(() => {
-        entranceBordersLayer.selectAll(".entrance-state-border").remove();
-      }, INITIAL_HIGHLIGHT_REVEAL_DELAY_MS + 180);
+      initialEntranceActive = false;
+      initialHighlightRevealPending = true;
+      svg.classed("is-entrance-active", false);
+      searchShell.classed("is-entrance-active", false);
+      searchEntranceText.text("");
+      searchInput.property("value", cityName);
+      searchInput.attr("disabled", null);
+      render(0);
+
+      await wait(INITIAL_HIGHLIGHT_REVEAL_DELAY_MS + INTRO_GAP_BEFORE_RAIL_MS);
+      entranceBordersLayer.selectAll(".entrance-state-border").remove();
+
+      revealIntroNode(railArrowTop);
+      await wait(INTRO_RAIL_ARROW_REVEAL_MS * 0.75);
+      revealIntroNode(railArrowUp);
+      await wait(INTRO_RAIL_ARROW_REVEAL_MS);
+
+      const rowAnimations = [];
+      railRows.each(function (d, index) {
+        const row = d3.select(this);
+        const startDelay = d3.sum(
+          d3.range(index).map((rowIndex) =>
+            Math.max(
+              INTRO_RAIL_ROW_MIN_GAP_MS,
+              INTRO_RAIL_ROW_INITIAL_GAP_MS - rowIndex * INTRO_RAIL_ROW_GAP_DECAY_MS,
+            ),
+          ),
+        );
+
+        rowAnimations.push(
+          (async () => {
+            await wait(startDelay);
+            revealRailRow(row, d.slot);
+            await animateRailRowText(row, d.record);
+          })(),
+        );
+      });
+
+      await Promise.all(rowAnimations);
+      revealIntroNode(railArrowDown);
+      await wait(INTRO_RAIL_ARROW_REVEAL_MS * 0.75);
+      revealIntroNode(railArrowBottom);
+      await wait(INTRO_RAIL_ARROW_REVEAL_MS * 0.7);
+
+      initialRailRevealPending = false;
+      railShell.classed("is-intro-ready", false);
+      interactionLocked = false;
+      render(0);
     }
 
     railWindow.on("wheel", (event) => {
