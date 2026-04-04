@@ -131,6 +131,7 @@ const baseStatesLayer = mapPlane.append("g").attr("class", "base-states-layer");
 const highlightedStatesLayer = mapPlane.append("g").attr("class", "highlighted-states-layer");
 const bordersLayer = mapPlane.append("g").attr("class", "borders-layer");
 const highlightBordersLayer = mapPlane.append("g").attr("class", "highlight-borders-layer");
+const hoveredStateOverlayLayer = mapPlane.append("g").attr("class", "hovered-state-overlay-layer");
 
 function normalizeName(value) {
   return value.trim().toLocaleLowerCase();
@@ -208,6 +209,8 @@ Promise.all([
       0;
     let previousIndex = focusedIndex;
     let hoveredStateId = null;
+    let currentHighlightedIds = new Set();
+    let currentHighlightedStates = [];
     let inputValue = nameFrequency[focusedIndex]?.displayName ?? SEARCH_DEFAULT;
     let interactionLocked = false;
     const longestDisplayName = nameFrequency.reduce(
@@ -303,23 +306,23 @@ Promise.all([
       railArrowBottom.classed("is-dimmed", focusedIndex >= nameFrequency.length - 1);
     }
 
-    function updateMap() {
-      const focused = getFocusedRecord();
-      const highlightedIds = new Set(focused?.mappedStateIds ?? []);
-      if (hoveredStateId != null && !highlightedIds.has(hoveredStateId)) {
-        hoveredStateId = null;
-      }
-
-      const highlightedStates = stateFeatures.filter((state) => highlightedIds.has(state.id));
+    function syncHighlightedStateLayers() {
+      const nonHoveredStates =
+        hoveredStateId == null
+          ? currentHighlightedStates
+          : currentHighlightedStates.filter((state) => state.id !== hoveredStateId);
+      const hoveredState =
+        hoveredStateId == null
+          ? []
+          : currentHighlightedStates.filter((state) => state.id === hoveredStateId);
 
       highlightedStatesLayer
         .selectAll(".highlighted-state-shape")
-        .data(highlightedStates, (d) => d.id)
+        .data(nonHoveredStates, (d) => d.id)
         .join("path")
         .attr("class", "highlighted-state-shape")
         .attr("data-state-id", (d) => d.id)
         .attr("d", path)
-        .classed("is-hovered", (d) => d.id === hoveredStateId)
         .on("mouseenter", (_, d) => {
           hoveredStateId = d.id;
           updateHoverState();
@@ -329,15 +332,57 @@ Promise.all([
           updateHoverState();
         });
 
+      const hoveredSelection = hoveredStateOverlayLayer
+        .selectAll(".hovered-state-overlay")
+        .data(hoveredState, (d) => d.id)
+        .join((enter) => {
+          const group = enter
+            .append("g")
+            .attr("class", "hovered-state-overlay")
+            .attr("data-state-id", (d) => d.id);
+
+          group.append("path").attr("class", "hovered-state-halo");
+          group.append("path").attr("class", "hovered-state-fill");
+
+          return group;
+        });
+
+      hoveredSelection
+        .attr("data-state-id", (d) => d.id)
+        .on("mouseenter", (_, d) => {
+          hoveredStateId = d.id;
+          updateHoverState();
+        })
+        .on("mouseleave", () => {
+          hoveredStateId = null;
+          updateHoverState();
+        });
+
+      hoveredSelection.select(".hovered-state-halo").attr("d", path);
+      hoveredSelection.select(".hovered-state-fill").attr("d", path);
+    }
+
+    function updateMap() {
+      const focused = getFocusedRecord();
+      currentHighlightedIds = new Set(focused?.mappedStateIds ?? []);
+      if (hoveredStateId != null && !currentHighlightedIds.has(hoveredStateId)) {
+        hoveredStateId = null;
+      }
+
+      currentHighlightedStates = stateFeatures.filter((state) => currentHighlightedIds.has(state.id));
+      syncHighlightedStateLayers();
+
       const visibleBorderMesh = mesh(
         statesTopo,
         statesTopo.objects.states,
         (a, b) =>
           Boolean(a) &&
+          a.id !== hoveredStateId &&
           !excludedStateIds.has(a.id) &&
+          (!b || b.id !== hoveredStateId) &&
           (!b ||
             (!excludedStateIds.has(b.id) &&
-              (!highlightedIds.has(a.id) || !highlightedIds.has(b.id)))),
+              (!currentHighlightedIds.has(a.id) || !currentHighlightedIds.has(b.id)))),
       );
 
       bordersLayer
@@ -348,15 +393,17 @@ Promise.all([
         .attr("d", path);
 
       const highlightedBorderMesh =
-        highlightedIds.size > 1
+        currentHighlightedIds.size > 1
           ? mesh(
               statesTopo,
               statesTopo.objects.states,
               (a, b) =>
                 Boolean(a) &&
                 Boolean(b) &&
-                highlightedIds.has(a.id) &&
-                highlightedIds.has(b.id) &&
+                a.id !== hoveredStateId &&
+                b.id !== hoveredStateId &&
+                currentHighlightedIds.has(a.id) &&
+                currentHighlightedIds.has(b.id) &&
                 !excludedStateIds.has(a.id) &&
                 !excludedStateIds.has(b.id),
             )
@@ -418,9 +465,51 @@ Promise.all([
     }
 
     function updateHoverState() {
-      highlightedStatesLayer
-        .selectAll(".highlighted-state-shape")
-        .classed("is-hovered", (d) => d.id === hoveredStateId);
+      syncHighlightedStateLayers();
+
+      const visibleBorderMesh = mesh(
+        statesTopo,
+        statesTopo.objects.states,
+        (a, b) =>
+          Boolean(a) &&
+          a.id !== hoveredStateId &&
+          !excludedStateIds.has(a.id) &&
+          (!b || b.id !== hoveredStateId) &&
+          (!b ||
+            (!excludedStateIds.has(b.id) &&
+              (!currentHighlightedIds.has(a.id) || !currentHighlightedIds.has(b.id)))),
+      );
+
+      bordersLayer
+        .selectAll(".state-borders")
+        .data(visibleBorderMesh ? [visibleBorderMesh] : [])
+        .join("path")
+        .attr("class", "state-borders")
+        .attr("d", path);
+
+      const highlightedBorderMesh =
+        currentHighlightedIds.size > 1
+          ? mesh(
+              statesTopo,
+              statesTopo.objects.states,
+              (a, b) =>
+                Boolean(a) &&
+                Boolean(b) &&
+                a.id !== hoveredStateId &&
+                b.id !== hoveredStateId &&
+                currentHighlightedIds.has(a.id) &&
+                currentHighlightedIds.has(b.id) &&
+                !excludedStateIds.has(a.id) &&
+                !excludedStateIds.has(b.id),
+            )
+          : null;
+
+      highlightBordersLayer
+        .selectAll(".highlight-borders")
+        .data(highlightedBorderMesh ? [highlightedBorderMesh] : [])
+        .join("path")
+        .attr("class", "highlight-borders")
+        .attr("d", path);
 
       stateLabels
         .selectAll(".state-label")

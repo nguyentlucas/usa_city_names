@@ -2,6 +2,7 @@
   color-scheme: light;
   --bg: #ffffff;
   --ink: #000000;
+  --ink-mid: #7a7a7a;
   --line: rgba(0, 0, 0, 0.2);
   --line-soft: rgba(0, 0, 0, 0.08);
   --line-faint: rgba(0, 0, 0, 0.04);
@@ -447,33 +448,42 @@ button {
 .highlighted-state-shape {
   fill: var(--ink);
   opacity: 0.88;
-  transform-box: fill-box;
-  transform-origin: center center;
   filter:
     drop-shadow(0 1px 0 rgba(0, 0, 0, 0.06))
     drop-shadow(0 4px 6px rgba(0, 0, 0, 0));
   transition:
     opacity 180ms ease,
-    transform 180ms ease,
-    stroke-width 180ms ease,
     filter 220ms ease;
-  stroke: rgba(0, 0, 0, 0);
-  stroke-width: 0.7;
-  vector-effect: non-scaling-stroke;
 }
 
-.highlighted-state-shape.is-hovered {
-  opacity: 1;
+.hovered-state-overlay {
+  transform-box: fill-box;
+  transform-origin: center center;
   transform: translateY(-3px) scale(1.032);
+  animation: state-outline-pulse 1700ms ease-in-out infinite;
+  pointer-events: auto;
+}
+
+.hovered-state-halo {
+  fill: none;
+  stroke: var(--ink-mid);
+  stroke-width: 3.2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.88;
+}
+
+.hovered-state-fill {
+  fill: var(--ink);
+  opacity: 1;
   stroke: var(--ink);
-  stroke-width: 1.1;
+  stroke-width: 1.15;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
   filter:
-    drop-shadow(0 0 0.8px rgba(0, 0, 0, 0.42))
-    drop-shadow(0 0 7px rgba(255, 255, 255, 0.72))
-    drop-shadow(0 0 16px rgba(255, 255, 255, 0.46))
     drop-shadow(0 10px 14px rgba(0, 0, 0, 0.26))
     drop-shadow(0 18px 28px rgba(0, 0, 0, 0.14));
-  animation: state-outline-pulse 1700ms ease-in-out infinite;
 }
 
 .state-labels:has(.state-label:hover) .state-label:not(:hover),
@@ -536,22 +546,14 @@ button {
 @keyframes state-outline-pulse {
   0%,
   100% {
-    stroke-width: 1;
     filter:
-      drop-shadow(0 0 0.8px rgba(0, 0, 0, 0.4))
-      drop-shadow(0 0 8px rgba(255, 255, 255, 0.68))
-      drop-shadow(0 0 15px rgba(255, 255, 255, 0.38))
-      drop-shadow(0 9px 13px rgba(0, 0, 0, 0.24))
-      drop-shadow(0 18px 26px rgba(0, 0, 0, 0.12));
+      drop-shadow(0 0 5px rgba(122, 122, 122, 0.34))
+      drop-shadow(0 0 11px rgba(122, 122, 122, 0.2));
   }
   50% {
-    stroke-width: 1.35;
     filter:
-      drop-shadow(0 0 1px rgba(0, 0, 0, 0.46))
-      drop-shadow(0 0 12px rgba(255, 255, 255, 0.88))
-      drop-shadow(0 0 24px rgba(255, 255, 255, 0.56))
-      drop-shadow(0 12px 16px rgba(0, 0, 0, 0.28))
-      drop-shadow(0 22px 34px rgba(0, 0, 0, 0.16));
+      drop-shadow(0 0 8px rgba(122, 122, 122, 0.44))
+      drop-shadow(0 0 16px rgba(122, 122, 122, 0.28));
   }
 }
 
