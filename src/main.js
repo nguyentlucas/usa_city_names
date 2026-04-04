@@ -16,9 +16,6 @@ const ROW_HEIGHT = 44;
 const RAIL_HEIGHT = VISIBLE_ROWS * ROW_HEIGHT;
 const MAP_WIDTH = 1120;
 const MAP_HEIGHT = 760;
-const MAP_FLOOR_Y = 420;
-const CALL_OUT_START_Y = 520;
-const CALL_OUT_GAP = 32;
 const SEARCH_DEFAULT = "Franklin";
 
 const app = d3.select("#app");
@@ -27,7 +24,12 @@ app.html(`
     <div class="layout">
       <aside class="rail-column">
         <div class="focus-rail-shell" aria-label="Focused place-name rail">
-          <div id="rail-arrow-top" class="rail-arrow rail-arrow-top" aria-hidden="true"></div>
+          <button
+            id="rail-arrow-top"
+            class="rail-arrow rail-arrow-top"
+            type="button"
+            aria-label="Move focus up one row"
+          ></button>
           <div
             id="focus-rail-window"
             class="focus-rail-window"
@@ -36,13 +38,18 @@ app.html(`
           >
             <div id="focus-rail-track" class="focus-rail-track"></div>
           </div>
-          <div id="rail-arrow-bottom" class="rail-arrow rail-arrow-bottom" aria-hidden="true"></div>
+          <button
+            id="rail-arrow-bottom"
+            class="rail-arrow rail-arrow-bottom"
+            type="button"
+            aria-label="Move focus down one row"
+          ></button>
         </div>
       </aside>
 
       <main class="main-column">
         <header class="intro">
-          <p class="intro-small">some city names appear again and again</p>
+          <p class="intro-small">Some city names appear again and again.</p>
           <h1 class="title-line">
             <span>How common is </span>
             <input
@@ -59,14 +66,22 @@ app.html(`
         </header>
 
         <section class="map-stage">
-          <div class="map-tilt">
-            <svg
-              id="map-svg"
-              class="map-svg"
-              viewBox="0 0 ${MAP_WIDTH} ${MAP_HEIGHT}"
-              preserveAspectRatio="xMidYMid meet"
-              aria-label="United States map highlighting states that share the focused place name"
-            ></svg>
+          <div class="map-figure">
+            <div class="map-tilt">
+              <svg
+                id="map-svg"
+                class="map-svg"
+                viewBox="0 0 ${MAP_WIDTH} ${MAP_HEIGHT}"
+                preserveAspectRatio="xMidYMid meet"
+                aria-label="United States map highlighting states that share the focused place name"
+              ></svg>
+            </div>
+            <div
+              id="state-labels"
+              class="state-labels"
+              aria-live="polite"
+              aria-label="Highlighted states"
+            ></div>
           </div>
         </section>
       </main>
@@ -80,10 +95,10 @@ const railArrowTop = d3.select("#rail-arrow-top");
 const railArrowBottom = d3.select("#rail-arrow-bottom");
 const searchInput = d3.select("#title-search");
 const svg = d3.select("#map-svg");
+const stateLabels = d3.select("#state-labels");
 const mapPlane = svg.append("g").attr("class", "map-plane");
 const statesLayer = mapPlane.append("g").attr("class", "states-layer");
 const bordersLayer = mapPlane.append("g").attr("class", "borders-layer");
-const calloutsLayer = svg.append("g").attr("class", "callouts-layer");
 
 function normalizeName(value) {
   return value.trim().toLocaleLowerCase();
@@ -95,10 +110,6 @@ function clamp(value, min, max) {
 
 function renderError(message) {
   app.append("div").attr("class", "error-banner").text(message);
-}
-
-function measureLabelWidth(name) {
-  return Math.max(72, Math.min(160, name.length * 8.6 + 24));
 }
 
 function buildVisibleRows(records, focusedIndex) {
@@ -114,57 +125,6 @@ function buildVisibleRows(records, focusedIndex) {
       isFocused: slot === CENTER_INDEX && Boolean(record),
     };
   });
-}
-
-function layoutCallouts(path, highlightedStates) {
-  const rows = Math.min(4, Math.max(1, Math.ceil(highlightedStates.length / 7)));
-  const items = highlightedStates
-    .map((state) => {
-      const [x, y] = path.centroid(state);
-      return {
-        id: state.id,
-        name: state.properties.name,
-        anchorX: x,
-        anchorY: y,
-        width: measureLabelWidth(state.properties.name),
-      };
-    })
-    .filter((item) => Number.isFinite(item.anchorX) && Number.isFinite(item.anchorY))
-    .sort((a, b) => a.anchorX - b.anchorX);
-
-  if (!items.length) {
-    return [];
-  }
-
-  const minX = 70;
-  const maxX = MAP_WIDTH - 210;
-  const minGap = 12;
-
-  items.forEach((item, index) => {
-    item.row = index % rows;
-    item.labelY = CALL_OUT_START_Y + item.row * CALL_OUT_GAP;
-    item.labelX = clamp(item.anchorX, minX, maxX);
-  });
-
-  const perRow = d3.group(items, (item) => item.row);
-  for (const rowItems of perRow.values()) {
-    rowItems.sort((a, b) => a.labelX - b.labelX);
-
-    let cursor = minX;
-    rowItems.forEach((item) => {
-      item.labelX = Math.max(item.labelX, cursor);
-      cursor = item.labelX + item.width + minGap;
-    });
-
-    cursor = maxX;
-    for (let index = rowItems.length - 1; index >= 0; index -= 1) {
-      const item = rowItems[index];
-      item.labelX = Math.min(item.labelX, cursor - item.width);
-      cursor = item.labelX - minGap;
-    }
-  }
-
-  return items;
 }
 
 Promise.all([
@@ -187,8 +147,8 @@ Promise.all([
     const stateIndex = new Map(stateFeatures.map((state) => [state.id, state]));
     const projection = d3.geoAlbersUsa().fitExtent(
       [
-        [48, 32],
-        [MAP_WIDTH - 48, MAP_FLOOR_Y - 30],
+        [18, 28],
+        [MAP_WIDTH - 18, MAP_HEIGHT - 34],
       ],
       { type: "FeatureCollection", features: stateFeatures },
     );
@@ -218,8 +178,15 @@ Promise.all([
     let previousIndex = focusedIndex;
     let inputValue = nameFrequency[focusedIndex]?.displayName ?? SEARCH_DEFAULT;
     let interactionLocked = false;
+    const longestDisplayName = nameFrequency.reduce(
+      (longest, record) =>
+        record.displayName.length > longest.length ? record.displayName : longest,
+      SEARCH_DEFAULT,
+    );
 
     searchInput.property("value", inputValue);
+    searchInput.property("size", longestDisplayName.length + 2);
+    searchInput.style("--search-chars", longestDisplayName.length + 2);
 
     function getFocusedRecord() {
       return nameFrequency[focusedIndex] ?? null;
@@ -311,63 +278,27 @@ Promise.all([
       const highlightedStates = (focused?.mappedStateIds ?? [])
         .map((stateId) => stateIndex.get(stateId))
         .filter(Boolean);
-      const calloutData = layoutCallouts(path, highlightedStates);
+      const labelData = highlightedStates
+        .map((state) => ({ id: state.id, name: state.properties.name }))
+        .sort((a, b) => a.name.localeCompare(b.name));
 
-      const calloutGroups = calloutsLayer
-        .selectAll(".callout")
-        .data(calloutData, (d) => d.id)
+      stateLabels
+        .selectAll(".state-label")
+        .data(labelData, (d) => d.id)
         .join(
-          (enter) => {
-            const group = enter.append("g").attr("class", "callout").style("opacity", 0);
-            group.append("path").attr("class", "callout-line");
-            group.append("circle").attr("class", "callout-dot").attr("r", 4.5);
-            group.append("text").attr("class", "callout-label");
-            return group;
-          },
+          (enter) =>
+            enter
+              .append("div")
+              .attr("class", "state-label")
+              .call((selection) => {
+                selection.append("span").attr("class", "state-label-bullet").attr("aria-hidden", "true");
+                selection.append("span").attr("class", "state-label-text");
+              }),
           (update) => update,
-          (exit) => exit.transition().duration(160).style("opacity", 0).remove(),
-        );
-
-      calloutGroups
-        .transition()
-        .duration(260)
-        .ease(d3.easeCubicOut)
-        .style("opacity", 1);
-
-      calloutGroups
-        .select(".callout-line")
-        .transition()
-        .duration(260)
-        .ease(d3.easeCubicOut)
-        .attr("d", (d) => {
-          const lineEndX = d.labelX;
-          const lineEndY = d.labelY;
-          const bendY = Math.max(d.anchorY + 28, MAP_FLOOR_Y + 8 + d.row * 10);
-          const sweepX = d.labelX - 12;
-          return [
-            `M${d.anchorX},${d.anchorY}`,
-            `L${d.anchorX},${bendY}`,
-            `Q${d.anchorX},${lineEndY - 12} ${sweepX},${lineEndY - 12}`,
-            `L${lineEndX},${lineEndY}`,
-          ].join(" ");
-        });
-
-      calloutGroups
-        .select(".callout-dot")
-        .transition()
-        .duration(260)
-        .ease(d3.easeCubicOut)
-        .attr("cx", (d) => d.labelX)
-        .attr("cy", (d) => d.labelY);
-
-      calloutGroups
-        .select(".callout-label")
-        .text((d) => d.name)
-        .transition()
-        .duration(260)
-        .ease(d3.easeCubicOut)
-        .attr("x", (d) => d.labelX + 12)
-        .attr("y", (d) => d.labelY + 4);
+          (exit) => exit.remove(),
+        )
+        .select(".state-label-text")
+        .text((d) => d.name);
     }
 
     function render(delta = 0) {
@@ -428,6 +359,16 @@ Promise.all([
       event.preventDefault();
       event.stopPropagation();
       moveFocus(event.deltaY > 0 ? 1 : -1);
+    });
+
+    railArrowTop.on("click", () => {
+      moveFocus(-1);
+      railWindow.node()?.focus();
+    });
+
+    railArrowBottom.on("click", () => {
+      moveFocus(1);
+      railWindow.node()?.focus();
     });
 
     railWindow.on("keydown", (event) => {
