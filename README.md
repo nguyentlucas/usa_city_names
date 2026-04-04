@@ -2,7 +2,7 @@
 
 An interactive static website that maps and ranks repeated incorporated place names across U.S. Census TIGER/Line PLACE boundaries.
 
-Live site after deployment: [https://<your-github-username>.github.io/<your-repo-name>/](https://<your-github-username>.github.io/<your-repo-name>/)
+Live site after deployment: [https://nguyentlucas.github.io/usa_city_names/](https://nguyentlucas.github.io/usa_city_names/)
 
 ## Local setup
 
