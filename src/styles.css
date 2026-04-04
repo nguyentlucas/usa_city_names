@@ -490,18 +490,6 @@ button {
   animation: state-lifted-drift 2600ms ease-in-out 180ms infinite alternate;
 }
 
-.hovered-state-pulse {
-  fill: none;
-  stroke: var(--bg);
-  stroke-width: 3.2;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center center;
-}
-
 .hovered-state-fill {
   fill: var(--ink);
   opacity: 1;
@@ -516,21 +504,22 @@ button {
 
 .hovered-state-outline {
   fill: none;
-  stroke: var(--bg);
-  stroke-width: 1.7;
+  stroke-width: 2.35;
   stroke-linejoin: round;
-  stroke-linecap: round;
+  stroke-linecap: butt;
   vector-effect: non-scaling-stroke;
   opacity: 1;
+  stroke-dasharray: 8 8;
 }
 
-.hovered-state-overlay.is-lifted .hovered-state-pulse {
-  animation: state-outline-pulse 880ms steps(1, end) infinite;
+.hovered-state-outline-white {
+  stroke: var(--bg);
+  animation: state-outline-marquee-white 1150ms linear infinite;
 }
 
-.hovered-state-overlay.is-entering .hovered-state-pulse,
-.hovered-state-overlay.is-exiting .hovered-state-pulse {
-  animation-play-state: running;
+.hovered-state-outline-black {
+  stroke: var(--ink);
+  animation: state-outline-marquee-black 1150ms linear infinite;
 }
 
 .state-labels:has(.state-label:hover) .state-label:not(:hover),
@@ -599,30 +588,21 @@ button {
   }
 }
 
-@keyframes state-outline-pulse {
+@keyframes state-outline-marquee-white {
   0% {
-    stroke: var(--bg);
-    stroke-width: 2.6;
-    opacity: 0.98;
-    transform: scale(1.015);
-  }
-  49.999% {
-    stroke: var(--bg);
-    stroke-width: 2.6;
-    opacity: 0.98;
-    transform: scale(1.015);
-  }
-  50% {
-    stroke: var(--ink);
-    stroke-width: 4.2;
-    opacity: 0.9;
-    transform: scale(1.048);
+    stroke-dashoffset: 0;
   }
   100% {
-    stroke: var(--ink);
-    stroke-width: 4.2;
-    opacity: 0.9;
-    transform: scale(1.048);
+    stroke-dashoffset: -16;
+  }
+}
+
+@keyframes state-outline-marquee-black {
+  0% {
+    stroke-dashoffset: -8;
+  }
+  100% {
+    stroke-dashoffset: -24;
   }
 }
 
