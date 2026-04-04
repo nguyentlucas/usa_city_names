@@ -27,14 +27,7 @@ app.html(`
       <div class="layout">
       <aside class="rail-column">
         <div class="focus-rail-shell" aria-label="Focused place-name rail">
-          <div class="rail-control-stack" aria-label="Rank navigation controls">
-            <button
-              id="rail-arrow-up"
-              class="rail-arrow rail-arrow-up"
-              type="button"
-              aria-label="Move focus up one row"
-              data-arrow="up-single"
-            ></button>
+          <div class="rail-control-stack rail-control-stack-top" aria-label="Rank navigation controls">
             <button
               id="rail-arrow-top"
               class="rail-arrow rail-arrow-top"
@@ -42,6 +35,23 @@ app.html(`
               aria-label="Jump to the top of the ranked list"
               data-arrow="up-double"
             ></button>
+            <button
+              id="rail-arrow-up"
+              class="rail-arrow rail-arrow-up"
+              type="button"
+              aria-label="Move focus up one row"
+              data-arrow="up-single"
+            ></button>
+          </div>
+          <div
+            id="focus-rail-window"
+            class="focus-rail-window"
+            tabindex="0"
+            aria-label="Place-name focus rail"
+          >
+            <div id="focus-rail-track" class="focus-rail-track"></div>
+          </div>
+          <div class="rail-control-stack rail-control-stack-bottom" aria-label="Rank navigation controls">
             <button
               id="rail-arrow-down"
               class="rail-arrow rail-arrow-down"
@@ -56,14 +66,6 @@ app.html(`
               aria-label="Jump to the bottom of the ranked list"
               data-arrow="down-double"
             ></button>
-          </div>
-          <div
-            id="focus-rail-window"
-            class="focus-rail-window"
-            tabindex="0"
-            aria-label="Place-name focus rail"
-          >
-            <div id="focus-rail-track" class="focus-rail-track"></div>
           </div>
         </div>
       </aside>
@@ -205,6 +207,7 @@ Promise.all([
       lookup.get(normalizeName(SEARCH_DEFAULT)) ??
       0;
     let previousIndex = focusedIndex;
+    let hoveredStateId = null;
     let inputValue = nameFrequency[focusedIndex]?.displayName ?? SEARCH_DEFAULT;
     let interactionLocked = false;
     const longestDisplayName = nameFrequency.reduce(
@@ -303,6 +306,9 @@ Promise.all([
     function updateMap() {
       const focused = getFocusedRecord();
       const highlightedIds = new Set(focused?.mappedStateIds ?? []);
+      if (hoveredStateId != null && !highlightedIds.has(hoveredStateId)) {
+        hoveredStateId = null;
+      }
 
       const highlightedStates = stateFeatures.filter((state) => highlightedIds.has(state.id));
 
@@ -311,7 +317,17 @@ Promise.all([
         .data(highlightedStates, (d) => d.id)
         .join("path")
         .attr("class", "highlighted-state-shape")
-        .attr("d", path);
+        .attr("data-state-id", (d) => d.id)
+        .attr("d", path)
+        .classed("is-hovered", (d) => d.id === hoveredStateId)
+        .on("mouseenter", (_, d) => {
+          hoveredStateId = d.id;
+          updateHoverState();
+        })
+        .on("mouseleave", () => {
+          hoveredStateId = null;
+          updateHoverState();
+        });
 
       const visibleBorderMesh = mesh(
         statesTopo,
@@ -368,15 +384,47 @@ Promise.all([
             enter
               .append("div")
               .attr("class", "state-label")
+              .attr("tabindex", "0")
               .call((selection) => {
-                selection.append("span").attr("class", "state-label-bullet").attr("aria-hidden", "true");
+                selection
+                  .append("span")
+                  .attr("class", "state-label-bullet")
+                  .attr("aria-hidden", "true");
                 selection.append("span").attr("class", "state-label-text");
               }),
           (update) => update,
           (exit) => exit.remove(),
         )
+        .attr("data-state-id", (d) => d.id)
+        .classed("is-hovered", (d) => d.id === hoveredStateId)
+        .on("mouseenter", (_, d) => {
+          hoveredStateId = d.id;
+          updateHoverState();
+        })
+        .on("mouseleave", () => {
+          hoveredStateId = null;
+          updateHoverState();
+        })
+        .on("focus", (_, d) => {
+          hoveredStateId = d.id;
+          updateHoverState();
+        })
+        .on("blur", () => {
+          hoveredStateId = null;
+          updateHoverState();
+        })
         .select(".state-label-text")
         .text((d) => d.name);
+    }
+
+    function updateHoverState() {
+      highlightedStatesLayer
+        .selectAll(".highlighted-state-shape")
+        .classed("is-hovered", (d) => d.id === hoveredStateId);
+
+      stateLabels
+        .selectAll(".state-label")
+        .classed("is-hovered", (d) => d.id === hoveredStateId);
     }
 
     function render(delta = 0) {

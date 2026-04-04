@@ -13,9 +13,8 @@
     "Liberation Mono",
     "Menlo",
     monospace;
-  --map-panel-height: minmax(360px, 1fr);
-  --state-list-height: 112px;
-  --rail-controls-height: 184px;
+  --map-panel-height: minmax(420px, 1.16fr);
+  --state-list-height: 88px;
 }
 
 * {
@@ -74,21 +73,29 @@ button {
 }
 
 .focus-rail-shell {
-  width: 100%;
+  width: min(100%, 270px);
   min-height: 0;
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
-  gap: 18px;
-  align-items: center;
+  grid-template-rows: auto auto auto;
+  justify-items: stretch;
+  align-content: center;
 }
 
 .rail-control-stack {
-  display: grid;
-  justify-items: center;
-  align-content: center;
-  gap: 12px;
-  min-height: var(--rail-controls-height);
-  height: var(--rail-controls-height);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rail-control-stack-top {
+  gap: 6px;
+  margin-bottom: 0;
+}
+
+.rail-control-stack-bottom {
+  gap: 6px;
+  margin-top: 0;
 }
 
 .rail-arrow {
@@ -164,9 +171,17 @@ button {
 
 .rail-arrow:not(.is-dimmed):hover,
 .rail-arrow:not(.is-dimmed):focus-visible {
-  transform: scale(1.08);
-  filter: opacity(0.72);
+  transform: scale(1.05);
+  filter: opacity(0.8);
   outline: none;
+}
+
+.rail-arrow-up {
+  margin-bottom: -1px;
+}
+
+.rail-arrow-down {
+  margin-top: -1px;
 }
 
 .focus-rail-window {
@@ -236,18 +251,18 @@ button {
   display: grid;
   grid-template-rows: auto var(--map-panel-height) var(--state-list-height);
   min-height: 0;
-  row-gap: 10px;
+  row-gap: 6px;
 }
 
 .intro {
-  padding-top: 6px;
+  padding-top: 4px;
 }
 
 .intro-small {
-  margin: 0 0 14px;
-  font-size: 0.92rem;
-  letter-spacing: 0.03em;
-  line-height: 1.05;
+  margin: 0 0 12px;
+  font-size: clamp(1rem, 1.15vw, 1.26rem);
+  letter-spacing: 0.02em;
+  line-height: 1.16;
 }
 
 .title-line {
@@ -278,14 +293,15 @@ button {
   width: max(calc(var(--search-chars, 20) * 0.76ch), 17ch);
   min-width: min(100%, calc(var(--search-chars, 20) * 0.76ch));
   max-width: 100%;
-  padding: 0 0.28em 0.08em 0.18em;
+  min-height: 1.26em;
+  padding: 0.07em 0.28em 0.17em 0.18em;
   border: 0;
   border-bottom: 2px solid var(--ink);
   background: rgba(0, 0, 0, 0.03);
   color: var(--ink);
   font-size: inherit;
   font-weight: 400;
-  line-height: inherit;
+  line-height: 1.14;
   outline: none;
   vertical-align: baseline;
   caret-color: transparent;
@@ -306,8 +322,8 @@ button {
 
 .title-caret {
   position: absolute;
-  top: 0.12em;
-  bottom: 0.18em;
+  top: 0.18em;
+  bottom: 0.24em;
   right: 0.22em;
   width: 1.5px;
   background: var(--ink);
@@ -331,7 +347,7 @@ button {
   display: flex;
   align-items: stretch;
   justify-content: stretch;
-  padding: 4px 20px 0;
+  padding: 0 20px;
 }
 
 .map-figure {
@@ -350,13 +366,13 @@ button {
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 20px 34px 26px;
+  padding: 10px 30px 12px;
   overflow: visible;
 }
 
 .map-svg {
-  width: calc(100% + 4.5%);
-  height: calc(100% + 4.5%);
+  width: calc(100% + 7.5%);
+  height: calc(100% + 7.5%);
   max-height: 100%;
   display: block;
   overflow: visible;
@@ -381,8 +397,8 @@ button {
   justify-content: flex-start;
   justify-self: center;
   column-gap: 14px;
-  row-gap: 3px;
-  padding-top: 8px;
+  row-gap: 4px;
+  padding-top: 2px;
   overflow: hidden;
 }
 
@@ -397,6 +413,13 @@ button {
   white-space: nowrap;
   font-size: 0.84rem;
   line-height: 1;
+  opacity: 0.74;
+  transform: scale(1);
+  transform-origin: left center;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+  outline: none;
 }
 
 .state-label-bullet {
@@ -404,6 +427,9 @@ button {
   height: 6px;
   background: var(--ink);
   flex: 0 0 auto;
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease;
 }
 
 .base-state-shape {
@@ -412,6 +438,43 @@ button {
 
 .highlighted-state-shape {
   fill: var(--ink);
+  opacity: 0.88;
+  transform-box: fill-box;
+  transform-origin: center center;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    stroke-width 180ms ease;
+  stroke: rgba(0, 0, 0, 0);
+  stroke-width: 0.7;
+  vector-effect: non-scaling-stroke;
+}
+
+.highlighted-state-shape.is-hovered {
+  opacity: 1;
+  transform: scale(1.008);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+
+.state-labels:has(.state-label:hover) .state-label:not(:hover),
+.state-labels:has(.state-label:focus-visible) .state-label:not(:focus-visible),
+.state-labels:has(.state-label.is-hovered) .state-label:not(.is-hovered) {
+  opacity: 0.46;
+}
+
+.state-label.is-hovered,
+.state-label:hover,
+.state-label:focus-visible {
+  opacity: 1;
+  transform: scale(1.035);
+}
+
+.state-label.is-hovered .state-label-bullet,
+.state-label:hover .state-label-bullet,
+.state-label:focus-visible .state-label-bullet {
+  transform: scale(1.18);
+  opacity: 1;
 }
 
 .highlight-borders {
@@ -495,8 +558,7 @@ button {
   }
 
   .focus-rail-shell {
-    grid-template-columns: 34px minmax(0, 1fr);
-    gap: 14px;
+    width: 100%;
   }
 
   .focus-rail-window {
@@ -505,6 +567,7 @@ button {
 
   .main-column {
     grid-template-rows: auto minmax(320px, 46vh) auto;
+    row-gap: 10px;
   }
 
   .title-line {
@@ -513,7 +576,7 @@ button {
   }
 
   .intro-small {
-    font-size: 0.86rem;
+    font-size: 0.9rem;
   }
 
   .title-search {
@@ -529,6 +592,11 @@ button {
     min-height: 320px;
     width: 100%;
     padding: 18px 18px 22px;
+  }
+
+  .map-svg {
+    width: calc(100% + 4.5%);
+    height: calc(100% + 4.5%);
   }
 
   .state-labels {
