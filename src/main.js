@@ -132,6 +132,7 @@ const highlightedStatesLayer = mapPlane.append("g").attr("class", "highlighted-s
 const bordersLayer = mapPlane.append("g").attr("class", "borders-layer");
 const highlightBordersLayer = mapPlane.append("g").attr("class", "highlight-borders-layer");
 const hoveredStateOverlayLayer = mapPlane.append("g").attr("class", "hovered-state-overlay-layer");
+const HOVERED_STATE_FALL_DURATION_MS = 220;
 
 function normalizeName(value) {
   return value.trim().toLocaleLowerCase();
@@ -335,17 +336,43 @@ Promise.all([
       const hoveredSelection = hoveredStateOverlayLayer
         .selectAll(".hovered-state-overlay")
         .data(hoveredState, (d) => d.id)
-        .join((enter) => {
-          const group = enter
-            .append("g")
-            .attr("class", "hovered-state-overlay")
-            .attr("data-state-id", (d) => d.id);
+        .join(
+          (enter) => {
+            const group = enter
+              .append("g")
+              .attr("class", "hovered-state-overlay is-entering")
+              .attr("data-state-id", (d) => d.id);
 
-          group.append("path").attr("class", "hovered-state-halo");
-          group.append("path").attr("class", "hovered-state-fill");
+            const body = group.append("g").attr("class", "hovered-state-overlay-body");
+            body.append("path").attr("class", "hovered-state-halo");
+            body.append("path").attr("class", "hovered-state-fill");
+            body.append("path").attr("class", "hovered-state-outline");
 
-          return group;
-        });
+            return group;
+          },
+          (update) => update,
+          (exit) =>
+            exit.each(function () {
+              if (this.hoverLiftFrame != null) {
+                cancelAnimationFrame(this.hoverLiftFrame);
+                this.hoverLiftFrame = null;
+              }
+              if (this.hoverExitTimer != null) {
+                clearTimeout(this.hoverExitTimer);
+              }
+
+              d3.select(this)
+                .classed("is-entering", false)
+                .classed("is-lifted", false)
+                .classed("is-exiting", true)
+                .on("mouseenter", null)
+                .on("mouseleave", null);
+
+              this.hoverExitTimer = window.setTimeout(() => {
+                d3.select(this).remove();
+              }, HOVERED_STATE_FALL_DURATION_MS);
+            }),
+        );
 
       hoveredSelection
         .attr("data-state-id", (d) => d.id)
@@ -358,8 +385,29 @@ Promise.all([
           updateHoverState();
         });
 
+      hoveredSelection.each(function () {
+        if (this.hoverExitTimer != null) {
+          clearTimeout(this.hoverExitTimer);
+          this.hoverExitTimer = null;
+        }
+        if (this.hoverLiftFrame != null) {
+          cancelAnimationFrame(this.hoverLiftFrame);
+        }
+
+        const selection = d3.select(this);
+        selection.classed("is-exiting", false);
+
+        if (!selection.classed("is-lifted")) {
+          this.hoverLiftFrame = window.requestAnimationFrame(() => {
+            selection.classed("is-entering", false).classed("is-lifted", true);
+            this.hoverLiftFrame = null;
+          });
+        }
+      });
+
       hoveredSelection.select(".hovered-state-halo").attr("d", path);
       hoveredSelection.select(".hovered-state-fill").attr("d", path);
+      hoveredSelection.select(".hovered-state-outline").attr("d", path);
     }
 
     function updateMap() {
