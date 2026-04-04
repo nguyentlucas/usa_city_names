@@ -19,28 +19,28 @@ const MAP_HEIGHT = 760;
 const SEARCH_DEFAULT = "Franklin";
 const ROW_TRANSITION_MS = 240;
 const JUMP_TRANSITION_MS = 520;
-const INTRO_TYPING_STAGGER_MS = 34;
-const INTRO_TYPING_MIN_DURATION_MS = 420;
-const INTRO_TYPING_MAX_DURATION_MS = 980;
-const INTRO_GAP_AFTER_EDITORIAL_MS = 180;
-const INTRO_GAP_AFTER_PREFIX_MS = 130;
-const INTRO_SEARCH_REVEAL_MS = 420;
-const INTRO_GAP_BEFORE_CITY_MS = 170;
-const INTRO_GAP_BEFORE_QUESTION_MS = 110;
-const INTRO_QUESTION_REVEAL_MS = 280;
-const INTRO_GAP_BEFORE_MAP_MS = 150;
-const INITIAL_MAP_STAGGER_MS = 14;
-const INITIAL_MAP_STATE_DURATION_MS = 420;
-const INITIAL_MAP_SETTLE_MS = 220;
-const INITIAL_HIGHLIGHT_REVEAL_DELAY_MS = 170;
-const INTRO_GAP_BEFORE_RAIL_MS = 180;
-const INTRO_RAIL_ARROW_REVEAL_MS = 260;
-const INTRO_RAIL_ROW_INITIAL_GAP_MS = 230;
-const INTRO_RAIL_ROW_GAP_DECAY_MS = 24;
-const INTRO_RAIL_ROW_MIN_GAP_MS = 92;
-const INTRO_RAIL_ROW_TYPING_STAGGER_MS = 22;
-const INTRO_RAIL_ROW_MIN_DURATION_MS = 340;
-const INTRO_RAIL_ROW_MAX_DURATION_MS = 760;
+const INTRO_TYPING_STAGGER_MS = 42;
+const INTRO_TYPING_MIN_DURATION_MS = 760;
+const INTRO_TYPING_MAX_DURATION_MS = 1600;
+const INTRO_GAP_AFTER_EDITORIAL_MS = 340;
+const INTRO_GAP_AFTER_PREFIX_MS = 280;
+const INTRO_SEARCH_REVEAL_MS = 760;
+const INTRO_GAP_BEFORE_CITY_MS = 300;
+const INTRO_GAP_BEFORE_QUESTION_MS = 220;
+const INTRO_QUESTION_REVEAL_MS = 420;
+const INTRO_GAP_BEFORE_MAP_MS = 300;
+const INITIAL_MAP_STAGGER_MS = 22;
+const INITIAL_MAP_STATE_DURATION_MS = 680;
+const INITIAL_MAP_SETTLE_MS = 340;
+const INITIAL_HIGHLIGHT_REVEAL_DELAY_MS = 220;
+const INTRO_GAP_BEFORE_RAIL_MS = 260;
+const INTRO_RAIL_ARROW_REVEAL_MS = 360;
+const INTRO_RAIL_ROW_INITIAL_GAP_MS = 340;
+const INTRO_RAIL_ROW_GAP_DECAY_MS = 30;
+const INTRO_RAIL_ROW_MIN_GAP_MS = 120;
+const INTRO_RAIL_ROW_TYPING_STAGGER_MS = 28;
+const INTRO_RAIL_ROW_MIN_DURATION_MS = 520;
+const INTRO_RAIL_ROW_MAX_DURATION_MS = 1100;
 const INTRO_COPY = "Some city names appear again and again.";
 const TITLE_PREFIX_COPY = "How common is";
 
@@ -50,7 +50,7 @@ app.html(`
     <div class="composition-layer">
       <div class="layout">
       <aside class="rail-column">
-        <div class="focus-rail-shell" aria-label="Focused place-name rail">
+        <div class="focus-rail-shell is-pristine-hidden" aria-label="Focused place-name rail">
           <div class="rail-control-stack rail-control-stack-top" aria-label="Rank navigation controls">
             <button
               id="rail-arrow-top"
@@ -96,10 +96,10 @@ app.html(`
 
       <main class="main-column">
         <header class="intro">
-          <p id="intro-small" class="intro-small"></p>
+          <p id="intro-small" class="intro-small is-intro-hidden"></p>
           <h1 class="title-line">
-            <span id="title-prefix" class="title-prefix"></span>
-            <span id="search-shell" class="search-shell">
+            <span id="title-prefix" class="title-prefix is-intro-hidden"></span>
+            <span id="search-shell" class="search-shell is-intro-hidden">
               <span id="search-entrance-text" class="search-entrance-text" aria-hidden="true"></span>
               <input
                 id="title-search"
@@ -112,11 +112,11 @@ app.html(`
               />
               <span class="title-caret" aria-hidden="true"></span>
             </span>
-            <span id="title-question" class="title-question">?</span>
+            <span id="title-question" class="title-question is-intro-hidden">?</span>
           </h1>
         </header>
 
-        <section class="map-stage">
+        <section class="map-stage is-pristine-hidden">
           <div class="map-figure">
             <div class="map-frame">
               <svg
@@ -131,7 +131,7 @@ app.html(`
         </section>
         <div
           id="state-labels"
-          class="state-labels"
+          class="state-labels is-pristine-hidden"
           aria-live="polite"
           aria-label="Highlighted states"
         ></div>
@@ -156,6 +156,7 @@ const titleQuestion = d3.select("#title-question");
 const svg = d3.select("#map-svg");
 const stateLabels = d3.select("#state-labels");
 const railShell = d3.select(".focus-rail-shell");
+const mapStage = d3.select(".map-stage");
 const mapPlane = svg.append("g").attr("class", "map-plane");
 const baseStatesLayer = mapPlane.append("g").attr("class", "base-states-layer");
 const highlightedStatesLayer = mapPlane.append("g").attr("class", "highlighted-states-layer");
@@ -282,6 +283,10 @@ function revealRailRow(rowSelection, slot) {
     .style("transform", `translateY(${slot * ROW_HEIGHT}px)`);
 }
 
+function revealPristineNode(selection) {
+  selection.classed("is-pristine-hidden", false).classed("is-pristine-entered", true);
+}
+
 function animateRailRowText(rowSelection, record) {
   const node = rowSelection.node();
   if (!node || !record) {
@@ -355,13 +360,6 @@ Promise.all([
     );
     const path = d3.geoPath(projection);
 
-    baseStatesLayer
-      .selectAll("path")
-      .data(stateFeatures)
-      .join("path")
-      .attr("class", "base-state-shape")
-      .attr("d", path);
-
     const lookup = new Map(
       Object.entries(nameLookup).map(([normalizedName, index]) => [normalizedName, Number(index)]),
     );
@@ -377,8 +375,12 @@ Promise.all([
     let inputValue = nameFrequency[focusedIndex]?.displayName ?? SEARCH_DEFAULT;
     let interactionLocked = false;
     let initialEntranceActive = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let initialMapRevealPending = initialEntranceActive;
     let initialHighlightRevealPending = false;
+    let initialLabelRevealPending = initialEntranceActive;
     let initialRailRevealPending = initialEntranceActive;
+    let introRailSelectionPending = initialEntranceActive;
+    let baseMapReady = false;
     const longestDisplayName = nameFrequency.reduce(
       (longest, record) =>
         record.displayName.length > longest.length ? record.displayName : longest,
@@ -397,6 +399,21 @@ Promise.all([
       const focused = getFocusedRecord();
       inputValue = focused?.displayName ?? "";
       searchInput.property("value", inputValue);
+    }
+
+    function ensureBaseMapRendered() {
+      if (baseMapReady) {
+        return;
+      }
+
+      baseStatesLayer
+        .selectAll("path")
+        .data(stateFeatures)
+        .join("path")
+        .attr("class", "base-state-shape")
+        .attr("d", path);
+
+      baseMapReady = true;
     }
 
     function updateRail(delta = 0) {
@@ -448,7 +465,9 @@ Promise.all([
         );
 
       rowSelection
-        .attr("class", (d) => (d.isFocused ? "rail-row is-focused" : "rail-row"))
+        .attr("class", (d) =>
+          d.isFocused && !introRailSelectionPending ? "rail-row is-focused" : "rail-row",
+        )
         .attr("disabled", (d) => (d.record ? null : true))
         .attr("aria-label", (d) =>
           d.record ? `${d.record.displayName}, ${d.record.count} occurrences` : "Empty row",
@@ -606,6 +625,16 @@ Promise.all([
     }
 
     function updateMap() {
+      if (initialMapRevealPending) {
+        highlightedStatesLayer.selectAll(".highlighted-state-shape").remove();
+        hoveredStateOverlayLayer.selectAll(".hovered-state-overlay").remove();
+        bordersLayer.selectAll(".state-borders").remove();
+        highlightBordersLayer.selectAll(".highlight-borders").remove();
+        stateLabels.selectAll(".state-label").remove();
+        return;
+      }
+
+      ensureBaseMapRendered();
       const focused = getFocusedRecord();
       currentHighlightedIds = new Set(focused?.mappedStateIds ?? []);
       if (hoveredStateId != null && !currentHighlightedIds.has(hoveredStateId)) {
@@ -672,7 +701,7 @@ Promise.all([
 
       stateLabels
         .selectAll(".state-label")
-        .data(initialEntranceActive ? [] : sortedLabels, (d) => d.id)
+        .data(initialEntranceActive || initialLabelRevealPending ? [] : sortedLabels, (d) => d.id)
         .join(
           (enter) =>
             enter
@@ -866,15 +895,11 @@ Promise.all([
       railArrowUp.classed("is-intro-hidden", true);
       railArrowDown.classed("is-intro-hidden", true);
       railArrowBottom.classed("is-intro-hidden", true);
-
       introSmall.attr("aria-label", INTRO_COPY);
       titlePrefix.attr("aria-label", TITLE_PREFIX_COPY);
       interactionLocked = true;
       introSmall.classed("is-intro-hidden", false);
-      titlePrefix.classed("is-intro-hidden", false);
       searchShell.classed("is-entrance-active", true);
-      searchShell.classed("is-intro-hidden", true);
-      titleQuestion.classed("is-intro-hidden", true);
       railShell.classed("is-intro-ready", true);
       searchInput.attr("disabled", true);
       searchInput.property("value", "");
@@ -882,6 +907,7 @@ Promise.all([
 
       await animateTypingTextAsync(introSmall, INTRO_COPY);
       await wait(INTRO_GAP_AFTER_EDITORIAL_MS);
+      titlePrefix.classed("is-intro-hidden", false);
       await animateTypingTextAsync(titlePrefix, TITLE_PREFIX_COPY);
       await wait(INTRO_GAP_AFTER_PREFIX_MS);
 
@@ -892,6 +918,7 @@ Promise.all([
       revealIntroNode(titleQuestion);
       await wait(INTRO_QUESTION_REVEAL_MS + INTRO_GAP_BEFORE_MAP_MS);
 
+      revealPristineNode(mapStage);
       svg.classed("is-entrance-active", true);
       entranceBordersLayer
         .selectAll(".entrance-state-border")
@@ -915,16 +942,30 @@ Promise.all([
       );
 
       initialEntranceActive = false;
+      initialMapRevealPending = false;
       initialHighlightRevealPending = true;
       svg.classed("is-entrance-active", false);
       searchShell.classed("is-entrance-active", false);
       searchEntranceText.text("");
       searchInput.property("value", cityName);
       searchInput.attr("disabled", null);
-      render(0);
+      updateMap();
 
       await wait(INITIAL_HIGHLIGHT_REVEAL_DELAY_MS + INTRO_GAP_BEFORE_RAIL_MS);
+      initialLabelRevealPending = false;
+      revealPristineNode(stateLabels);
+      updateMap();
       entranceBordersLayer.selectAll(".entrance-state-border").remove();
+
+      initialRailRevealPending = false;
+      updateRail(0);
+      revealPristineNode(railShell);
+      railTrack
+        .selectAll(".rail-row")
+        .filter((d) => d.record)
+        .classed("is-intro-hidden", true)
+        .style("opacity", 0)
+        .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT - 6}px)`);
 
       revealIntroNode(railArrowTop);
       await wait(INTRO_RAIL_ARROW_REVEAL_MS * 0.75);
@@ -958,7 +999,7 @@ Promise.all([
       revealIntroNode(railArrowBottom);
       await wait(INTRO_RAIL_ARROW_REVEAL_MS * 0.7);
 
-      initialRailRevealPending = false;
+      introRailSelectionPending = false;
       railShell.classed("is-intro-ready", false);
       interactionLocked = false;
       render(0);
@@ -1084,13 +1125,18 @@ Promise.all([
       });
 
     if (initialEntranceActive) {
-      render(0);
       playInitialEntrance();
       return;
     }
 
     introSmall.text(INTRO_COPY);
     titlePrefix.text(TITLE_PREFIX_COPY);
+    revealPristineNode(mapStage);
+    revealPristineNode(stateLabels);
+    revealPristineNode(railShell);
+    initialMapRevealPending = false;
+    initialLabelRevealPending = false;
+    introRailSelectionPending = false;
     render(0);
   })
   .catch((error) => {

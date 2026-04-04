@@ -83,6 +83,23 @@ button {
   transition: opacity 320ms ease;
 }
 
+.focus-rail-shell.is-pristine-hidden,
+.map-stage.is-pristine-hidden,
+.state-labels.is-pristine-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.focus-rail-shell.is-pristine-entered,
+.map-stage.is-pristine-entered,
+.state-labels.is-pristine-entered {
+  visibility: visible;
+  transition:
+    opacity 420ms cubic-bezier(0.2, 0.92, 0.32, 1),
+    transform 420ms cubic-bezier(0.2, 0.92, 0.32, 1);
+}
+
 .focus-rail-shell.is-intro-ready {
   pointer-events: none;
 }
@@ -432,6 +449,9 @@ button {
   align-items: stretch;
   justify-content: stretch;
   padding: 0 20px;
+  transition:
+    opacity 420ms cubic-bezier(0.2, 0.92, 0.32, 1),
+    transform 420ms cubic-bezier(0.2, 0.92, 0.32, 1);
 }
 
 .map-figure {
@@ -490,6 +510,9 @@ button {
   row-gap: 4px;
   padding-top: 2px;
   overflow: hidden;
+  transition:
+    opacity 320ms cubic-bezier(0.2, 0.92, 0.32, 1),
+    transform 360ms cubic-bezier(0.2, 0.92, 0.32, 1);
 }
 
 .state-labels.is-settling {
