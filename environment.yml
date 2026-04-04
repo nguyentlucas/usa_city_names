@@ -1,0 +1,13 @@
+name: city-names
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - geopandas
+  - shapely
+  - pyproj
+  - pyogrio
+  - fiona
+  - pandas
+  - numpy
+  - topojson

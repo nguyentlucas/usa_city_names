@@ -1,0 +1,18 @@
+{
+  "source": "U.S. Census TIGER/Line PLACE shapefiles",
+  "year": 2025,
+  "includedClassfp": [
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5"
+  ],
+  "excludedExamples": [
+    "U1"
+  ],
+  "placeCount": 19491,
+  "nameCount": 12723,
+  "stateCount": 51,
+  "simplifyToleranceMeters": 250.0
+}

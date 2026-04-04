@@ -1,0 +1,5304 @@
+[
+  {
+    "normalizedName": "franklin",
+    "displayName": "Franklin",
+    "count": 24,
+    "stateCount": 23,
+    "states": [
+      "Alabama",
+      "Arkansas",
+      "Georgia",
+      "Idaho",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kentucky",
+      "Louisiana",
+      "Michigan",
+      "Minnesota",
+      "Missouri",
+      "Nebraska",
+      "New Hampshire",
+      "New Jersey",
+      "New York",
+      "North Carolina",
+      "Ohio",
+      "Pennsylvania",
+      "Tennessee",
+      "Texas",
+      "West Virginia",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "0128024",
+        "name": "Franklin",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "0525030",
+        "name": "Franklin",
+        "stateAbbr": "AR",
+        "stateName": "Arkansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1331292",
+        "name": "Franklin",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1628810",
+        "name": "Franklin",
+        "stateAbbr": "ID",
+        "stateName": "Idaho",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1727663",
+        "name": "Franklin",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1825450",
+        "name": "Franklin",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1928740",
+        "name": "Franklin",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2128918",
+        "name": "Franklin",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2227155",
+        "name": "Franklin",
+        "stateAbbr": "LA",
+        "stateName": "Louisiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2630340",
+        "name": "Franklin",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2722364",
+        "name": "Franklin",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2925624",
+        "name": "Franklin",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3117530",
+        "name": "Franklin",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3327380",
+        "name": "Franklin",
+        "stateAbbr": "NH",
+        "stateName": "New Hampshire",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3424930",
+        "name": "Franklin",
+        "stateAbbr": "NJ",
+        "stateName": "New Jersey",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3627221",
+        "name": "Franklin",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3724640",
+        "name": "Franklin",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3928476",
+        "name": "Franklin",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4227360",
+        "name": "Franklin",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4227456",
+        "name": "Franklin",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4727740",
+        "name": "Franklin",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4827288",
+        "name": "Franklin",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5429044",
+        "name": "Franklin",
+        "stateAbbr": "WV",
+        "stateName": "West Virginia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5527300",
+        "name": "Franklin",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "clinton",
+    "displayName": "Clinton",
+    "count": 20,
+    "stateCount": 20,
+    "states": [
+      "Arkansas",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kentucky",
+      "Louisiana",
+      "Michigan",
+      "Minnesota",
+      "Mississippi",
+      "Missouri",
+      "Nebraska",
+      "New Jersey",
+      "New York",
+      "North Carolina",
+      "Ohio",
+      "Oklahoma",
+      "South Carolina",
+      "Tennessee",
+      "Utah",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "0514260",
+        "name": "Clinton",
+        "stateAbbr": "AR",
+        "stateName": "Arkansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1715001",
+        "name": "Clinton",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1813780",
+        "name": "Clinton",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1914430",
+        "name": "Clinton",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "2115742",
+        "name": "Clinton",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2215990",
+        "name": "Clinton",
+        "stateAbbr": "LA",
+        "stateName": "Louisiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2616480",
+        "name": "Clinton",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2711980",
+        "name": "Clinton",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2814420",
+        "name": "Clinton",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2914986",
+        "name": "Clinton",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3109655",
+        "name": "Clinton",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3413720",
+        "name": "Clinton",
+        "stateAbbr": "NJ",
+        "stateName": "New Jersey",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3616419",
+        "name": "Clinton",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3713240",
+        "name": "Clinton",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3916182",
+        "name": "Clinton",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "4015400",
+        "name": "Clinton",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4515295",
+        "name": "Clinton",
+        "stateAbbr": "SC",
+        "stateName": "South Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4715580",
+        "name": "Clinton",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4914290",
+        "name": "Clinton",
+        "stateAbbr": "UT",
+        "stateName": "Utah",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5515625",
+        "name": "Clinton",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "madison",
+    "displayName": "Madison",
+    "count": 20,
+    "stateCount": 20,
+    "states": [
+      "Alabama",
+      "Arkansas",
+      "Florida",
+      "Georgia",
+      "Illinois",
+      "Indiana",
+      "Kansas",
+      "Minnesota",
+      "Mississippi",
+      "Missouri",
+      "Nebraska",
+      "New Jersey",
+      "New York",
+      "North Carolina",
+      "Ohio",
+      "Pennsylvania",
+      "South Dakota",
+      "Virginia",
+      "West Virginia",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "0145784",
+        "name": "Madison",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "0543280",
+        "name": "Madison",
+        "stateAbbr": "AR",
+        "stateName": "Arkansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1242425",
+        "name": "Madison",
+        "stateAbbr": "FL",
+        "stateName": "Florida",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1349196",
+        "name": "Madison",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1745993",
+        "name": "Madison",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1845990",
+        "name": "Madison",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2044050",
+        "name": "Madison",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2739266",
+        "name": "Madison",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2844520",
+        "name": "Madison",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2945470",
+        "name": "Madison",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3130240",
+        "name": "Madison",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3442510",
+        "name": "Madison",
+        "stateAbbr": "NJ",
+        "stateName": "New Jersey",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3644424",
+        "name": "Madison",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3740560",
+        "name": "Madison",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3946480",
+        "name": "Madison",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4246488",
+        "name": "Madison",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4640220",
+        "name": "Madison",
+        "stateAbbr": "SD",
+        "stateName": "South Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "5148488",
+        "name": "Madison",
+        "stateAbbr": "VA",
+        "stateName": "Virginia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5450524",
+        "name": "Madison",
+        "stateAbbr": "WV",
+        "stateName": "West Virginia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5548000",
+        "name": "Madison",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "clayton",
+    "displayName": "Clayton",
+    "count": 19,
+    "stateCount": 19,
+    "states": [
+      "Alabama",
+      "California",
+      "Delaware",
+      "Georgia",
+      "Idaho",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Louisiana",
+      "Michigan",
+      "Missouri",
+      "New Jersey",
+      "New Mexico",
+      "New York",
+      "North Carolina",
+      "Ohio",
+      "Oklahoma",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "0115376",
+        "name": "Clayton",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "0613882",
+        "name": "Clayton",
+        "stateAbbr": "CA",
+        "stateName": "California",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1015440",
+        "name": "Clayton",
+        "stateAbbr": "DE",
+        "stateName": "Delaware",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1316656",
+        "name": "Clayton",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1615490",
+        "name": "Clayton",
+        "stateAbbr": "ID",
+        "stateName": "Idaho",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1714767",
+        "name": "Clayton",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1813366",
+        "name": "Clayton",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1913845",
+        "name": "Clayton",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2013675",
+        "name": "Clayton",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2215850",
+        "name": "Clayton",
+        "stateAbbr": "LA",
+        "stateName": "Louisiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2616280",
+        "name": "Clayton",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2914572",
+        "name": "Clayton",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3413360",
+        "name": "Clayton",
+        "stateAbbr": "NJ",
+        "stateName": "New Jersey",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3515720",
+        "name": "Clayton",
+        "stateAbbr": "NM",
+        "stateName": "New Mexico",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3616089",
+        "name": "Clayton",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3712860",
+        "name": "Clayton",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3915644",
+        "name": "Clayton",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "4014900",
+        "name": "Clayton",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5515100",
+        "name": "Clayton",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "marion",
+    "displayName": "Marion",
+    "count": 18,
+    "stateCount": 18,
+    "states": [
+      "Alabama",
+      "Arkansas",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Kentucky",
+      "Louisiana",
+      "Michigan",
+      "Mississippi",
+      "North Carolina",
+      "North Dakota",
+      "Ohio",
+      "South Carolina",
+      "South Dakota",
+      "Texas",
+      "Virginia",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "0146768",
+        "name": "Marion",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "0544180",
+        "name": "Marion",
+        "stateAbbr": "AR",
+        "stateName": "Arkansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1746916",
+        "name": "Marion",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1846908",
+        "name": "Marion",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1949485",
+        "name": "Marion",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2044750",
+        "name": "Marion",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2150034",
+        "name": "Marion",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2248645",
+        "name": "Marion",
+        "stateAbbr": "LA",
+        "stateName": "Louisiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2651660",
+        "name": "Marion",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2845160",
+        "name": "Marion",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3741420",
+        "name": "Marion",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3850780",
+        "name": "Marion",
+        "stateAbbr": "ND",
+        "stateName": "North Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3947754",
+        "name": "Marion",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4544575",
+        "name": "Marion",
+        "stateAbbr": "SC",
+        "stateName": "South Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4640860",
+        "name": "Marion",
+        "stateAbbr": "SD",
+        "stateName": "South Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4846692",
+        "name": "Marion",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5149464",
+        "name": "Marion",
+        "stateAbbr": "VA",
+        "stateName": "Virginia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5549400",
+        "name": "Marion",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "fairview",
+    "displayName": "Fairview",
+    "count": 17,
+    "stateCount": 17,
+    "states": [
+      "Alabama",
+      "Illinois",
+      "Kansas",
+      "Kentucky",
+      "Missouri",
+      "Montana",
+      "New Jersey",
+      "North Carolina",
+      "Ohio",
+      "Oklahoma",
+      "Oregon",
+      "Pennsylvania",
+      "South Dakota",
+      "Tennessee",
+      "Texas",
+      "Utah",
+      "West Virginia"
+    ],
+    "places": [
+      {
+        "geoid": "0125384",
+        "name": "Fairview",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1725063",
+        "name": "Fairview",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2022425",
+        "name": "Fairview",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2126236",
+        "name": "Fairview",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2923518",
+        "name": "Fairview",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3025300",
+        "name": "Fairview",
+        "stateAbbr": "MT",
+        "stateName": "Montana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3422560",
+        "name": "Fairview",
+        "stateAbbr": "NJ",
+        "stateName": "New Jersey",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3722500",
+        "name": "Fairview",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3926348",
+        "name": "Fairview",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4025100",
+        "name": "Fairview",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4124250",
+        "name": "Fairview",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4224832",
+        "name": "Fairview",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4620780",
+        "name": "Fairview",
+        "stateAbbr": "SD",
+        "stateName": "South Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4725440",
+        "name": "Fairview",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4825224",
+        "name": "Fairview",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4924630",
+        "name": "Fairview",
+        "stateAbbr": "UT",
+        "stateName": "Utah",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5426524",
+        "name": "Fairview",
+        "stateAbbr": "WV",
+        "stateName": "West Virginia",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "cleveland",
+    "displayName": "Cleveland",
+    "count": 16,
+    "stateCount": 16,
+    "states": [
+      "Alabama",
+      "Georgia",
+      "Illinois",
+      "Minnesota",
+      "Mississippi",
+      "Missouri",
+      "New York",
+      "North Carolina",
+      "North Dakota",
+      "Ohio",
+      "Oklahoma",
+      "Tennessee",
+      "Texas",
+      "Utah",
+      "Virginia",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "0115472",
+        "name": "Cleveland",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1316824",
+        "name": "Cleveland",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1714923",
+        "name": "Cleveland",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2711872",
+        "name": "Cleveland",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2814260",
+        "name": "Cleveland",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2914770",
+        "name": "Cleveland",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3616188",
+        "name": "Cleveland",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3713000",
+        "name": "Cleveland",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3814660",
+        "name": "Cleveland",
+        "stateAbbr": "ND",
+        "stateName": "North Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3916000",
+        "name": "Cleveland",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "4015350",
+        "name": "Cleveland",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4715400",
+        "name": "Cleveland",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4815436",
+        "name": "Cleveland",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4914070",
+        "name": "Cleveland",
+        "stateAbbr": "UT",
+        "stateName": "Utah",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5117296",
+        "name": "Cleveland",
+        "stateAbbr": "VA",
+        "stateName": "Virginia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5515400",
+        "name": "Cleveland",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "greenville",
+    "displayName": "Greenville",
+    "count": 16,
+    "stateCount": 16,
+    "states": [
+      "Alabama",
+      "Florida",
+      "Georgia",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kentucky",
+      "Michigan",
+      "Mississippi",
+      "Missouri",
+      "North Carolina",
+      "Ohio",
+      "Pennsylvania",
+      "South Carolina",
+      "Texas",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "0131912",
+        "name": "Greenville",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1227575",
+        "name": "Greenville",
+        "stateAbbr": "FL",
+        "stateName": "Florida",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1335016",
+        "name": "Greenville",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1731589",
+        "name": "Greenville",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1829844",
+        "name": "Greenville",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1932970",
+        "name": "Greenville",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2133022",
+        "name": "Greenville",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2635100",
+        "name": "Greenville",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2829180",
+        "name": "Greenville",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2929476",
+        "name": "Greenville",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3728080",
+        "name": "Greenville",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3932340",
+        "name": "Greenville",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4231328",
+        "name": "Greenville",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4530850",
+        "name": "Greenville",
+        "stateAbbr": "SC",
+        "stateName": "South Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4830920",
+        "name": "Greenville",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5531525",
+        "name": "Greenville",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "jackson",
+    "displayName": "Jackson",
+    "count": 16,
+    "stateCount": 16,
+    "states": [
+      "Alabama",
+      "California",
+      "Georgia",
+      "Kentucky",
+      "Louisiana",
+      "Michigan",
+      "Minnesota",
+      "Mississippi",
+      "Missouri",
+      "Nebraska",
+      "North Carolina",
+      "Ohio",
+      "South Carolina",
+      "Tennessee",
+      "Wisconsin",
+      "Wyoming"
+    ],
+    "places": [
+      {
+        "geoid": "0138152",
+        "name": "Jackson",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "0636980",
+        "name": "Jackson",
+        "stateAbbr": "CA",
+        "stateName": "California",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1341596",
+        "name": "Jackson",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2139952",
+        "name": "Jackson",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2237830",
+        "name": "Jackson",
+        "stateAbbr": "LA",
+        "stateName": "Louisiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2641420",
+        "name": "Jackson",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2731562",
+        "name": "Jackson",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2836000",
+        "name": "Jackson",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2935648",
+        "name": "Jackson",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3124355",
+        "name": "Jackson",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3734000",
+        "name": "Jackson",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3937842",
+        "name": "Jackson",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "4536205",
+        "name": "Jackson",
+        "stateAbbr": "SC",
+        "stateName": "South Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4737640",
+        "name": "Jackson",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5537675",
+        "name": "Jackson",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "5640120",
+        "name": "Jackson",
+        "stateAbbr": "WY",
+        "stateName": "Wyoming",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "manchester",
+    "displayName": "Manchester",
+    "count": 16,
+    "stateCount": 16,
+    "states": [
+      "Georgia",
+      "Illinois",
+      "Iowa",
+      "Kansas",
+      "Kentucky",
+      "Maryland",
+      "Michigan",
+      "Minnesota",
+      "Missouri",
+      "New Hampshire",
+      "New York",
+      "Ohio",
+      "Oklahoma",
+      "Pennsylvania",
+      "Tennessee",
+      "Vermont"
+    ],
+    "places": [
+      {
+        "geoid": "1349532",
+        "name": "Manchester",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1746331",
+        "name": "Manchester",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1948810",
+        "name": "Manchester",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2044225",
+        "name": "Manchester",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2149656",
+        "name": "Manchester",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2449950",
+        "name": "Manchester",
+        "stateAbbr": "MD",
+        "stateName": "Maryland",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2650660",
+        "name": "Manchester",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2739716",
+        "name": "Manchester",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2945668",
+        "name": "Manchester",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3345140",
+        "name": "Manchester",
+        "stateAbbr": "NH",
+        "stateName": "New Hampshire",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3644853",
+        "name": "Manchester",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3947012",
+        "name": "Manchester",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4046000",
+        "name": "Manchester",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4246864",
+        "name": "Manchester",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4745500",
+        "name": "Manchester",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5042700",
+        "name": "Manchester",
+        "stateAbbr": "VT",
+        "stateName": "Vermont",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "oxford",
+    "displayName": "Oxford",
+    "count": 16,
+    "stateCount": 16,
+    "states": [
+      "Alabama",
+      "Arkansas",
+      "Georgia",
+      "Idaho",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Maryland",
+      "Michigan",
+      "Mississippi",
+      "Nebraska",
+      "New York",
+      "North Carolina",
+      "Ohio",
+      "Pennsylvania",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "0157576",
+        "name": "Oxford",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "0552880",
+        "name": "Oxford",
+        "stateAbbr": "AR",
+        "stateName": "Arkansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1358744",
+        "name": "Oxford",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1660040",
+        "name": "Oxford",
+        "stateAbbr": "ID",
+        "stateName": "Idaho",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1857546",
+        "name": "Oxford",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1960645",
+        "name": "Oxford",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2053850",
+        "name": "Oxford",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2459450",
+        "name": "Oxford",
+        "stateAbbr": "MD",
+        "stateName": "Maryland",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2662020",
+        "name": "Oxford",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2854840",
+        "name": "Oxford",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3137910",
+        "name": "Oxford",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3655948",
+        "name": "Oxford",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3749800",
+        "name": "Oxford",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3959234",
+        "name": "Oxford",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4257480",
+        "name": "Oxford",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "5560875",
+        "name": "Oxford",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "springfield",
+    "displayName": "Springfield",
+    "count": 16,
+    "stateCount": 16,
+    "states": [
+      "Colorado",
+      "Florida",
+      "Georgia",
+      "Illinois",
+      "Kentucky",
+      "Louisiana",
+      "Massachusetts",
+      "Michigan",
+      "Minnesota",
+      "Missouri",
+      "Nebraska",
+      "Ohio",
+      "Oregon",
+      "South Carolina",
+      "South Dakota",
+      "Tennessee"
+    ],
+    "places": [
+      {
+        "geoid": "0873330",
+        "name": "Springfield",
+        "stateAbbr": "CO",
+        "stateName": "Colorado",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1268275",
+        "name": "Springfield",
+        "stateAbbr": "FL",
+        "stateName": "Florida",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1372780",
+        "name": "Springfield",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1772000",
+        "name": "Springfield",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2172660",
+        "name": "Springfield",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2272415",
+        "name": "Springfield",
+        "stateAbbr": "LA",
+        "stateName": "Louisiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2567000",
+        "name": "Springfield",
+        "stateAbbr": "MA",
+        "stateName": "Massachusetts",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2675700",
+        "name": "Springfield",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2761816",
+        "name": "Springfield",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2970000",
+        "name": "Springfield",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3146520",
+        "name": "Springfield",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3974118",
+        "name": "Springfield",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4169600",
+        "name": "Springfield",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4568470",
+        "name": "Springfield",
+        "stateAbbr": "SC",
+        "stateName": "South Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4660660",
+        "name": "Springfield",
+        "stateAbbr": "SD",
+        "stateName": "South Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4770500",
+        "name": "Springfield",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "washington",
+    "displayName": "Washington",
+    "count": 16,
+    "stateCount": 16,
+    "states": [
+      "Arkansas",
+      "District of Columbia",
+      "Georgia",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Louisiana",
+      "Missouri",
+      "Nebraska",
+      "New Jersey",
+      "North Carolina",
+      "Oklahoma",
+      "Pennsylvania",
+      "Utah",
+      "Virginia"
+    ],
+    "places": [
+      {
+        "geoid": "0573370",
+        "name": "Washington",
+        "stateAbbr": "AR",
+        "stateName": "Arkansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1150000",
+        "name": "Washington",
+        "stateAbbr": "DC",
+        "stateName": "District of Columbia",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "1380704",
+        "name": "Washington",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1779033",
+        "name": "Washington",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1880504",
+        "name": "Washington",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1982335",
+        "name": "Washington",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2075825",
+        "name": "Washington",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2279870",
+        "name": "Washington",
+        "stateAbbr": "LA",
+        "stateName": "Louisiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2977416",
+        "name": "Washington",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3151595",
+        "name": "Washington",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3477270",
+        "name": "Washington",
+        "stateAbbr": "NJ",
+        "stateName": "New Jersey",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3771220",
+        "name": "Washington",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4078700",
+        "name": "Washington",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4281328",
+        "name": "Washington",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4981960",
+        "name": "Washington",
+        "stateAbbr": "UT",
+        "stateName": "Utah",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5183248",
+        "name": "Washington",
+        "stateAbbr": "VA",
+        "stateName": "Virginia",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "auburn",
+    "displayName": "Auburn",
+    "count": 15,
+    "stateCount": 15,
+    "states": [
+      "Alabama",
+      "California",
+      "Georgia",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Kentucky",
+      "Maine",
+      "Michigan",
+      "Nebraska",
+      "New York",
+      "Pennsylvania",
+      "Washington",
+      "West Virginia"
+    ],
+    "places": [
+      {
+        "geoid": "0103076",
+        "name": "Auburn",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "0603204",
+        "name": "Auburn",
+        "stateAbbr": "CA",
+        "stateName": "California",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1304140",
+        "name": "Auburn",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1702921",
+        "name": "Auburn",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1802674",
+        "name": "Auburn",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1903610",
+        "name": "Auburn",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2003250",
+        "name": "Auburn",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2102638",
+        "name": "Auburn",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2302060",
+        "name": "Auburn",
+        "stateAbbr": "ME",
+        "stateName": "Maine",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2604080",
+        "name": "Auburn",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3102655",
+        "name": "Auburn",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3603078",
+        "name": "Auburn",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4203488",
+        "name": "Auburn",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "5303180",
+        "name": "Auburn",
+        "stateAbbr": "WA",
+        "stateName": "Washington",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5403364",
+        "name": "Auburn",
+        "stateAbbr": "WV",
+        "stateName": "West Virginia",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "aurora",
+    "displayName": "Aurora",
+    "count": 15,
+    "stateCount": 15,
+    "states": [
+      "Colorado",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Minnesota",
+      "Missouri",
+      "Nebraska",
+      "New York",
+      "North Carolina",
+      "Ohio",
+      "Oregon",
+      "South Dakota",
+      "Texas",
+      "Utah"
+    ],
+    "places": [
+      {
+        "geoid": "0804000",
+        "name": "Aurora",
+        "stateAbbr": "CO",
+        "stateName": "Colorado",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1703012",
+        "name": "Aurora",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1802782",
+        "name": "Aurora",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1903835",
+        "name": "Aurora",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2003425",
+        "name": "Aurora",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2702872",
+        "name": "Aurora",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2902548",
+        "name": "Aurora",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3102690",
+        "name": "Aurora",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3603188",
+        "name": "Aurora",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3702620",
+        "name": "Aurora",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3903086",
+        "name": "Aurora",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "4103300",
+        "name": "Aurora",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4602780",
+        "name": "Aurora",
+        "stateAbbr": "SD",
+        "stateName": "South Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4804672",
+        "name": "Aurora",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4902740",
+        "name": "Aurora",
+        "stateAbbr": "UT",
+        "stateName": "Utah",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "burlington",
+    "displayName": "Burlington",
+    "count": 15,
+    "stateCount": 15,
+    "states": [
+      "Colorado",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Michigan",
+      "New Jersey",
+      "North Carolina",
+      "North Dakota",
+      "Oklahoma",
+      "Pennsylvania",
+      "Vermont",
+      "Washington",
+      "Wisconsin",
+      "Wyoming"
+    ],
+    "places": [
+      {
+        "geoid": "0810600",
+        "name": "Burlington",
+        "stateAbbr": "CO",
+        "stateName": "Colorado",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1709759",
+        "name": "Burlington",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1809244",
+        "name": "Burlington",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1909550",
+        "name": "Burlington",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "2009400",
+        "name": "Burlington",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2611800",
+        "name": "Burlington",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3408920",
+        "name": "Burlington",
+        "stateAbbr": "NJ",
+        "stateName": "New Jersey",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3709060",
+        "name": "Burlington",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3810940",
+        "name": "Burlington",
+        "stateAbbr": "ND",
+        "stateName": "North Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4010050",
+        "name": "Burlington",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4210240",
+        "name": "Burlington",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "5010675",
+        "name": "Burlington",
+        "stateAbbr": "VT",
+        "stateName": "Vermont",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "5308920",
+        "name": "Burlington",
+        "stateAbbr": "WA",
+        "stateName": "Washington",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5511200",
+        "name": "Burlington",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "5611120",
+        "name": "Burlington",
+        "stateAbbr": "WY",
+        "stateName": "Wyoming",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "hamilton",
+    "displayName": "Hamilton",
+    "count": 15,
+    "stateCount": 15,
+    "states": [
+      "Alabama",
+      "Georgia",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Missouri",
+      "Montana",
+      "New York",
+      "North Carolina",
+      "North Dakota",
+      "Ohio",
+      "Texas",
+      "Virginia",
+      "Washington"
+    ],
+    "places": [
+      {
+        "geoid": "0132848",
+        "name": "Hamilton",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1336220",
+        "name": "Hamilton",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1732434",
+        "name": "Hamilton",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1830594",
+        "name": "Hamilton",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1933870",
+        "name": "Hamilton",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2029675",
+        "name": "Hamilton",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2930034",
+        "name": "Hamilton",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3033775",
+        "name": "Hamilton",
+        "stateAbbr": "MT",
+        "stateName": "Montana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3631709",
+        "name": "Hamilton",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3729120",
+        "name": "Hamilton",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3834620",
+        "name": "Hamilton",
+        "stateAbbr": "ND",
+        "stateName": "North Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3933012",
+        "name": "Hamilton",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4831952",
+        "name": "Hamilton",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5134240",
+        "name": "Hamilton",
+        "stateAbbr": "VA",
+        "stateName": "Virginia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5329255",
+        "name": "Hamilton",
+        "stateAbbr": "WA",
+        "stateName": "Washington",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "lexington",
+    "displayName": "Lexington",
+    "count": 15,
+    "stateCount": 15,
+    "states": [
+      "Alabama",
+      "Georgia",
+      "Illinois",
+      "Michigan",
+      "Minnesota",
+      "Mississippi",
+      "Missouri",
+      "Nebraska",
+      "North Carolina",
+      "Ohio",
+      "Oklahoma",
+      "Oregon",
+      "South Carolina",
+      "Tennessee",
+      "Texas"
+    ],
+    "places": [
+      {
+        "geoid": "0142640",
+        "name": "Lexington",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1346188",
+        "name": "Lexington",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1743094",
+        "name": "Lexington",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2647280",
+        "name": "Lexington",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2736836",
+        "name": "Lexington",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2840600",
+        "name": "Lexington",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2941870",
+        "name": "Lexington",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3126910",
+        "name": "Lexington",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3738060",
+        "name": "Lexington",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3942994",
+        "name": "Lexington",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4042700",
+        "name": "Lexington",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4142200",
+        "name": "Lexington",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4541335",
+        "name": "Lexington",
+        "stateAbbr": "SC",
+        "stateName": "South Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4741980",
+        "name": "Lexington",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4842532",
+        "name": "Lexington",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "liberty",
+    "displayName": "Liberty",
+    "count": 15,
+    "stateCount": 14,
+    "states": [
+      "Illinois",
+      "Indiana",
+      "Kansas",
+      "Kentucky",
+      "Mississippi",
+      "Missouri",
+      "Nebraska",
+      "New York",
+      "North Carolina",
+      "Oklahoma",
+      "Pennsylvania",
+      "South Carolina",
+      "Tennessee",
+      "Texas"
+    ],
+    "places": [
+      {
+        "geoid": "1743133",
+        "name": "Liberty",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1843434",
+        "name": "Liberty",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2040250",
+        "name": "Liberty",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2146072",
+        "name": "Liberty",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2840640",
+        "name": "Liberty",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2942032",
+        "name": "Liberty",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3126980",
+        "name": "Liberty",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3642224",
+        "name": "Liberty",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3738100",
+        "name": "Liberty",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4042860",
+        "name": "Liberty",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4243064",
+        "name": "Liberty",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4243128",
+        "name": "Liberty",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4541380",
+        "name": "Liberty",
+        "stateAbbr": "SC",
+        "stateName": "South Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4742040",
+        "name": "Liberty",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4842568",
+        "name": "Liberty",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "monroe",
+    "displayName": "Monroe",
+    "count": 15,
+    "stateCount": 15,
+    "states": [
+      "Georgia",
+      "Indiana",
+      "Iowa",
+      "Louisiana",
+      "Michigan",
+      "Nebraska",
+      "New York",
+      "North Carolina",
+      "Ohio",
+      "Oregon",
+      "Pennsylvania",
+      "South Dakota",
+      "Utah",
+      "Washington",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "1352192",
+        "name": "Monroe",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1850202",
+        "name": "Monroe",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1953355",
+        "name": "Monroe",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2251410",
+        "name": "Monroe",
+        "stateAbbr": "LA",
+        "stateName": "Louisiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2655020",
+        "name": "Monroe",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3132585",
+        "name": "Monroe",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3647988",
+        "name": "Monroe",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3743920",
+        "name": "Monroe",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3951310",
+        "name": "Monroe",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4149600",
+        "name": "Monroe",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4250432",
+        "name": "Monroe",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4643380",
+        "name": "Monroe",
+        "stateAbbr": "SD",
+        "stateName": "South Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4951360",
+        "name": "Monroe",
+        "stateAbbr": "UT",
+        "stateName": "Utah",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5346685",
+        "name": "Monroe",
+        "stateAbbr": "WA",
+        "stateName": "Washington",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5553750",
+        "name": "Monroe",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "salem",
+    "displayName": "Salem",
+    "count": 15,
+    "stateCount": 15,
+    "states": [
+      "Arkansas",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kentucky",
+      "Massachusetts",
+      "Missouri",
+      "Nebraska",
+      "New Jersey",
+      "Ohio",
+      "Oregon",
+      "South Carolina",
+      "South Dakota",
+      "Utah",
+      "West Virginia"
+    ],
+    "places": [
+      {
+        "geoid": "0562150",
+        "name": "Salem",
+        "stateAbbr": "AR",
+        "stateName": "Arkansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1767236",
+        "name": "Salem",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1867464",
+        "name": "Salem",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1970230",
+        "name": "Salem",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2168052",
+        "name": "Salem",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2559105",
+        "name": "Salem",
+        "stateAbbr": "MA",
+        "stateName": "Massachusetts",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2965234",
+        "name": "Salem",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3143370",
+        "name": "Salem",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3465490",
+        "name": "Salem",
+        "stateAbbr": "NJ",
+        "stateName": "New Jersey",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3969834",
+        "name": "Salem",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4164900",
+        "name": "Salem",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4562980",
+        "name": "Salem",
+        "stateAbbr": "SC",
+        "stateName": "South Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4657340",
+        "name": "Salem",
+        "stateAbbr": "SD",
+        "stateName": "South Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4965770",
+        "name": "Salem",
+        "stateAbbr": "UT",
+        "stateName": "Utah",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5471380",
+        "name": "Salem",
+        "stateAbbr": "WV",
+        "stateName": "West Virginia",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "troy",
+    "displayName": "Troy",
+    "count": 15,
+    "stateCount": 15,
+    "states": [
+      "Alabama",
+      "Idaho",
+      "Illinois",
+      "Indiana",
+      "Kansas",
+      "Michigan",
+      "Missouri",
+      "Montana",
+      "New York",
+      "North Carolina",
+      "Ohio",
+      "Pennsylvania",
+      "South Carolina",
+      "Tennessee",
+      "Texas"
+    ],
+    "places": [
+      {
+        "geoid": "0176920",
+        "name": "Troy",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1682360",
+        "name": "Troy",
+        "stateAbbr": "ID",
+        "stateName": "Idaho",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1776199",
+        "name": "Troy",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1876634",
+        "name": "Troy",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2071575",
+        "name": "Troy",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2680700",
+        "name": "Troy",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2973942",
+        "name": "Troy",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3075025",
+        "name": "Troy",
+        "stateAbbr": "MT",
+        "stateName": "Montana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3675484",
+        "name": "Troy",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3768520",
+        "name": "Troy",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3977588",
+        "name": "Troy",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4277584",
+        "name": "Troy",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4572655",
+        "name": "Troy",
+        "stateAbbr": "SC",
+        "stateName": "South Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4775240",
+        "name": "Troy",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4873748",
+        "name": "Troy",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "albany",
+    "displayName": "Albany",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "California",
+      "Georgia",
+      "Illinois",
+      "Indiana",
+      "Kentucky",
+      "Louisiana",
+      "Minnesota",
+      "Missouri",
+      "New York",
+      "Ohio",
+      "Oregon",
+      "Texas",
+      "Vermont",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "0600674",
+        "name": "Albany",
+        "stateAbbr": "CA",
+        "stateName": "California",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1301052",
+        "name": "Albany",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1700516",
+        "name": "Albany",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1800802",
+        "name": "Albany",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2100694",
+        "name": "Albany",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2200835",
+        "name": "Albany",
+        "stateAbbr": "LA",
+        "stateName": "Louisiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2700622",
+        "name": "Albany",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2900514",
+        "name": "Albany",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3601000",
+        "name": "Albany",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3901042",
+        "name": "Albany",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4101000",
+        "name": "Albany",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4801648",
+        "name": "Albany",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5000400",
+        "name": "Albany",
+        "stateAbbr": "VT",
+        "stateName": "Vermont",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5500750",
+        "name": "Albany",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "arlington",
+    "displayName": "Arlington",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "Georgia",
+      "Illinois",
+      "Iowa",
+      "Kansas",
+      "Kentucky",
+      "Minnesota",
+      "Nebraska",
+      "Ohio",
+      "Oregon",
+      "South Dakota",
+      "Tennessee",
+      "Texas",
+      "Washington",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "1302928",
+        "name": "Arlington",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1702102",
+        "name": "Arlington",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1902845",
+        "name": "Arlington",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2002325",
+        "name": "Arlington",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2102044",
+        "name": "Arlington",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2702152",
+        "name": "Arlington",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3101990",
+        "name": "Arlington",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3902400",
+        "name": "Arlington",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4102800",
+        "name": "Arlington",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4602180",
+        "name": "Arlington",
+        "stateAbbr": "SD",
+        "stateName": "South Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4701740",
+        "name": "Arlington",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4804000",
+        "name": "Arlington",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5302585",
+        "name": "Arlington",
+        "stateAbbr": "WA",
+        "stateName": "Washington",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5502800",
+        "name": "Arlington",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "ashland",
+    "displayName": "Ashland",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "Alabama",
+      "Illinois",
+      "Kansas",
+      "Kentucky",
+      "Louisiana",
+      "Mississippi",
+      "Missouri",
+      "Nebraska",
+      "Ohio",
+      "Oklahoma",
+      "Oregon",
+      "Pennsylvania",
+      "Virginia",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "0102860",
+        "name": "Ashland",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1702505",
+        "name": "Ashland",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2002675",
+        "name": "Ashland",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2102368",
+        "name": "Ashland",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2203145",
+        "name": "Ashland",
+        "stateAbbr": "LA",
+        "stateName": "Louisiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2802140",
+        "name": "Ashland",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2902242",
+        "name": "Ashland",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3102305",
+        "name": "Ashland",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3902568",
+        "name": "Ashland",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "4003050",
+        "name": "Ashland",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4103050",
+        "name": "Ashland",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4203264",
+        "name": "Ashland",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "5103368",
+        "name": "Ashland",
+        "stateAbbr": "VA",
+        "stateName": "Virginia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5503225",
+        "name": "Ashland",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "columbus",
+    "displayName": "Columbus",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "Georgia",
+      "Illinois",
+      "Indiana",
+      "Kansas",
+      "Kentucky",
+      "Minnesota",
+      "Mississippi",
+      "Montana",
+      "Nebraska",
+      "New Mexico",
+      "North Carolina",
+      "North Dakota",
+      "Texas",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "1319000",
+        "name": "Columbus",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1715846",
+        "name": "Columbus",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1814734",
+        "name": "Columbus",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2015075",
+        "name": "Columbus",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2116768",
+        "name": "Columbus",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2712718",
+        "name": "Columbus",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2815380",
+        "name": "Columbus",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3016825",
+        "name": "Columbus",
+        "stateAbbr": "MT",
+        "stateName": "Montana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3110110",
+        "name": "Columbus",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3517050",
+        "name": "Columbus",
+        "stateAbbr": "NM",
+        "stateName": "New Mexico",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3713980",
+        "name": "Columbus",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3815460",
+        "name": "Columbus",
+        "stateAbbr": "ND",
+        "stateName": "North Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4816168",
+        "name": "Columbus",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5516450",
+        "name": "Columbus",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "dayton",
+    "displayName": "Dayton",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "Alabama",
+      "Idaho",
+      "Indiana",
+      "Iowa",
+      "Kentucky",
+      "Minnesota",
+      "Ohio",
+      "Oregon",
+      "Pennsylvania",
+      "Tennessee",
+      "Texas",
+      "Virginia",
+      "Washington",
+      "Wyoming"
+    ],
+    "places": [
+      {
+        "geoid": "0119912",
+        "name": "Dayton",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1620710",
+        "name": "Dayton",
+        "stateAbbr": "ID",
+        "stateName": "Idaho",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1817002",
+        "name": "Dayton",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1919180",
+        "name": "Dayton",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2120350",
+        "name": "Dayton",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2715022",
+        "name": "Dayton",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3921000",
+        "name": "Dayton",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4118250",
+        "name": "Dayton",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4218400",
+        "name": "Dayton",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4719700",
+        "name": "Dayton",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4819432",
+        "name": "Dayton",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5121648",
+        "name": "Dayton",
+        "stateAbbr": "VA",
+        "stateName": "Virginia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5316970",
+        "name": "Dayton",
+        "stateAbbr": "WA",
+        "stateName": "Washington",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5619385",
+        "name": "Dayton",
+        "stateAbbr": "WY",
+        "stateName": "Wyoming",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "dover",
+    "displayName": "Dover",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "Arkansas",
+      "Delaware",
+      "Idaho",
+      "Illinois",
+      "Kentucky",
+      "Minnesota",
+      "Missouri",
+      "New Hampshire",
+      "New Jersey",
+      "North Carolina",
+      "Ohio",
+      "Oklahoma",
+      "Pennsylvania",
+      "Tennessee"
+    ],
+    "places": [
+      {
+        "geoid": "0519600",
+        "name": "Dover",
+        "stateAbbr": "AR",
+        "stateName": "Arkansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1021200",
+        "name": "Dover",
+        "stateAbbr": "DE",
+        "stateName": "Delaware",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1622510",
+        "name": "Dover",
+        "stateAbbr": "ID",
+        "stateName": "Idaho",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1720526",
+        "name": "Dover",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2122222",
+        "name": "Dover",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2716264",
+        "name": "Dover",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2919918",
+        "name": "Dover",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3318820",
+        "name": "Dover",
+        "stateAbbr": "NH",
+        "stateName": "New Hampshire",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3418070",
+        "name": "Dover",
+        "stateAbbr": "NJ",
+        "stateName": "New Jersey",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3717660",
+        "name": "Dover",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3922456",
+        "name": "Dover",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "4021350",
+        "name": "Dover",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4219696",
+        "name": "Dover",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4721400",
+        "name": "Dover",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "georgetown",
+    "displayName": "Georgetown",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "Arkansas",
+      "Colorado",
+      "Delaware",
+      "Idaho",
+      "Illinois",
+      "Indiana",
+      "Kentucky",
+      "Louisiana",
+      "Minnesota",
+      "Mississippi",
+      "Ohio",
+      "Pennsylvania",
+      "South Carolina",
+      "Texas"
+    ],
+    "places": [
+      {
+        "geoid": "0526440",
+        "name": "Georgetown",
+        "stateAbbr": "AR",
+        "stateName": "Arkansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "0829735",
+        "name": "Georgetown",
+        "stateAbbr": "CO",
+        "stateName": "Colorado",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1029090",
+        "name": "Georgetown",
+        "stateAbbr": "DE",
+        "stateName": "Delaware",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1630340",
+        "name": "Georgetown",
+        "stateAbbr": "ID",
+        "stateName": "Idaho",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1728963",
+        "name": "Georgetown",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1827324",
+        "name": "Georgetown",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2130700",
+        "name": "Georgetown",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2228660",
+        "name": "Georgetown",
+        "stateAbbr": "LA",
+        "stateName": "Louisiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2723498",
+        "name": "Georgetown",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2826980",
+        "name": "Georgetown",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3929778",
+        "name": "Georgetown",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4228824",
+        "name": "Georgetown",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4528870",
+        "name": "Georgetown",
+        "stateAbbr": "SC",
+        "stateName": "South Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4829336",
+        "name": "Georgetown",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "hillsboro",
+    "displayName": "Hillsboro",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "Alabama",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Maryland",
+      "Missouri",
+      "North Dakota",
+      "Ohio",
+      "Oregon",
+      "Texas",
+      "Virginia",
+      "West Virginia",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "0134816",
+        "name": "Hillsboro",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1735047",
+        "name": "Hillsboro",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1833862",
+        "name": "Hillsboro",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1936390",
+        "name": "Hillsboro",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2032275",
+        "name": "Hillsboro",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2439175",
+        "name": "Hillsboro",
+        "stateAbbr": "MD",
+        "stateName": "Maryland",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2932248",
+        "name": "Hillsboro",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3838100",
+        "name": "Hillsboro",
+        "stateAbbr": "ND",
+        "stateName": "North Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3935560",
+        "name": "Hillsboro",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4134100",
+        "name": "Hillsboro",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4834088",
+        "name": "Hillsboro",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5137288",
+        "name": "Hillsboro",
+        "stateAbbr": "VA",
+        "stateName": "Virginia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5437372",
+        "name": "Hillsboro",
+        "stateAbbr": "WV",
+        "stateName": "West Virginia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5534825",
+        "name": "Hillsboro",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "lebanon",
+    "displayName": "Lebanon",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "Illinois",
+      "Indiana",
+      "Kansas",
+      "Kentucky",
+      "Missouri",
+      "Nebraska",
+      "New Hampshire",
+      "New Jersey",
+      "Ohio",
+      "Oregon",
+      "Pennsylvania",
+      "South Dakota",
+      "Tennessee",
+      "Virginia"
+    ],
+    "places": [
+      {
+        "geoid": "1742496",
+        "name": "Lebanon",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1842624",
+        "name": "Lebanon",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2039100",
+        "name": "Lebanon",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2144344",
+        "name": "Lebanon",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2941168",
+        "name": "Lebanon",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3126455",
+        "name": "Lebanon",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3341300",
+        "name": "Lebanon",
+        "stateAbbr": "NH",
+        "stateName": "New Hampshire",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3439630",
+        "name": "Lebanon",
+        "stateAbbr": "NJ",
+        "stateName": "New Jersey",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3942364",
+        "name": "Lebanon",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "4141650",
+        "name": "Lebanon",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4242168",
+        "name": "Lebanon",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4636260",
+        "name": "Lebanon",
+        "stateAbbr": "SD",
+        "stateName": "South Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4741520",
+        "name": "Lebanon",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5144696",
+        "name": "Lebanon",
+        "stateAbbr": "VA",
+        "stateName": "Virginia",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "milford",
+    "displayName": "Milford",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "Delaware",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Michigan",
+      "Missouri",
+      "Nebraska",
+      "New Jersey",
+      "New York",
+      "Ohio",
+      "Pennsylvania",
+      "Texas",
+      "Utah"
+    ],
+    "places": [
+      {
+        "geoid": "1047420",
+        "name": "Milford",
+        "stateAbbr": "DE",
+        "stateName": "Delaware",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1749048",
+        "name": "Milford",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1849320",
+        "name": "Milford",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1952095",
+        "name": "Milford",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2046525",
+        "name": "Milford",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2653960",
+        "name": "Milford",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2948098",
+        "name": "Milford",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3132060",
+        "name": "Milford",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3446260",
+        "name": "Milford",
+        "stateAbbr": "NJ",
+        "stateName": "New Jersey",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3647229",
+        "name": "Milford",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3950176",
+        "name": "Milford",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "4249400",
+        "name": "Milford",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4848408",
+        "name": "Milford",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4950040",
+        "name": "Milford",
+        "stateAbbr": "UT",
+        "stateName": "Utah",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "mount vernon",
+    "displayName": "Mount Vernon",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "Alabama",
+      "Arkansas",
+      "Georgia",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kentucky",
+      "Missouri",
+      "New York",
+      "Ohio",
+      "Oregon",
+      "South Dakota",
+      "Texas",
+      "Washington"
+    ],
+    "places": [
+      {
+        "geoid": "0152608",
+        "name": "Mount Vernon",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "0548020",
+        "name": "Mount Vernon",
+        "stateAbbr": "AR",
+        "stateName": "Arkansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1353508",
+        "name": "Mount Vernon",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1751180",
+        "name": "Mount Vernon",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1851732",
+        "name": "Mount Vernon",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1954840",
+        "name": "Mount Vernon",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2154174",
+        "name": "Mount Vernon",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2950672",
+        "name": "Mount Vernon",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3649121",
+        "name": "Mount Vernon",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3953102",
+        "name": "Mount Vernon",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "4150250",
+        "name": "Mount Vernon",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4644100",
+        "name": "Mount Vernon",
+        "stateAbbr": "SD",
+        "stateName": "South Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4849860",
+        "name": "Mount Vernon",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5347560",
+        "name": "Mount Vernon",
+        "stateAbbr": "WA",
+        "stateName": "Washington",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "newport",
+    "displayName": "Newport",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "Arkansas",
+      "Delaware",
+      "Indiana",
+      "Kentucky",
+      "Minnesota",
+      "Nebraska",
+      "New York",
+      "North Carolina",
+      "Oregon",
+      "Pennsylvania",
+      "Rhode Island",
+      "Tennessee",
+      "Vermont",
+      "Washington"
+    ],
+    "places": [
+      {
+        "geoid": "0549580",
+        "name": "Newport",
+        "stateAbbr": "AR",
+        "stateName": "Arkansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1051190",
+        "name": "Newport",
+        "stateAbbr": "DE",
+        "stateName": "Delaware",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1853496",
+        "name": "Newport",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2155884",
+        "name": "Newport",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2745790",
+        "name": "Newport",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3134265",
+        "name": "Newport",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3650573",
+        "name": "Newport",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3746860",
+        "name": "Newport",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4152450",
+        "name": "Newport",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4253968",
+        "name": "Newport",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4449960",
+        "name": "Newport",
+        "stateAbbr": "RI",
+        "stateName": "Rhode Island",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4753000",
+        "name": "Newport",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5048850",
+        "name": "Newport",
+        "stateAbbr": "VT",
+        "stateName": "Vermont",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "5348820",
+        "name": "Newport",
+        "stateAbbr": "WA",
+        "stateName": "Washington",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "oakland",
+    "displayName": "Oakland",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "California",
+      "Florida",
+      "Illinois",
+      "Iowa",
+      "Kentucky",
+      "Maryland",
+      "Mississippi",
+      "Missouri",
+      "Nebraska",
+      "New Jersey",
+      "Oklahoma",
+      "Oregon",
+      "Pennsylvania",
+      "Tennessee"
+    ],
+    "places": [
+      {
+        "geoid": "0653000",
+        "name": "Oakland",
+        "stateAbbr": "CA",
+        "stateName": "California",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1250525",
+        "name": "Oakland",
+        "stateAbbr": "FL",
+        "stateName": "Florida",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1754781",
+        "name": "Oakland",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1958080",
+        "name": "Oakland",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2157144",
+        "name": "Oakland",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2457650",
+        "name": "Oakland",
+        "stateAbbr": "MD",
+        "stateName": "Maryland",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2853200",
+        "name": "Oakland",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2953750",
+        "name": "Oakland",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3135490",
+        "name": "Oakland",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3453850",
+        "name": "Oakland",
+        "stateAbbr": "NJ",
+        "stateName": "New Jersey",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4053400",
+        "name": "Oakland",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4154000",
+        "name": "Oakland",
+        "stateAbbr": "OR",
+        "stateName": "Oregon",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4256008",
+        "name": "Oakland",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4754920",
+        "name": "Oakland",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "trenton",
+    "displayName": "Trenton",
+    "count": 14,
+    "stateCount": 14,
+    "states": [
+      "Florida",
+      "Georgia",
+      "Illinois",
+      "Kentucky",
+      "Michigan",
+      "Missouri",
+      "Nebraska",
+      "New Jersey",
+      "North Carolina",
+      "Ohio",
+      "South Carolina",
+      "Tennessee",
+      "Texas",
+      "Utah"
+    ],
+    "places": [
+      {
+        "geoid": "1272350",
+        "name": "Trenton",
+        "stateAbbr": "FL",
+        "stateName": "Florida",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1377372",
+        "name": "Trenton",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1775991",
+        "name": "Trenton",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2177592",
+        "name": "Trenton",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2680420",
+        "name": "Trenton",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2973816",
+        "name": "Trenton",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3149145",
+        "name": "Trenton",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3474000",
+        "name": "Trenton",
+        "stateAbbr": "NJ",
+        "stateName": "New Jersey",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3768320",
+        "name": "Trenton",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3977322",
+        "name": "Trenton",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "4572520",
+        "name": "Trenton",
+        "stateAbbr": "SC",
+        "stateName": "South Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4775000",
+        "name": "Trenton",
+        "stateAbbr": "TN",
+        "stateName": "Tennessee",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4873592",
+        "name": "Trenton",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4977230",
+        "name": "Trenton",
+        "stateAbbr": "UT",
+        "stateName": "Utah",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "cambridge",
+    "displayName": "Cambridge",
+    "count": 13,
+    "stateCount": 13,
+    "states": [
+      "Idaho",
+      "Illinois",
+      "Iowa",
+      "Kansas",
+      "Kentucky",
+      "Maryland",
+      "Massachusetts",
+      "Minnesota",
+      "Nebraska",
+      "New York",
+      "Ohio",
+      "Vermont",
+      "Wisconsin"
+    ],
+    "places": [
+      {
+        "geoid": "1612520",
+        "name": "Cambridge",
+        "stateAbbr": "ID",
+        "stateName": "Idaho",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1710643",
+        "name": "Cambridge",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1910225",
+        "name": "Cambridge",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2010125",
+        "name": "Cambridge",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2112066",
+        "name": "Cambridge",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2412400",
+        "name": "Cambridge",
+        "stateAbbr": "MD",
+        "stateName": "Maryland",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2511000",
+        "name": "Cambridge",
+        "stateAbbr": "MA",
+        "stateName": "Massachusetts",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2709370",
+        "name": "Cambridge",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3107730",
+        "name": "Cambridge",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3611825",
+        "name": "Cambridge",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3910996",
+        "name": "Cambridge",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5011425",
+        "name": "Cambridge",
+        "stateAbbr": "VT",
+        "stateName": "Vermont",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5512225",
+        "name": "Cambridge",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      }
+    ]
+  },
+  {
+    "normalizedName": "canton",
+    "displayName": "Canton",
+    "count": 13,
+    "stateCount": 13,
+    "states": [
+      "Georgia",
+      "Illinois",
+      "Kansas",
+      "Minnesota",
+      "Mississippi",
+      "Missouri",
+      "New York",
+      "North Carolina",
+      "Ohio",
+      "Oklahoma",
+      "Pennsylvania",
+      "South Dakota",
+      "Texas"
+    ],
+    "places": [
+      {
+        "geoid": "1312988",
+        "name": "Canton",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1711007",
+        "name": "Canton",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2010475",
+        "name": "Canton",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2709802",
+        "name": "Canton",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "2811100",
+        "name": "Canton",
+        "stateAbbr": "MS",
+        "stateName": "Mississippi",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2911134",
+        "name": "Canton",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3612331",
+        "name": "Canton",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3710240",
+        "name": "Canton",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3912000",
+        "name": "Canton",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "4011600",
+        "name": "Canton",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4211160",
+        "name": "Canton",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4609500",
+        "name": "Canton",
+        "stateAbbr": "SD",
+        "stateName": "South Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4812496",
+        "name": "Canton",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "fairfield",
+    "displayName": "Fairfield",
+    "count": 13,
+    "stateCount": 13,
+    "states": [
+      "Alabama",
+      "California",
+      "Idaho",
+      "Illinois",
+      "Iowa",
+      "Kentucky",
+      "Montana",
+      "Nebraska",
+      "Ohio",
+      "Pennsylvania",
+      "Texas",
+      "Utah",
+      "Washington"
+    ],
+    "places": [
+      {
+        "geoid": "0125120",
+        "name": "Fairfield",
+        "stateAbbr": "AL",
+        "stateName": "Alabama",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "0623182",
+        "name": "Fairfield",
+        "stateAbbr": "CA",
+        "stateName": "California",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1626290",
+        "name": "Fairfield",
+        "stateAbbr": "ID",
+        "stateName": "Idaho",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1724816",
+        "name": "Fairfield",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1926445",
+        "name": "Fairfield",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "2126020",
+        "name": "Fairfield",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3025225",
+        "name": "Fairfield",
+        "stateAbbr": "MT",
+        "stateName": "Montana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3116445",
+        "name": "Fairfield",
+        "stateAbbr": "NE",
+        "stateName": "Nebraska",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3925970",
+        "name": "Fairfield",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4224560",
+        "name": "Fairfield",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4825104",
+        "name": "Fairfield",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "4924410",
+        "name": "Fairfield",
+        "stateAbbr": "UT",
+        "stateName": "Utah",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5322990",
+        "name": "Fairfield",
+        "stateAbbr": "WA",
+        "stateName": "Washington",
+        "classfp": "C1"
+      }
+    ]
+  },
+  {
+    "normalizedName": "hudson",
+    "displayName": "Hudson",
+    "count": 13,
+    "stateCount": 13,
+    "states": [
+      "Colorado",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Michigan",
+      "New York",
+      "North Carolina",
+      "Ohio",
+      "South Dakota",
+      "Texas",
+      "Wisconsin",
+      "Wyoming"
+    ],
+    "places": [
+      {
+        "geoid": "0837820",
+        "name": "Hudson",
+        "stateAbbr": "CO",
+        "stateName": "Colorado",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1736438",
+        "name": "Hudson",
+        "stateAbbr": "IL",
+        "stateName": "Illinois",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1835086",
+        "name": "Hudson",
+        "stateAbbr": "IN",
+        "stateName": "Indiana",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "1937470",
+        "name": "Hudson",
+        "stateAbbr": "IA",
+        "stateName": "Iowa",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2033400",
+        "name": "Hudson",
+        "stateAbbr": "KS",
+        "stateName": "Kansas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "2639720",
+        "name": "Hudson",
+        "stateAbbr": "MI",
+        "stateName": "Michigan",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3635969",
+        "name": "Hudson",
+        "stateAbbr": "NY",
+        "stateName": "New York",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "3732980",
+        "name": "Hudson",
+        "stateAbbr": "NC",
+        "stateName": "North Carolina",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "3936651",
+        "name": "Hudson",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "classfp": "C2"
+      },
+      {
+        "geoid": "4630740",
+        "name": "Hudson",
+        "stateAbbr": "SD",
+        "stateName": "South Dakota",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "4835228",
+        "name": "Hudson",
+        "stateAbbr": "TX",
+        "stateName": "Texas",
+        "classfp": "C1"
+      },
+      {
+        "geoid": "5536250",
+        "name": "Hudson",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "classfp": "C5"
+      },
+      {
+        "geoid": "5638960",
+        "name": "Hudson",
+        "stateAbbr": "WY",
+        "stateName": "Wyoming",
+        "classfp": "C1"
+      }
+    ]
+  }
+]
