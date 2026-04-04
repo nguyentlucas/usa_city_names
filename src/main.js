@@ -23,37 +23,6 @@ const JUMP_TRANSITION_MS = 520;
 const app = d3.select("#app");
 app.html(`
   <div class="page-shell">
-    <svg class="effect-defs" aria-hidden="true" width="0" height="0" focusable="false">
-      <defs>
-        <filter
-          id="composition-curvature"
-          x="-6%"
-          y="-6%"
-          width="112%"
-          height="112%"
-          filterUnits="objectBoundingBox"
-          primitiveUnits="objectBoundingBox"
-          color-interpolation-filters="sRGB"
-        >
-          <feImage
-            x="0"
-            y="0"
-            width="1"
-            height="1"
-            preserveAspectRatio="none"
-            href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='tl' x1='100%25' y1='100%25' x2='0%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='rgb(128,128,0)'/%3E%3Cstop offset='100%25' stop-color='rgb(94,94,0)'/%3E%3C/linearGradient%3E%3ClinearGradient id='tr' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='rgb(128,128,0)'/%3E%3Cstop offset='100%25' stop-color='rgb(162,94,0)'/%3E%3C/linearGradient%3E%3ClinearGradient id='bl' x1='100%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='rgb(128,128,0)'/%3E%3Cstop offset='100%25' stop-color='rgb(94,162,0)'/%3E%3C/linearGradient%3E%3ClinearGradient id='br' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='rgb(128,128,0)'/%3E%3Cstop offset='100%25' stop-color='rgb(162,162,0)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='50' height='50' fill='url(%23tl)'/%3E%3Crect x='50' width='50' height='50' fill='url(%23tr)'/%3E%3Crect y='50' width='50' height='50' fill='url(%23bl)'/%3E%3Crect x='50' y='50' width='50' height='50' fill='url(%23br)'/%3E%3C/svg%3E"
-            result="curvature-map"
-          />
-          <feDisplacementMap
-            in="SourceGraphic"
-            in2="curvature-map"
-            scale="18"
-            xChannelSelector="R"
-            yChannelSelector="G"
-          />
-        </filter>
-      </defs>
-    </svg>
     <div class="composition-layer">
       <div class="layout">
       <aside class="rail-column">
