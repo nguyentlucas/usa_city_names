@@ -14,7 +14,8 @@
     "Menlo",
     monospace;
   --map-panel-height: minmax(360px, 1fr);
-  --state-list-height: 144px;
+  --state-list-height: 112px;
+  --rail-controls-height: 184px;
 }
 
 * {
@@ -51,6 +52,19 @@ button {
   height: 100vh;
   margin: 0 auto;
   padding: 26px 28px 24px;
+  position: relative;
+}
+
+.effect-defs {
+  position: absolute;
+}
+
+.composition-layer {
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+  transform: perspective(2800px) rotateX(0.28deg) scale(0.996, 0.992);
+  filter: url(#composition-curvature);
 }
 
 .layout {
@@ -68,15 +82,20 @@ button {
 
 .focus-rail-shell {
   width: 100%;
+  min-height: 0;
   display: grid;
-  justify-items: center;
-  gap: 14px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
 }
 
-.rail-control-group {
+.rail-control-stack {
   display: grid;
   justify-items: center;
-  gap: 10px;
+  align-content: center;
+  gap: 12px;
+  min-height: var(--rail-controls-height);
+  height: var(--rail-controls-height);
 }
 
 .rail-arrow {
@@ -233,8 +252,9 @@ button {
 
 .intro-small {
   margin: 0 0 14px;
-  font-size: 0.82rem;
+  font-size: 0.92rem;
   letter-spacing: 0.03em;
+  line-height: 1.05;
 }
 
 .title-line {
@@ -318,7 +338,7 @@ button {
   display: flex;
   align-items: stretch;
   justify-content: stretch;
-  padding-top: 4px;
+  padding: 4px 20px 0;
 }
 
 .map-figure {
@@ -327,28 +347,29 @@ button {
   display: flex;
   align-items: stretch;
   justify-content: center;
-  perspective: 2400px;
 }
 
 .map-frame {
-  width: min(100%, 1120px);
+  width: min(100%, 1240px);
   height: 100%;
   min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  transform: perspective(2400px) rotateX(0.55deg) scaleX(0.997);
-  transform-origin: center center;
+  padding: 20px 34px 26px;
+  overflow: visible;
 }
 
 .map-svg {
-  width: 100%;
-  height: 100%;
+  width: calc(100% + 4.5%);
+  height: calc(100% + 4.5%);
   max-height: 100%;
   display: block;
   overflow: visible;
+  flex: 0 0 auto;
   transform: translateZ(0);
+  transform-origin: center center;
   transition:
     opacity 280ms ease,
     transform 420ms ease;
@@ -481,7 +502,8 @@ button {
   }
 
   .focus-rail-shell {
-    gap: 10px;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 14px;
   }
 
   .focus-rail-window {
@@ -497,18 +519,23 @@ button {
     font-size: clamp(1.4rem, 8vw, 2.4rem);
   }
 
+  .intro-small {
+    font-size: 0.86rem;
+  }
+
   .title-search {
     width: min(100%, calc(var(--search-chars, 20) * 0.68ch));
   }
 
   .map-stage {
     min-height: 0;
-    padding-top: 10px;
+    padding: 10px 8px 0;
   }
 
   .map-frame {
     min-height: 320px;
-    transform: perspective(2200px) rotateX(0.45deg) scaleX(0.998);
+    width: 100%;
+    padding: 18px 18px 22px;
   }
 
   .state-labels {

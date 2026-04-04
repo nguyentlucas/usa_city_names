@@ -23,10 +23,42 @@ const JUMP_TRANSITION_MS = 520;
 const app = d3.select("#app");
 app.html(`
   <div class="page-shell">
-    <div class="layout">
+    <svg class="effect-defs" aria-hidden="true" width="0" height="0" focusable="false">
+      <defs>
+        <filter
+          id="composition-curvature"
+          x="-6%"
+          y="-6%"
+          width="112%"
+          height="112%"
+          filterUnits="objectBoundingBox"
+          primitiveUnits="objectBoundingBox"
+          color-interpolation-filters="sRGB"
+        >
+          <feImage
+            x="0"
+            y="0"
+            width="1"
+            height="1"
+            preserveAspectRatio="none"
+            href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='tl' x1='100%25' y1='100%25' x2='0%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='rgb(128,128,0)'/%3E%3Cstop offset='100%25' stop-color='rgb(94,94,0)'/%3E%3C/linearGradient%3E%3ClinearGradient id='tr' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='rgb(128,128,0)'/%3E%3Cstop offset='100%25' stop-color='rgb(162,94,0)'/%3E%3C/linearGradient%3E%3ClinearGradient id='bl' x1='100%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='rgb(128,128,0)'/%3E%3Cstop offset='100%25' stop-color='rgb(94,162,0)'/%3E%3C/linearGradient%3E%3ClinearGradient id='br' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='rgb(128,128,0)'/%3E%3Cstop offset='100%25' stop-color='rgb(162,162,0)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='50' height='50' fill='url(%23tl)'/%3E%3Crect x='50' width='50' height='50' fill='url(%23tr)'/%3E%3Crect y='50' width='50' height='50' fill='url(%23bl)'/%3E%3Crect x='50' y='50' width='50' height='50' fill='url(%23br)'/%3E%3C/svg%3E"
+            result="curvature-map"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="curvature-map"
+            scale="18"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </defs>
+    </svg>
+    <div class="composition-layer">
+      <div class="layout">
       <aside class="rail-column">
         <div class="focus-rail-shell" aria-label="Focused place-name rail">
-          <div class="rail-control-group rail-control-group-top">
+          <div class="rail-control-stack" aria-label="Rank navigation controls">
             <button
               id="rail-arrow-up"
               class="rail-arrow rail-arrow-up"
@@ -41,16 +73,6 @@ app.html(`
               aria-label="Jump to the top of the ranked list"
               data-arrow="up-double"
             ></button>
-          </div>
-          <div
-            id="focus-rail-window"
-            class="focus-rail-window"
-            tabindex="0"
-            aria-label="Place-name focus rail"
-          >
-            <div id="focus-rail-track" class="focus-rail-track"></div>
-          </div>
-          <div class="rail-control-group rail-control-group-bottom">
             <button
               id="rail-arrow-down"
               class="rail-arrow rail-arrow-down"
@@ -65,6 +87,14 @@ app.html(`
               aria-label="Jump to the bottom of the ranked list"
               data-arrow="down-double"
             ></button>
+          </div>
+          <div
+            id="focus-rail-window"
+            class="focus-rail-window"
+            tabindex="0"
+            aria-label="Place-name focus rail"
+          >
+            <div id="focus-rail-track" class="focus-rail-track"></div>
           </div>
         </div>
       </aside>
@@ -111,6 +141,7 @@ app.html(`
         ></div>
       </main>
     </div>
+    </div>
   </div>
 `);
 
@@ -124,20 +155,7 @@ const searchInput = d3.select("#title-search");
 const searchShell = d3.select("#search-shell");
 const svg = d3.select("#map-svg");
 const stateLabels = d3.select("#state-labels");
-svg
-  .append("defs")
-  .append("clipPath")
-  .attr("id", "map-curvature-clip")
-  .attr("clipPathUnits", "objectBoundingBox")
-  .append("path")
-  .attr(
-    "d",
-    "M0.018,0.092 C0.03,0.038 0.088,0.012 0.158,0.012 H0.842 C0.912,0.012 0.97,0.038 0.982,0.092 C0.994,0.164 0.994,0.836 0.982,0.908 C0.97,0.962 0.912,0.988 0.842,0.988 H0.158 C0.088,0.988 0.03,0.962 0.018,0.908 C0.006,0.836 0.006,0.164 0.018,0.092 Z",
-  );
-const mapPlane = svg
-  .append("g")
-  .attr("class", "map-plane")
-  .attr("clip-path", "url(#map-curvature-clip)");
+const mapPlane = svg.append("g").attr("class", "map-plane");
 const baseStatesLayer = mapPlane.append("g").attr("class", "base-states-layer");
 const highlightedStatesLayer = mapPlane.append("g").attr("class", "highlighted-states-layer");
 const bordersLayer = mapPlane.append("g").attr("class", "borders-layer");
@@ -195,8 +213,8 @@ Promise.all([
     const stateIndex = new Map(stateFeatures.map((state) => [state.id, state]));
     const projection = d3.geoAlbersUsa().fitExtent(
       [
-        [18, 28],
-        [MAP_WIDTH - 18, MAP_HEIGHT - 34],
+        [8, 16],
+        [MAP_WIDTH - 8, MAP_HEIGHT - 18],
       ],
       { type: "FeatureCollection", features: stateFeatures },
     );
