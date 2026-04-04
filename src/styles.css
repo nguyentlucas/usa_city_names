@@ -414,11 +414,16 @@ button {
   font-size: 0.84rem;
   line-height: 1;
   opacity: 0.74;
-  transform: scale(1);
+  color: rgba(0, 0, 0, 0.78);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  transform: translateY(0) scale(1);
   transform-origin: left center;
   transition:
     opacity 180ms ease,
-    transform 180ms ease;
+    transform 180ms ease,
+    color 180ms ease,
+    font-weight 180ms ease;
   outline: none;
 }
 
@@ -427,6 +432,9 @@ button {
   height: 6px;
   background: var(--ink);
   flex: 0 0 auto;
+  transform: scale(1);
+  transform-origin: center;
+  opacity: 0.78;
   transition:
     transform 180ms ease,
     opacity 180ms ease;
@@ -441,10 +449,12 @@ button {
   opacity: 0.88;
   transform-box: fill-box;
   transform-origin: center center;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.05)) drop-shadow(0 3px 5px rgba(0, 0, 0, 0));
   transition:
     opacity 180ms ease,
     transform 180ms ease,
-    stroke-width 180ms ease;
+    stroke-width 180ms ease,
+    filter 220ms ease;
   stroke: rgba(0, 0, 0, 0);
   stroke-width: 0.7;
   vector-effect: non-scaling-stroke;
@@ -452,9 +462,14 @@ button {
 
 .highlighted-state-shape.is-hovered {
   opacity: 1;
-  transform: scale(1.008);
+  transform: scale(1.017);
   stroke: var(--ink);
-  stroke-width: 1.2;
+  stroke-width: 1.45;
+  filter:
+    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.7))
+    drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18))
+    drop-shadow(0 12px 20px rgba(0, 0, 0, 0.08));
+  animation: state-outline-pulse 1700ms ease-in-out infinite;
 }
 
 .state-labels:has(.state-label:hover) .state-label:not(:hover),
@@ -467,14 +482,17 @@ button {
 .state-label:hover,
 .state-label:focus-visible {
   opacity: 1;
-  transform: scale(1.035);
+  color: var(--ink);
+  font-weight: 500;
+  transform: translateY(-1px) scale(1.045);
 }
 
 .state-label.is-hovered .state-label-bullet,
 .state-label:hover .state-label-bullet,
 .state-label:focus-visible .state-label-bullet {
-  transform: scale(1.18);
+  transform: scale(1.22);
   opacity: 1;
+  animation: label-bullet-pulse 1700ms ease-in-out infinite;
 }
 
 .highlight-borders {
@@ -508,6 +526,36 @@ button {
   47%,
   100% {
     opacity: 0.16;
+  }
+}
+
+@keyframes state-outline-pulse {
+  0%,
+  100% {
+    stroke-width: 1.25;
+    filter:
+      drop-shadow(0 1px 0 rgba(255, 255, 255, 0.55))
+      drop-shadow(0 5px 8px rgba(0, 0, 0, 0.14))
+      drop-shadow(0 0 0 rgba(0, 0, 0, 0.04));
+  }
+  50% {
+    stroke-width: 1.7;
+    filter:
+      drop-shadow(0 1px 0 rgba(255, 255, 255, 0.72))
+      drop-shadow(0 7px 12px rgba(0, 0, 0, 0.2))
+      drop-shadow(0 0 0.8px rgba(0, 0, 0, 0.22));
+  }
+}
+
+@keyframes label-bullet-pulse {
+  0%,
+  100% {
+    transform: scale(1.14);
+    opacity: 0.92;
+  }
+  50% {
+    transform: scale(1.28);
+    opacity: 1;
   }
 }
 
