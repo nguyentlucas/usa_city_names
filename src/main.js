@@ -344,7 +344,7 @@ Promise.all([
               .attr("data-state-id", (d) => d.id);
 
             const body = group.append("g").attr("class", "hovered-state-overlay-body");
-            body.append("path").attr("class", "hovered-state-halo");
+            body.append("path").attr("class", "hovered-state-pulse");
             body.append("path").attr("class", "hovered-state-fill");
             body.append("path").attr("class", "hovered-state-outline");
 
@@ -405,7 +405,7 @@ Promise.all([
         }
       });
 
-      hoveredSelection.select(".hovered-state-halo").attr("d", path);
+      hoveredSelection.select(".hovered-state-pulse").attr("d", path);
       hoveredSelection.select(".hovered-state-fill").attr("d", path);
       hoveredSelection.select(".hovered-state-outline").attr("d", path);
     }

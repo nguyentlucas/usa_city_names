@@ -490,17 +490,16 @@ button {
   animation: state-lifted-drift 2600ms ease-in-out 180ms infinite alternate;
 }
 
-.hovered-state-halo {
-  fill: rgba(122, 122, 122, 0.16);
-  stroke: var(--ink-mid);
-  stroke-width: 2.8;
+.hovered-state-pulse {
+  fill: none;
+  stroke: var(--bg);
+  stroke-width: 3.2;
   stroke-linejoin: round;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
-  opacity: 0.92;
-  filter:
-    drop-shadow(0 5px 7px rgba(0, 0, 0, 0.12))
-    drop-shadow(0 11px 14px rgba(0, 0, 0, 0.07));
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center center;
 }
 
 .hovered-state-fill {
@@ -523,6 +522,15 @@ button {
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
   opacity: 1;
+}
+
+.hovered-state-overlay.is-lifted .hovered-state-pulse {
+  animation: state-outline-pulse 880ms steps(1, end) infinite;
+}
+
+.hovered-state-overlay.is-entering .hovered-state-pulse,
+.hovered-state-overlay.is-exiting .hovered-state-pulse {
+  animation-play-state: running;
 }
 
 .state-labels:has(.state-label:hover) .state-label:not(:hover),
@@ -588,6 +596,33 @@ button {
   }
   100% {
     transform: translateY(-0.35px) scale(1.006);
+  }
+}
+
+@keyframes state-outline-pulse {
+  0% {
+    stroke: var(--bg);
+    stroke-width: 2.6;
+    opacity: 0.98;
+    transform: scale(1.015);
+  }
+  49.999% {
+    stroke: var(--bg);
+    stroke-width: 2.6;
+    opacity: 0.98;
+    transform: scale(1.015);
+  }
+  50% {
+    stroke: var(--ink);
+    stroke-width: 4.2;
+    opacity: 0.9;
+    transform: scale(1.048);
+  }
+  100% {
+    stroke: var(--ink);
+    stroke-width: 4.2;
+    opacity: 0.9;
+    transform: scale(1.048);
   }
 }
 
