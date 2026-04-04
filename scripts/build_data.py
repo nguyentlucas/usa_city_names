@@ -4,10 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import re
-import shutil
-import subprocess
 import tempfile
 import zipfile
 from pathlib import Path
@@ -15,7 +12,6 @@ from pathlib import Path
 try:
     import geopandas as gpd
     import pandas as pd
-    from shapely import make_valid
 except ModuleNotFoundError as exc:
     raise SystemExit(
         "Missing geospatial dependencies. Create the conda environment first:\n"
@@ -26,6 +22,7 @@ except ModuleNotFoundError as exc:
 
 VALID_CLASSFP = {"C1", "C2", "C3", "C4", "C5"}
 NAME_COLUMNS = ["GEOID", "NAME", "CLASSFP", "STATEFP"]
+MAP_EXCLUDED_STATE_IDS = {"15", "60", "66", "69", "72", "78"}
 STATE_INFO = {
     "01": {"abbr": "AL", "name": "Alabama"},
     "02": {"abbr": "AK", "name": "Alaska"},
@@ -99,13 +96,6 @@ def choose_display_name(names: pd.Series) -> str:
     return sorted(counts[counts == counts.max()].index)[0]
 
 
-def safe_make_valid(series):
-    try:
-        return series.apply(make_valid)
-    except Exception:
-        return series.buffer(0)
-
-
 def load_place_zip(zip_path: Path) -> gpd.GeoDataFrame:
     with tempfile.TemporaryDirectory(prefix="city_names_") as temp_dir:
         extract_dir = Path(temp_dir) / zip_path.stem
@@ -114,8 +104,7 @@ def load_place_zip(zip_path: Path) -> gpd.GeoDataFrame:
             archive.extractall(extract_dir)
 
         shapefile_path = next(extract_dir.glob("*.shp"))
-        gdf = gpd.read_file(shapefile_path)
-        gdf = gdf.set_crs(4326, allow_override=True)
+        gdf = gpd.read_file(shapefile_path, columns=NAME_COLUMNS)
 
     missing = [column for column in NAME_COLUMNS if column not in gdf.columns]
     if missing:
@@ -124,65 +113,57 @@ def load_place_zip(zip_path: Path) -> gpd.GeoDataFrame:
     match = re.search(r"tl_2025_(\d{2})_place$", zip_path.stem)
     if not match:
         raise ValueError(f"Could not parse state code from {zip_path.name}")
+
     state_code = match.group(1)
     state_meta = STATE_INFO.get(state_code)
     if state_meta is None:
         raise ValueError(f"Unknown state code in {zip_path.name}: {state_code}")
 
-    gdf = gdf.loc[gdf["CLASSFP"].isin(VALID_CLASSFP), NAME_COLUMNS + ["geometry"]].copy()
+    gdf = gdf.loc[gdf["CLASSFP"].isin(VALID_CLASSFP), NAME_COLUMNS].copy()
     if gdf.empty:
         gdf["display_name"] = pd.Series(dtype="string")
         gdf["normalized_name"] = pd.Series(dtype="string")
         gdf["state_abbr"] = pd.Series(dtype="string")
         gdf["state_name"] = pd.Series(dtype="string")
-        gdf["place_label"] = pd.Series(dtype="string")
         return gdf
 
     gdf["display_name"] = gdf["NAME"].map(clean_display_name)
     gdf["normalized_name"] = gdf["display_name"].map(normalize_name)
-
     gdf["state_abbr"] = state_meta["abbr"]
     gdf["state_name"] = state_meta["name"]
-    gdf["place_label"] = gdf["display_name"] + ", " + gdf["state_abbr"]
     return gdf
 
 
-def build_name_assets(df: gpd.GeoDataFrame, output_dir: Path, top_n: int) -> None:
+def build_name_assets(df: pd.DataFrame, output_dir: Path) -> None:
     summaries = []
     lookup = {}
-    grouped = df.groupby("normalized_name", sort=False)
 
+    grouped = df.groupby("normalized_name", sort=False)
     for normalized_name, group in grouped:
         places = group.sort_values(["state_name", "display_name", "GEOID"])
+        state_ids = sorted(places["STATEFP"].unique().tolist())
+        mapped_state_ids = [state_id for state_id in state_ids if state_id not in MAP_EXCLUDED_STATE_IDS]
+
         record = {
             "normalizedName": normalized_name,
             "displayName": choose_display_name(places["display_name"]),
             "count": int(len(places)),
-            "stateCount": int(places["state_abbr"].nunique()),
-            "states": sorted(places["state_name"].unique().tolist()),
-            "places": [
-                {
-                    "geoid": row.GEOID,
-                    "name": row.display_name,
-                    "stateAbbr": row.state_abbr,
-                    "stateName": row.state_name,
-                    "classfp": row.CLASSFP,
-                }
-                for row in places.itertuples(index=False)
-            ],
+            "stateCount": int(len(state_ids)),
+            "stateIds": state_ids,
+            "mappedStateIds": mapped_state_ids,
+            "stateNames": [STATE_INFO[state_id]["name"] for state_id in state_ids],
+            "mappedStateNames": [STATE_INFO[state_id]["name"] for state_id in mapped_state_ids],
         }
         summaries.append(record)
-        lookup[normalized_name] = record
 
     summaries.sort(key=lambda item: (-item["count"], item["displayName"], item["normalizedName"]))
-    top_names = summaries[:top_n]
+
+    for index, record in enumerate(summaries, start=1):
+        record["rank"] = index
+        lookup[record["normalizedName"]] = index - 1
 
     (output_dir / "name_frequency.json").write_text(
         json.dumps(summaries, indent=2),
-        encoding="utf-8",
-    )
-    (output_dir / "top_names.json").write_text(
-        json.dumps(top_names, indent=2),
         encoding="utf-8",
     )
     (output_dir / "name_lookup.json").write_text(
@@ -191,62 +172,9 @@ def build_name_assets(df: gpd.GeoDataFrame, output_dir: Path, top_n: int) -> Non
     )
 
 
-def build_topology(df: gpd.GeoDataFrame, output_dir: Path) -> None:
-    topo_df = df[
-        [
-            "GEOID",
-            "NAME",
-            "display_name",
-            "normalized_name",
-            "state_abbr",
-            "state_name",
-            "CLASSFP",
-            "place_label",
-            "area_m2",
-            "centroid_lon",
-            "centroid_lat",
-            "geometry",
-        ]
-    ].copy()
-
-    project_root = Path(__file__).resolve().parents[1]
-    geo2topo_bin = project_root / "node_modules" / ".bin" / "geo2topo"
-    if not geo2topo_bin.exists():
-        raise SystemExit(
-            "Missing frontend dependency `geo2topo`. Run `npm install` before building data."
-        )
-
-    feature_collection = json.loads(topo_df.to_json(drop_id=True))
-    topo_path = output_dir / "places.topo.json"
-    with tempfile.NamedTemporaryFile(
-        mode="w",
-        suffix=".geojson",
-        delete=False,
-        encoding="utf-8",
-    ) as temp_file:
-        json.dump(feature_collection, temp_file, separators=(",", ":"))
-        temp_geojson_path = Path(temp_file.name)
-
-    try:
-        subprocess.run(
-            [
-                str(geo2topo_bin),
-                f"places={temp_geojson_path}",
-                "-q",
-                "1e5",
-                "-o",
-                str(topo_path),
-            ],
-            check=True,
-            cwd=project_root,
-        )
-    finally:
-        temp_geojson_path.unlink(missing_ok=True)
-
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build web-ready assets from TIGER/Line PLACE zip bundles."
+        description="Build ranked incorporated place-name assets from TIGER/Line PLACE zip bundles."
     )
     parser.add_argument(
         "--input-dir",
@@ -260,18 +188,6 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help="Directory for generated JSON assets.",
     )
-    parser.add_argument(
-        "--simplify-tolerance",
-        default=250.0,
-        type=float,
-        help="Douglas-Peucker simplify tolerance in meters in a global metric projection.",
-    )
-    parser.add_argument(
-        "--top-n",
-        default=40,
-        type=int,
-        help="How many top repeated names to include in top_names.json.",
-    )
     return parser.parse_args()
 
 
@@ -282,44 +198,34 @@ def main() -> None:
         raise SystemExit(f"No input zips found in {args.input_dir}")
 
     frames = [load_place_zip(path) for path in zip_paths]
-    combined = gpd.GeoDataFrame(pd.concat(frames, ignore_index=True), crs=frames[0].crs)
+    combined = pd.concat(frames, ignore_index=True)
     combined = combined.loc[combined["normalized_name"] != ""].copy()
-    combined["geometry"] = safe_make_valid(combined.geometry)
-    combined = combined[combined.geometry.notnull() & ~combined.geometry.is_empty].copy()
-
-    projected = combined.to_crs(3857)
-    projected["area_m2"] = projected.geometry.area.round(2)
-    projected["centroid_geom"] = projected.geometry.representative_point()
-    projected["geometry"] = projected.geometry.simplify(
-        args.simplify_tolerance,
-        preserve_topology=True,
-    )
-
-    simplified = projected.to_crs(4326)
-    centroids = gpd.GeoSeries(projected["centroid_geom"], crs=3857).to_crs(4326)
-    simplified["area_m2"] = projected["area_m2"].astype(float)
-    simplified["centroid_lon"] = centroids.x.round(6)
-    simplified["centroid_lat"] = centroids.y.round(6)
-    simplified["NAME"] = simplified["display_name"]
-    simplified = simplified.sort_values(
+    combined = combined.sort_values(
         ["normalized_name", "state_abbr", "display_name", "GEOID"]
     ).reset_index(drop=True)
 
     output_dir = args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    build_topology(simplified, output_dir)
-    build_name_assets(simplified, output_dir, args.top_n)
+    build_name_assets(combined, output_dir)
+
+    for stale_name in ("places.topo.json", "top_names.json"):
+        stale_path = output_dir / stale_name
+        if stale_path.exists():
+            stale_path.unlink()
 
     metadata = {
         "source": "U.S. Census TIGER/Line PLACE shapefiles",
         "year": 2025,
         "includedClassfp": sorted(VALID_CLASSFP),
-        "excludedExamples": ["U1"],
-        "placeCount": int(len(simplified)),
-        "nameCount": int(simplified["normalized_name"].nunique()),
-        "stateCount": int(simplified["state_abbr"].nunique()),
-        "simplifyToleranceMeters": args.simplify_tolerance,
+        "placeCount": int(len(combined)),
+        "nameCount": int(combined["normalized_name"].nunique()),
+        "stateCount": int(combined["STATEFP"].nunique()),
+        "mappedStateCount": int(
+            combined.loc[~combined["STATEFP"].isin(MAP_EXCLUDED_STATE_IDS), "STATEFP"].nunique()
+        ),
+        "defaultFocusedName": "Franklin",
+        "excludedMapStateIds": sorted(MAP_EXCLUDED_STATE_IDS),
     }
     (output_dir / "metadata.json").write_text(
         json.dumps(metadata, indent=2),

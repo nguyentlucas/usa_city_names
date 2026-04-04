@@ -8,11 +8,17 @@
     "C4",
     "C5"
   ],
-  "excludedExamples": [
-    "U1"
-  ],
   "placeCount": 19491,
   "nameCount": 12723,
   "stateCount": 51,
-  "simplifyToleranceMeters": 250.0
+  "mappedStateCount": 50,
+  "defaultFocusedName": "Franklin",
+  "excludedMapStateIds": [
+    "15",
+    "60",
+    "66",
+    "69",
+    "72",
+    "78"
+  ]
 }

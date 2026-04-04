@@ -5,420 +5,505 @@ import { feature, mesh } from "topojson-client";
 import statesUrl from "us-atlas/states-10m.json?url";
 
 const DATA_URLS = {
-  places: "./data/places.topo.json",
   nameFrequency: "./data/name_frequency.json",
-  topNames: "./data/top_names.json",
   nameLookup: "./data/name_lookup.json",
   metadata: "./data/metadata.json",
 };
 
-const SMALL_PLACE_AREA = 2_500_000;
+const VISIBLE_ROWS = 11;
+const CENTER_INDEX = 5;
+const ROW_HEIGHT = 44;
+const RAIL_HEIGHT = VISIBLE_ROWS * ROW_HEIGHT;
+const MAP_WIDTH = 1120;
+const MAP_HEIGHT = 760;
+const MAP_FLOOR_Y = 420;
+const CALL_OUT_START_Y = 520;
+const CALL_OUT_GAP = 32;
+const SEARCH_DEFAULT = "Franklin";
 
 const app = d3.select("#app");
 app.html(`
   <div class="page-shell">
-    <header class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">U.S. incorporated place names</p>
-        <h1>Where the same city name appears again and again</h1>
-        <p class="hero-text" id="summary-text"></p>
-      </div>
-      <div class="search-panel">
-        <label class="search-label" for="name-search">Search an exact incorporated place name</label>
-        <div class="search-wrap">
-          <input id="name-search" class="search-input" type="search" autocomplete="off" spellcheck="false" placeholder="Try Franklin, Greenville, Springfield..." />
-          <button id="search-clear" class="search-clear" type="button" aria-label="Clear search">Clear</button>
-        </div>
-        <div id="search-status" class="search-status"></div>
-        <div id="chip-row" class="chip-row" aria-label="Example repeated names"></div>
-        <div id="suggestions" class="suggestions" aria-live="polite"></div>
-      </div>
-    </header>
-
-    <main class="content-grid">
-      <section class="panel panel-rankings">
-        <div class="panel-head">
-          <div>
-            <p class="panel-kicker">Most repeated</p>
-            <h2>Ranked incorporated names</h2>
+    <div class="layout">
+      <aside class="rail-column">
+        <div class="focus-rail-shell" aria-label="Focused place-name rail">
+          <div id="rail-arrow-top" class="rail-arrow rail-arrow-top" aria-hidden="true"></div>
+          <div
+            id="focus-rail-window"
+            class="focus-rail-window"
+            tabindex="0"
+            aria-label="Place-name focus rail"
+          >
+            <div id="focus-rail-track" class="focus-rail-track"></div>
           </div>
+          <div id="rail-arrow-bottom" class="rail-arrow rail-arrow-bottom" aria-hidden="true"></div>
         </div>
-        <div id="ranking-list" class="ranking-list"></div>
-      </section>
-
-      <section class="panel panel-map">
-        <div class="panel-head">
-          <div>
-            <p class="panel-kicker">Linked map</p>
-            <h2>All incorporated place boundaries</h2>
-          </div>
-        </div>
-        <div id="map-wrap" class="map-wrap">
-          <svg id="map-svg" class="map-svg" viewBox="0 0 980 640" preserveAspectRatio="xMidYMid meet"></svg>
-        </div>
-      </section>
-
-      <aside class="panel panel-details">
-        <div class="panel-head">
-          <div>
-            <p class="panel-kicker">Selection</p>
-            <h2>Name details</h2>
-          </div>
-        </div>
-        <div id="details-card" class="details-card"></div>
       </aside>
-    </main>
+
+      <main class="main-column">
+        <header class="intro">
+          <p class="intro-small">some city names appear again and again</p>
+          <h1 class="title-line">
+            <span>How common is </span>
+            <input
+              id="title-search"
+              class="title-search"
+              type="search"
+              autocomplete="off"
+              autocapitalize="words"
+              spellcheck="false"
+              aria-label="Search incorporated place name"
+            />
+            <span>?</span>
+          </h1>
+        </header>
+
+        <section class="map-stage">
+          <div class="map-tilt">
+            <svg
+              id="map-svg"
+              class="map-svg"
+              viewBox="0 0 ${MAP_WIDTH} ${MAP_HEIGHT}"
+              preserveAspectRatio="xMidYMid meet"
+              aria-label="United States map highlighting states that share the focused place name"
+            ></svg>
+          </div>
+        </section>
+      </main>
+    </div>
   </div>
 `);
 
-const summaryText = d3.select("#summary-text");
-const searchInput = d3.select("#name-search");
-const searchClear = d3.select("#search-clear");
-const searchStatus = d3.select("#search-status");
-const chipRow = d3.select("#chip-row");
-const suggestions = d3.select("#suggestions");
-const rankingList = d3.select("#ranking-list");
-const detailsCard = d3.select("#details-card");
-
+const railWindow = d3.select("#focus-rail-window");
+const railTrack = d3.select("#focus-rail-track");
+const railArrowTop = d3.select("#rail-arrow-top");
+const railArrowBottom = d3.select("#rail-arrow-bottom");
+const searchInput = d3.select("#title-search");
 const svg = d3.select("#map-svg");
-const width = 980;
-const height = 640;
-const rootLayer = svg.append("g");
-const statesLayer = rootLayer.append("g").attr("class", "states-layer");
-const placesLayer = rootLayer.append("g").attr("class", "places-layer");
-const markersLayer = rootLayer.append("g").attr("class", "markers-layer");
-
-const zoomBehavior = d3
-  .zoom()
-  .scaleExtent([1, 10])
-  .translateExtent([
-    [0, 0],
-    [width, height],
-  ])
-  .extent([
-    [0, 0],
-    [width, height],
-  ])
-  .on("zoom", (event) => {
-    rootLayer.attr("transform", event.transform);
-  });
-
-svg.call(zoomBehavior);
+const mapPlane = svg.append("g").attr("class", "map-plane");
+const statesLayer = mapPlane.append("g").attr("class", "states-layer");
+const bordersLayer = mapPlane.append("g").attr("class", "borders-layer");
+const calloutsLayer = svg.append("g").attr("class", "callouts-layer");
 
 function normalizeName(value) {
   return value.trim().toLocaleLowerCase();
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
 }
 
 function renderError(message) {
   app.append("div").attr("class", "error-banner").text(message);
 }
 
-function buildProjection(placesFeatures, statesFeatures) {
-  const collection = {
-    type: "FeatureCollection",
-    features: [...statesFeatures, ...placesFeatures],
-  };
-  return d3.geoMercator().fitExtent(
-    [
-      [18, 18],
-      [width - 18, height - 18],
-    ],
-    collection,
-  );
+function measureLabelWidth(name) {
+  return Math.max(72, Math.min(160, name.length * 8.6 + 24));
 }
 
-function createDetailsMarkup(record) {
-  const stateMarkup = record.states
-    .map((state) => `<span class="state-pill">${state}</span>`)
-    .join("");
+function buildVisibleRows(records, focusedIndex) {
+  return d3.range(VISIBLE_ROWS).map((slot) => {
+    const recordIndex = focusedIndex + (slot - CENTER_INDEX);
+    const record = records[recordIndex] ?? null;
 
-  const placeMarkup = record.places
-    .map(
-      (place) => `
-        <li class="place-row">
-          <span>${place.name}</span>
-          <span class="place-state">${place.stateAbbr}</span>
-        </li>
-      `,
-    )
-    .join("");
+    return {
+      key: record ? record.normalizedName : `empty-${slot}`,
+      slot,
+      recordIndex,
+      record,
+      isFocused: slot === CENTER_INDEX && Boolean(record),
+    };
+  });
+}
 
-  return `
-    <div class="details-headline">
-      <h3>${record.displayName}</h3>
-      <p>${record.count} incorporated places across ${record.stateCount} states or territories.</p>
-    </div>
-    <div class="detail-stats">
-      <div class="stat-block">
-        <span class="stat-value">${record.count}</span>
-        <span class="stat-label">places</span>
-      </div>
-      <div class="stat-block">
-        <span class="stat-value">${record.stateCount}</span>
-        <span class="stat-label">states / territories</span>
-      </div>
-    </div>
-    <div class="details-section">
-      <p class="details-section-title">States represented</p>
-      <div class="state-pill-wrap">${stateMarkup}</div>
-    </div>
-    <div class="details-section">
-      <p class="details-section-title">Matching incorporated places</p>
-      <ul class="place-list">${placeMarkup}</ul>
-    </div>
-  `;
+function layoutCallouts(path, highlightedStates) {
+  const rows = Math.min(4, Math.max(1, Math.ceil(highlightedStates.length / 7)));
+  const items = highlightedStates
+    .map((state) => {
+      const [x, y] = path.centroid(state);
+      return {
+        id: state.id,
+        name: state.properties.name,
+        anchorX: x,
+        anchorY: y,
+        width: measureLabelWidth(state.properties.name),
+      };
+    })
+    .filter((item) => Number.isFinite(item.anchorX) && Number.isFinite(item.anchorY))
+    .sort((a, b) => a.anchorX - b.anchorX);
+
+  if (!items.length) {
+    return [];
+  }
+
+  const minX = 70;
+  const maxX = MAP_WIDTH - 210;
+  const minGap = 12;
+
+  items.forEach((item, index) => {
+    item.row = index % rows;
+    item.labelY = CALL_OUT_START_Y + item.row * CALL_OUT_GAP;
+    item.labelX = clamp(item.anchorX, minX, maxX);
+  });
+
+  const perRow = d3.group(items, (item) => item.row);
+  for (const rowItems of perRow.values()) {
+    rowItems.sort((a, b) => a.labelX - b.labelX);
+
+    let cursor = minX;
+    rowItems.forEach((item) => {
+      item.labelX = Math.max(item.labelX, cursor);
+      cursor = item.labelX + item.width + minGap;
+    });
+
+    cursor = maxX;
+    for (let index = rowItems.length - 1; index >= 0; index -= 1) {
+      const item = rowItems[index];
+      item.labelX = Math.min(item.labelX, cursor - item.width);
+      cursor = item.labelX - minGap;
+    }
+  }
+
+  return items;
 }
 
 Promise.all([
-  d3.json(DATA_URLS.places),
   d3.json(DATA_URLS.nameFrequency),
-  d3.json(DATA_URLS.topNames),
   d3.json(DATA_URLS.nameLookup),
   d3.json(DATA_URLS.metadata),
   d3.json(statesUrl),
 ])
-  .then(([placesTopo, nameFrequency, topNames, nameLookup, metadata, statesTopo]) => {
-    const placeObjectKey = placesTopo.objects.places
-      ? "places"
-      : Object.keys(placesTopo.objects)[0];
-    const placesFeatures = feature(placesTopo, placesTopo.objects[placeObjectKey]).features;
-    const statesFeatures = feature(statesTopo, statesTopo.objects.states).features;
-    const stateMesh = mesh(statesTopo, statesTopo.objects.states, (a, b) => a !== b);
-    const projection = buildProjection(placesFeatures, statesFeatures);
-    const path = d3.geoPath(projection);
-
-    const nameIndex = new Map(nameFrequency.map((entry) => [entry.normalizedName, entry]));
-    const defaultSelection = topNames[0]?.normalizedName ?? nameFrequency[0]?.normalizedName;
-    let selectedName = defaultSelection;
-    let searchValue = "";
-
-    summaryText.text(
-      `${metadata.placeCount.toLocaleString()} incorporated places from 2025 Census TIGER/Line PLACE files, restricted to CLASSFP ${metadata.includedClassfp.join(", ")}.`,
+  .then(([nameFrequency, nameLookup, metadata, statesTopo]) => {
+    const excludedStateIds = new Set(metadata.excludedMapStateIds ?? []);
+    const stateFeatures = feature(statesTopo, statesTopo.objects.states).features.filter(
+      (state) => !excludedStateIds.has(state.id),
+    );
+    const stateMesh = mesh(
+      statesTopo,
+      statesTopo.objects.states,
+      (a, b) => a !== b && !excludedStateIds.has(a.id) && !excludedStateIds.has(b.id),
     );
 
+    const stateIndex = new Map(stateFeatures.map((state) => [state.id, state]));
+    const projection = d3.geoAlbersUsa().fitExtent(
+      [
+        [48, 32],
+        [MAP_WIDTH - 48, MAP_FLOOR_Y - 30],
+      ],
+      { type: "FeatureCollection", features: stateFeatures },
+    );
+    const path = d3.geoPath(projection);
+
     statesLayer
+      .selectAll("path")
+      .data(stateFeatures)
+      .join("path")
+      .attr("class", "state-shape")
+      .attr("d", path);
+
+    bordersLayer
       .append("path")
       .datum(stateMesh)
       .attr("class", "state-borders")
       .attr("d", path);
 
-    placesLayer
-      .selectAll("path")
-      .data(placesFeatures)
-      .join("path")
-      .attr("class", "place-shape")
-      .attr("d", path)
-      .append("title")
-      .text((d) => `${d.properties.display_name}, ${d.properties.state_abbr}`);
+    const lookup = new Map(
+      Object.entries(nameLookup).map(([normalizedName, index]) => [normalizedName, Number(index)]),
+    );
 
-    placesLayer
-      .selectAll("path")
-      .on("click", (_, d) => {
-        setSelection(d.properties.normalized_name, d.properties.display_name);
-      });
+    let focusedIndex =
+      lookup.get(normalizeName(metadata.defaultFocusedName ?? SEARCH_DEFAULT)) ??
+      lookup.get(normalizeName(SEARCH_DEFAULT)) ??
+      0;
+    let previousIndex = focusedIndex;
+    let inputValue = nameFrequency[focusedIndex]?.displayName ?? SEARCH_DEFAULT;
+    let interactionLocked = false;
 
-    const markerSelection = markersLayer
-      .selectAll("circle")
-      .data(placesFeatures.filter((d) => Number(d.properties.area_m2) <= SMALL_PLACE_AREA))
-      .join("circle")
-      .attr("class", "place-marker")
-      .attr("cx", (d) => projection([d.properties.centroid_lon, d.properties.centroid_lat])[0])
-      .attr("cy", (d) => projection([d.properties.centroid_lon, d.properties.centroid_lat])[1])
-      .attr("r", 1.8);
+    searchInput.property("value", inputValue);
 
-    function renderChips() {
-      chipRow
-        .selectAll("button")
-        .data(topNames.slice(0, 6))
-        .join("button")
-        .attr("type", "button")
-        .attr("class", (d) =>
-          d.normalizedName === selectedName ? "chip is-active" : "chip",
-        )
-        .text((d) => d.displayName)
-        .on("click", (_, d) => {
-          searchInput.property("value", d.displayName);
-          setSelection(d.normalizedName, d.displayName);
-        });
+    function getFocusedRecord() {
+      return nameFrequency[focusedIndex] ?? null;
     }
 
-    function renderRankings() {
-      const maxCount = d3.max(topNames, (d) => d.count) ?? 1;
-      const rows = rankingList.selectAll("button").data(topNames).join("button");
+    function syncSearchValue() {
+      const focused = getFocusedRecord();
+      inputValue = focused?.displayName ?? "";
+      searchInput.property("value", inputValue);
+    }
 
-      rows
-        .attr("type", "button")
-        .attr("class", (d) =>
-          d.normalizedName === selectedName ? "rank-row is-active" : "rank-row",
-        )
-        .on("click", (_, d) => {
-          searchInput.property("value", d.displayName);
-          setSelection(d.normalizedName, d.displayName);
-        })
-        .html(
-          (d, index) => `
-            <span class="rank-index">${index + 1}</span>
-            <span class="rank-meta">
-              <span class="rank-name">${d.displayName}</span>
-              <span class="rank-sub">${d.stateCount} states / territories</span>
-            </span>
-            <span class="rank-bar"><span style="width:${(d.count / maxCount) * 100}%"></span></span>
-            <span class="rank-count">${d.count}</span>
-          `,
+    function updateRail(delta = 0) {
+      const rows = buildVisibleRows(nameFrequency, focusedIndex);
+      const travel = Math.sign(delta) * Math.min(VISIBLE_ROWS, Math.abs(delta)) * ROW_HEIGHT;
+      const duration = Math.abs(delta) <= 1 ? 220 : 320;
+
+      railTrack.style("height", `${RAIL_HEIGHT}px`);
+
+      const rowSelection = railTrack
+        .selectAll(".rail-row")
+        .data(rows, (d) => d.key)
+        .join(
+          (enter) =>
+            enter
+              .append("button")
+              .attr("type", "button")
+              .attr("class", "rail-row")
+              .style("transform", (d) => {
+                const startY = d.slot * ROW_HEIGHT + travel;
+                return `translateY(${startY}px)`;
+              })
+              .style("opacity", 0)
+              .call((selection) =>
+                selection
+                  .transition()
+                  .duration(duration)
+                  .ease(d3.easeCubicOut)
+                  .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT}px)`)
+                  .style("opacity", 1),
+              ),
+          (update) => update,
+          (exit) =>
+            exit
+              .transition()
+              .duration(duration)
+              .ease(d3.easeCubicIn)
+              .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT - travel}px)`)
+              .style("opacity", 0)
+              .remove(),
         );
-    }
 
-    function renderSuggestions() {
-      const query = normalizeName(searchValue);
-      if (!query) {
-        suggestions.html("");
-        searchStatus.text("Exact matching, case-insensitive. Click a result or press Enter on an exact name.");
-        return;
-      }
-
-      const exact = nameLookup[query];
-      const matches = nameFrequency
-        .filter((entry) => entry.normalizedName.includes(query))
-        .slice(0, 6);
-
-      if (exact) {
-        searchStatus.text(`Exact match found: ${exact.displayName}`);
-      } else {
-        searchStatus.text("No exact match yet. Matching uses trimmed, case-insensitive name equality.");
-      }
-
-      const items = suggestions.selectAll("button").data(matches, (d) => d.normalizedName).join("button");
-      items
-        .attr("type", "button")
-        .attr("class", "suggestion")
-        .text((d) => `${d.displayName} (${d.count})`)
+      rowSelection
+        .attr("class", (d) => (d.isFocused ? "rail-row is-focused" : "rail-row"))
+        .attr("disabled", (d) => (d.record ? null : true))
+        .attr("aria-label", (d) =>
+          d.record ? `${d.record.displayName}, ${d.record.count} occurrences` : "Empty row",
+        )
+        .html((d) =>
+          d.record
+            ? `<span class="rail-count">${d.record.count}</span><span class="rail-name">${d.record.displayName}</span>`
+            : "",
+        )
         .on("click", (_, d) => {
-          searchInput.property("value", d.displayName);
-          setSelection(d.normalizedName, d.displayName);
-        });
+          if (!d.record) {
+            return;
+          }
+          setFocusedIndex(d.recordIndex);
+        })
+        .transition()
+        .duration(duration)
+        .ease(d3.easeCubicOut)
+        .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT}px)`)
+        .style("opacity", (d) => (d.record ? 1 : 0));
+
+      railArrowTop.classed("is-dimmed", focusedIndex <= 0);
+      railArrowBottom.classed("is-dimmed", focusedIndex >= nameFrequency.length - 1);
     }
 
     function updateMap() {
-      const selected = nameIndex.get(selectedName);
-      const selectedGeoids = new Set((selected?.places ?? []).map((place) => place.geoid));
+      const focused = getFocusedRecord();
+      const highlightedIds = new Set(focused?.mappedStateIds ?? []);
 
-      placesLayer
-        .selectAll("path")
-        .attr("class", (d) => {
-          const isSelected = selectedGeoids.has(d.properties.GEOID);
-          return isSelected ? "place-shape is-selected" : "place-shape is-muted";
+      statesLayer
+        .selectAll(".state-shape")
+        .attr("class", (d) =>
+          highlightedIds.has(d.id) ? "state-shape is-highlighted" : "state-shape",
+        );
+
+      const highlightedStates = (focused?.mappedStateIds ?? [])
+        .map((stateId) => stateIndex.get(stateId))
+        .filter(Boolean);
+      const calloutData = layoutCallouts(path, highlightedStates);
+
+      const calloutGroups = calloutsLayer
+        .selectAll(".callout")
+        .data(calloutData, (d) => d.id)
+        .join(
+          (enter) => {
+            const group = enter.append("g").attr("class", "callout").style("opacity", 0);
+            group.append("path").attr("class", "callout-line");
+            group.append("circle").attr("class", "callout-dot").attr("r", 4.5);
+            group.append("text").attr("class", "callout-label");
+            return group;
+          },
+          (update) => update,
+          (exit) => exit.transition().duration(160).style("opacity", 0).remove(),
+        );
+
+      calloutGroups
+        .transition()
+        .duration(260)
+        .ease(d3.easeCubicOut)
+        .style("opacity", 1);
+
+      calloutGroups
+        .select(".callout-line")
+        .transition()
+        .duration(260)
+        .ease(d3.easeCubicOut)
+        .attr("d", (d) => {
+          const lineEndX = d.labelX;
+          const lineEndY = d.labelY;
+          const bendY = Math.max(d.anchorY + 28, MAP_FLOOR_Y + 8 + d.row * 10);
+          const sweepX = d.labelX - 12;
+          return [
+            `M${d.anchorX},${d.anchorY}`,
+            `L${d.anchorX},${bendY}`,
+            `Q${d.anchorX},${lineEndY - 12} ${sweepX},${lineEndY - 12}`,
+            `L${lineEndX},${lineEndY}`,
+          ].join(" ");
         });
 
-      markerSelection
-        .attr("class", (d) => {
-          const isSelected = selectedGeoids.has(d.properties.GEOID);
-          return isSelected ? "place-marker is-selected" : "place-marker is-muted";
-        })
-        .attr("r", (d) => (selectedGeoids.has(d.properties.GEOID) ? 2.2 : 1.8));
+      calloutGroups
+        .select(".callout-dot")
+        .transition()
+        .duration(260)
+        .ease(d3.easeCubicOut)
+        .attr("cx", (d) => d.labelX)
+        .attr("cy", (d) => d.labelY);
+
+      calloutGroups
+        .select(".callout-label")
+        .text((d) => d.name)
+        .transition()
+        .duration(260)
+        .ease(d3.easeCubicOut)
+        .attr("x", (d) => d.labelX + 12)
+        .attr("y", (d) => d.labelY + 4);
     }
 
-    function updateDetails() {
-      const selected = nameIndex.get(selectedName);
-      if (!selected) {
-        detailsCard.html(`<p class="empty-state">No matching incorporated place name selected.</p>`);
-        return;
-      }
-      detailsCard.html(createDetailsMarkup(selected));
+    function render(delta = 0) {
+      updateRail(delta);
+      updateMap();
     }
 
-    function zoomToSelection() {
-      const selected = nameIndex.get(selectedName);
-      if (!selected) {
-        svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity);
+    function setFocusedIndex(nextIndex, options = {}) {
+      const boundedIndex = clamp(nextIndex, 0, nameFrequency.length - 1);
+      if (boundedIndex === focusedIndex && !options.force) {
+        if (!options.preserveInput) {
+          syncSearchValue();
+        }
+        render(0);
         return;
       }
 
-      const selectedFeatures = placesFeatures.filter(
-        (featureItem) => featureItem.properties.normalized_name === selectedName,
-      );
-      const [[x0, y0], [x1, y1]] = d3.geoPath(projection).bounds({
-        type: "FeatureCollection",
-        features: selectedFeatures,
+      previousIndex = focusedIndex;
+      focusedIndex = boundedIndex;
+
+      if (!options.preserveInput) {
+        syncSearchValue();
+      }
+
+      render(focusedIndex - previousIndex);
+    }
+
+    function moveFocus(step) {
+      if (interactionLocked) {
+        return;
+      }
+
+      const nextIndex = clamp(focusedIndex + step, 0, nameFrequency.length - 1);
+      if (nextIndex === focusedIndex) {
+        return;
+      }
+
+      interactionLocked = true;
+      setFocusedIndex(nextIndex);
+      window.setTimeout(() => {
+        interactionLocked = false;
+      }, 230);
+    }
+
+    function handleSearchCommit() {
+      const normalized = normalizeName(searchInput.property("value"));
+      const matchedIndex = lookup.get(normalized);
+
+      if (matchedIndex == null) {
+        syncSearchValue();
+        return;
+      }
+
+      setFocusedIndex(matchedIndex);
+    }
+
+    railWindow.on("wheel", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      moveFocus(event.deltaY > 0 ? 1 : -1);
+    });
+
+    railWindow.on("keydown", (event) => {
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        moveFocus(1);
+      }
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        moveFocus(-1);
+      }
+    });
+
+    d3.select(window).on("keydown.focus-rail", (event) => {
+      const activeElement = document.activeElement;
+      if (activeElement === searchInput.node()) {
+        return;
+      }
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        moveFocus(1);
+      }
+
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        moveFocus(-1);
+      }
+    });
+
+    d3.select(window).on("wheel.focus-rail", (event) => {
+      if (window.innerWidth <= 980) {
+        return;
+      }
+
+      const activeElement = document.activeElement;
+      if (activeElement === searchInput.node()) {
+        return;
+      }
+
+      event.preventDefault();
+      moveFocus(event.deltaY > 0 ? 1 : -1);
+    });
+
+    searchInput
+      .on("focus", (event) => {
+        event.target.select();
+      })
+      .on("input", (event) => {
+        inputValue = event.target.value;
+        const matchedIndex = lookup.get(normalizeName(inputValue));
+        if (matchedIndex != null) {
+          setFocusedIndex(matchedIndex, { preserveInput: false });
+        }
+      })
+      .on("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          handleSearchCommit();
+        }
+
+        if (event.key === "Escape") {
+          event.preventDefault();
+          syncSearchValue();
+          searchInput.node().blur();
+        }
+      })
+      .on("blur", () => {
+        handleSearchCommit();
       });
 
-      if (![x0, y0, x1, y1].every(Number.isFinite)) {
-        return;
-      }
-
-      const dx = x1 - x0;
-      const dy = y1 - y0;
-      const cx = (x0 + x1) / 2;
-      const cy = (y0 + y1) / 2;
-      const scale = Math.max(
-        1,
-        Math.min(8, 0.82 / Math.max(dx / width, dy / height)),
-      );
-      const translate = [width / 2 - scale * cx, height / 2 - scale * cy];
-
-      svg
-        .transition()
-        .duration(650)
-        .call(
-          zoomBehavior.transform,
-          d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale),
-        );
-    }
-
-    function setSelection(nextName, displayValue = "") {
-      selectedName = nextName;
-      searchValue = displayValue || nameIndex.get(nextName)?.displayName || "";
-      searchInput.property("value", searchValue);
-      renderChips();
-      renderRankings();
-      renderSuggestions();
-      updateMap();
-      updateDetails();
-      zoomToSelection();
-    }
-
-    searchInput.on("input", (event) => {
-      searchValue = event.target.value;
-      const exact = nameLookup[normalizeName(searchValue)];
-      if (exact) {
-        selectedName = exact.normalizedName;
-        renderChips();
-        renderRankings();
-        updateMap();
-        updateDetails();
-        zoomToSelection();
-      }
-      renderSuggestions();
-    });
-
-    searchInput.on("keydown", (event) => {
-      if (event.key !== "Enter") {
-        return;
-      }
-
-      const query = normalizeName(searchInput.property("value"));
-      const exact = nameLookup[query];
-      if (exact) {
-        setSelection(exact.normalizedName, exact.displayName);
-      }
-    });
-
-    searchClear.on("click", () => {
-      searchValue = "";
-      searchInput.property("value", "");
-      setSelection(defaultSelection, nameIndex.get(defaultSelection)?.displayName || "");
-      suggestions.html("");
-    });
-
-    renderChips();
-    renderRankings();
-    renderSuggestions();
-    updateMap();
-    updateDetails();
-    zoomToSelection();
+    render(0);
   })
   .catch((error) => {
     console.error(error);
     renderError(
-      "Data assets are missing or unreadable. Build them with `python3 scripts/build_data.py` after creating the conda environment, then run `npm install` and `npm run dev`.",
+      "Data assets are missing or unreadable. Rebuild them with `python3 scripts/build_data.py`, then run `npm run build` or `npm run dev`.",
     );
   });
