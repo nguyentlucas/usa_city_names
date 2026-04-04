@@ -449,7 +449,9 @@ button {
   opacity: 0.88;
   transform-box: fill-box;
   transform-origin: center center;
-  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.05)) drop-shadow(0 3px 5px rgba(0, 0, 0, 0));
+  filter:
+    drop-shadow(0 1px 0 rgba(0, 0, 0, 0.06))
+    drop-shadow(0 4px 6px rgba(0, 0, 0, 0));
   transition:
     opacity 180ms ease,
     transform 180ms ease,
@@ -462,13 +464,15 @@ button {
 
 .highlighted-state-shape.is-hovered {
   opacity: 1;
-  transform: scale(1.017);
+  transform: translateY(-3px) scale(1.032);
   stroke: var(--ink);
-  stroke-width: 1.45;
+  stroke-width: 1.1;
   filter:
-    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.7))
-    drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18))
-    drop-shadow(0 12px 20px rgba(0, 0, 0, 0.08));
+    drop-shadow(0 0 0.8px rgba(0, 0, 0, 0.42))
+    drop-shadow(0 0 7px rgba(255, 255, 255, 0.72))
+    drop-shadow(0 0 16px rgba(255, 255, 255, 0.46))
+    drop-shadow(0 10px 14px rgba(0, 0, 0, 0.26))
+    drop-shadow(0 18px 28px rgba(0, 0, 0, 0.14));
   animation: state-outline-pulse 1700ms ease-in-out infinite;
 }
 
@@ -532,18 +536,22 @@ button {
 @keyframes state-outline-pulse {
   0%,
   100% {
-    stroke-width: 1.25;
+    stroke-width: 1;
     filter:
-      drop-shadow(0 1px 0 rgba(255, 255, 255, 0.55))
-      drop-shadow(0 5px 8px rgba(0, 0, 0, 0.14))
-      drop-shadow(0 0 0 rgba(0, 0, 0, 0.04));
+      drop-shadow(0 0 0.8px rgba(0, 0, 0, 0.4))
+      drop-shadow(0 0 8px rgba(255, 255, 255, 0.68))
+      drop-shadow(0 0 15px rgba(255, 255, 255, 0.38))
+      drop-shadow(0 9px 13px rgba(0, 0, 0, 0.24))
+      drop-shadow(0 18px 26px rgba(0, 0, 0, 0.12));
   }
   50% {
-    stroke-width: 1.7;
+    stroke-width: 1.35;
     filter:
-      drop-shadow(0 1px 0 rgba(255, 255, 255, 0.72))
-      drop-shadow(0 7px 12px rgba(0, 0, 0, 0.2))
-      drop-shadow(0 0 0.8px rgba(0, 0, 0, 0.22));
+      drop-shadow(0 0 1px rgba(0, 0, 0, 0.46))
+      drop-shadow(0 0 12px rgba(255, 255, 255, 0.88))
+      drop-shadow(0 0 24px rgba(255, 255, 255, 0.56))
+      drop-shadow(0 12px 16px rgba(0, 0, 0, 0.28))
+      drop-shadow(0 22px 34px rgba(0, 0, 0, 0.16));
   }
 }
 
