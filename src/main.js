@@ -33,6 +33,12 @@ const INITIAL_MAP_STAGGER_MS = 22;
 const INITIAL_MAP_STATE_DURATION_MS = 680;
 const INITIAL_MAP_SETTLE_MS = 340;
 const INITIAL_HIGHLIGHT_REVEAL_DELAY_MS = 220;
+const INITIAL_HIGHLIGHT_DROP_MS = 220;
+const INITIAL_HIGHLIGHT_STAGGER_MS = 24;
+const STATE_LABEL_TYPING_STAGGER_MS = 28;
+const STATE_LABEL_TYPING_MIN_DURATION_MS = 220;
+const STATE_LABEL_TYPING_MAX_DURATION_MS = 640;
+const STATE_LABEL_REVEAL_GAP_MS = 28;
 const INTRO_GAP_BEFORE_RAIL_MS = 260;
 const INTRO_RAIL_ARROW_REVEAL_MS = 360;
 const INTRO_RAIL_ROW_INITIAL_GAP_MS = 340;
@@ -339,6 +345,34 @@ function animateRailRowText(rowSelection, record) {
   });
 }
 
+function getStateLabelTypingDuration(text) {
+  return clamp(
+    text.length * STATE_LABEL_TYPING_STAGGER_MS + 120,
+    STATE_LABEL_TYPING_MIN_DURATION_MS,
+    STATE_LABEL_TYPING_MAX_DURATION_MS,
+  );
+}
+
+function animateStateLabelText(labelSelection, label) {
+  const node = labelSelection.node();
+  if (!node || !label) {
+    return Promise.resolve();
+  }
+
+  labelSelection.interrupt();
+  labelSelection.style("opacity", 0).style("transform", "translateY(4px)");
+  labelSelection
+    .transition()
+    .duration(220)
+    .ease(d3.easeCubicOut)
+    .style("opacity", null)
+    .style("transform", null);
+
+  return animateTypingTextAsync(labelSelection.select(".state-label-text"), label.name, {
+    duration: getStateLabelTypingDuration(label.name),
+  });
+}
+
 Promise.all([
   d3.json(DATA_URLS.nameFrequency),
   d3.json(DATA_URLS.nameLookup),
@@ -379,6 +413,7 @@ Promise.all([
     let initialHighlightRevealPending = false;
     let initialLabelRevealPending = initialEntranceActive;
     let initialRailRevealPending = initialEntranceActive;
+    let introRailTextPending = initialEntranceActive;
     let introRailSelectionPending = initialEntranceActive;
     let baseMapReady = false;
     const longestDisplayName = nameFrequency.reduce(
@@ -486,10 +521,14 @@ Promise.all([
 
       rowSelection.each(function (d) {
         const row = d3.select(this);
-        row.select(".rail-count").text(d.record && !initialRailRevealPending ? d.record.count : "");
+        row
+          .select(".rail-count")
+          .text(d.record && !initialRailRevealPending && !introRailTextPending ? d.record.count : "");
         row
           .select(".rail-name")
-          .text(d.record && !initialRailRevealPending ? d.record.displayName : "");
+          .text(
+            d.record && !initialRailRevealPending && !introRailTextPending ? d.record.displayName : "",
+          );
       });
 
       railArrowUp.classed("is-dimmed", focusedIndex <= 0);
@@ -524,13 +563,14 @@ Promise.all([
                 }
 
                 selection
-                  .style("opacity", 0)
+                  .style("opacity", 1)
+                  .style("fill-opacity", 0)
                   .attr("transform", "translate(0,-4)")
                   .transition()
-                  .delay((_, index) => index * 24)
-                  .duration(220)
+                  .delay((_, index) => index * INITIAL_HIGHLIGHT_STAGGER_MS)
+                  .duration(INITIAL_HIGHLIGHT_DROP_MS)
                   .ease(d3.easeCubicOut)
-                  .style("opacity", 0.88)
+                  .style("fill-opacity", 0.88)
                   .attr("transform", "translate(0,0)");
               }),
           (update) => update,
@@ -539,6 +579,7 @@ Promise.all([
         .attr("class", "highlighted-state-shape")
         .attr("data-state-id", (d) => d.id)
         .attr("d", path)
+        .style("fill-opacity", 0.88)
         .on("mouseenter", (_, d) => {
           hoveredStateId = d.id;
           updateHoverState();
@@ -701,7 +742,7 @@ Promise.all([
 
       stateLabels
         .selectAll(".state-label")
-        .data(initialEntranceActive || initialLabelRevealPending ? [] : sortedLabels, (d) => d.id)
+        .data(initialEntranceActive || initialMapRevealPending ? [] : sortedLabels, (d) => d.id)
         .join(
           (enter) =>
             enter
@@ -714,17 +755,6 @@ Promise.all([
                   .attr("class", "state-label-bullet")
                   .attr("aria-hidden", "true");
                 selection.append("span").attr("class", "state-label-text");
-                if (initialHighlightRevealPending) {
-                  selection
-                    .style("opacity", 0)
-                    .style("transform", "translateY(4px)")
-                    .transition()
-                    .delay((_, index) => 80 + index * 20)
-                    .duration(220)
-                    .ease(d3.easeCubicOut)
-                    .style("opacity", null)
-                    .style("transform", null);
-                }
               }),
           (update) => update,
           (exit) => exit.remove(),
@@ -748,7 +778,7 @@ Promise.all([
           updateHoverState();
         })
         .select(".state-label-text")
-        .text((d) => d.name);
+        .text((d) => (initialLabelRevealPending ? "" : d.name));
 
       initialHighlightRevealPending = false;
     }
@@ -885,12 +915,6 @@ Promise.all([
         .map((state) => ({ state, centroid: path.centroid(state) }))
         .sort((a, b) => a.centroid[1] - b.centroid[1] || a.centroid[0] - b.centroid[0])
         .map(({ state }) => state);
-      const railRows = railTrack
-        .selectAll(".rail-row")
-        .filter((d) => d.record)
-        .classed("is-intro-hidden", true)
-        .style("opacity", 0)
-        .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT - 6}px)`);
       railArrowTop.classed("is-intro-hidden", true);
       railArrowUp.classed("is-intro-hidden", true);
       railArrowDown.classed("is-intro-hidden", true);
@@ -951,16 +975,31 @@ Promise.all([
       searchInput.attr("disabled", null);
       updateMap();
 
-      await wait(INITIAL_HIGHLIGHT_REVEAL_DELAY_MS + INTRO_GAP_BEFORE_RAIL_MS);
-      initialLabelRevealPending = false;
+      await wait(INITIAL_HIGHLIGHT_REVEAL_DELAY_MS);
       revealPristineNode(stateLabels);
       updateMap();
+
+      const labelAnimations = [];
+      stateLabels.selectAll(".state-label").each(function (d, index) {
+        const label = d3.select(this);
+        labelAnimations.push(
+          (async () => {
+            await wait(index * STATE_LABEL_REVEAL_GAP_MS);
+            await animateStateLabelText(label, d);
+          })(),
+        );
+      });
+
+      await Promise.all(labelAnimations);
+      initialLabelRevealPending = false;
       entranceBordersLayer.selectAll(".entrance-state-border").remove();
+      await wait(INTRO_GAP_BEFORE_RAIL_MS);
 
       initialRailRevealPending = false;
+      introRailTextPending = true;
       updateRail(0);
       revealPristineNode(railShell);
-      railTrack
+      const introRailRows = railTrack
         .selectAll(".rail-row")
         .filter((d) => d.record)
         .classed("is-intro-hidden", true)
@@ -972,33 +1011,31 @@ Promise.all([
       revealIntroNode(railArrowUp);
       await wait(INTRO_RAIL_ARROW_REVEAL_MS);
 
-      const rowAnimations = [];
-      railRows.each(function (d, index) {
+      const introRailRowQueue = [];
+      introRailRows.each(function (d, index) {
         const row = d3.select(this);
-        const startDelay = d3.sum(
-          d3.range(index).map((rowIndex) =>
-            Math.max(
-              INTRO_RAIL_ROW_MIN_GAP_MS,
-              INTRO_RAIL_ROW_INITIAL_GAP_MS - rowIndex * INTRO_RAIL_ROW_GAP_DECAY_MS,
-            ),
-          ),
-        );
+        const gapDelay =
+          index === 0
+            ? 0
+            : Math.max(
+                INTRO_RAIL_ROW_MIN_GAP_MS,
+                INTRO_RAIL_ROW_INITIAL_GAP_MS - (index - 1) * INTRO_RAIL_ROW_GAP_DECAY_MS,
+              );
 
-        rowAnimations.push(
-          (async () => {
-            await wait(startDelay);
-            revealRailRow(row, d.slot);
-            await animateRailRowText(row, d.record);
-          })(),
-        );
+        introRailRowQueue.push({ row, slot: d.slot, record: d.record, gapDelay });
       });
 
-      await Promise.all(rowAnimations);
+      for (const { row, slot, record, gapDelay } of introRailRowQueue) {
+        await wait(gapDelay);
+        revealRailRow(row, slot);
+        await animateRailRowText(row, record);
+      }
       revealIntroNode(railArrowDown);
       await wait(INTRO_RAIL_ARROW_REVEAL_MS * 0.75);
       revealIntroNode(railArrowBottom);
       await wait(INTRO_RAIL_ARROW_REVEAL_MS * 0.7);
 
+      introRailTextPending = false;
       introRailSelectionPending = false;
       railShell.classed("is-intro-ready", false);
       interactionLocked = false;
@@ -1136,6 +1173,8 @@ Promise.all([
     revealPristineNode(railShell);
     initialMapRevealPending = false;
     initialLabelRevealPending = false;
+    initialRailRevealPending = false;
+    introRailTextPending = false;
     introRailSelectionPending = false;
     render(0);
   })

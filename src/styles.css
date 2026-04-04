@@ -568,12 +568,17 @@ button {
 
 .highlighted-state-shape {
   fill: var(--ink);
-  opacity: 0.88;
+  fill-opacity: 0.88;
+  stroke: var(--ink);
+  stroke-width: 0.9;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  paint-order: stroke fill;
   filter:
     drop-shadow(0 1px 0 rgba(0, 0, 0, 0.06))
     drop-shadow(0 4px 6px rgba(0, 0, 0, 0));
   transition:
-    opacity 180ms ease,
+    fill-opacity 180ms ease,
     filter 220ms ease;
 }
 
