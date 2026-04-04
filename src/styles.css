@@ -15,14 +15,6 @@
     monospace;
   --map-panel-height: minmax(360px, 1fr);
   --state-list-height: 144px;
-  --screen-glow: radial-gradient(circle at 50% 42%, rgba(0, 0, 0, 0.035), transparent 58%);
-  --scanlines: repeating-linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.018) 0,
-    rgba(0, 0, 0, 0.018) 1px,
-    transparent 1px,
-    transparent 4px
-  );
 }
 
 * {
@@ -59,26 +51,6 @@ button {
   height: 100vh;
   margin: 0 auto;
   padding: 26px 28px 24px;
-  position: relative;
-}
-
-.page-shell::before,
-.page-shell::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.page-shell::before {
-  background: var(--screen-glow);
-  opacity: 0.8;
-}
-
-.page-shell::after {
-  background: var(--scanlines);
-  opacity: 0.18;
-  mix-blend-mode: multiply;
 }
 
 .layout {
@@ -352,28 +324,26 @@ button {
 .map-figure {
   width: 100%;
   min-height: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  perspective: 2400px;
 }
 
 .map-frame {
-  width: 100%;
+  width: min(100%, 1120px);
   height: 100%;
   min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-}
-
-.map-frame::before {
-  content: "";
-  position: absolute;
-  inset: 8% 9% 12%;
-  background: radial-gradient(circle at 50% 48%, rgba(0, 0, 0, 0.03), transparent 68%);
-  pointer-events: none;
+  transform: perspective(2400px) rotateX(0.55deg) scaleX(0.997);
+  transform-origin: center center;
 }
 
 .map-svg {
-  width: min(100%, 1120px);
+  width: 100%;
   height: 100%;
   max-height: 100%;
   display: block;
@@ -389,13 +359,16 @@ button {
 }
 
 .state-labels {
-  width: 100%;
+  width: min(34rem, 100%);
   min-height: 0;
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   align-content: start;
-  justify-items: start;
-  gap: 5px;
-  padding-top: 10px;
+  justify-content: flex-start;
+  justify-self: center;
+  column-gap: 14px;
+  row-gap: 3px;
+  padding-top: 8px;
   overflow: hidden;
 }
 
@@ -406,10 +379,10 @@ button {
 .state-label {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   white-space: nowrap;
   font-size: 0.84rem;
-  line-height: 1.06;
+  line-height: 1;
 }
 
 .state-label-bullet {
@@ -419,22 +392,18 @@ button {
   flex: 0 0 auto;
 }
 
-.state-shape {
+.base-state-shape {
   fill: var(--bg);
-  stroke: var(--ink);
-  stroke-width: 0.9;
-  vector-effect: non-scaling-stroke;
-  transition: fill 180ms ease;
 }
 
-.state-shape.is-highlighted {
+.highlighted-state-shape {
   fill: var(--ink);
 }
 
 .highlight-borders {
   fill: none;
   stroke: var(--bg);
-  stroke-width: 2.4;
+  stroke-width: 1.2;
   vector-effect: non-scaling-stroke;
   stroke-linejoin: round;
   stroke-linecap: round;
@@ -539,11 +508,14 @@ button {
 
   .map-frame {
     min-height: 320px;
+    transform: perspective(2200px) rotateX(0.45deg) scaleX(0.998);
   }
 
   .state-labels {
+    width: min(30rem, 100%);
     max-width: 100%;
-    gap: 4px;
+    column-gap: 12px;
+    row-gap: 2px;
     padding-top: 6px;
     overflow: visible;
   }

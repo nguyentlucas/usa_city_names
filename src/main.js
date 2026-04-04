@@ -124,10 +124,24 @@ const searchInput = d3.select("#title-search");
 const searchShell = d3.select("#search-shell");
 const svg = d3.select("#map-svg");
 const stateLabels = d3.select("#state-labels");
-const mapPlane = svg.append("g").attr("class", "map-plane");
-const statesLayer = mapPlane.append("g").attr("class", "states-layer");
-const highlightBordersLayer = mapPlane.append("g").attr("class", "highlight-borders-layer");
+svg
+  .append("defs")
+  .append("clipPath")
+  .attr("id", "map-curvature-clip")
+  .attr("clipPathUnits", "objectBoundingBox")
+  .append("path")
+  .attr(
+    "d",
+    "M0.018,0.092 C0.03,0.038 0.088,0.012 0.158,0.012 H0.842 C0.912,0.012 0.97,0.038 0.982,0.092 C0.994,0.164 0.994,0.836 0.982,0.908 C0.97,0.962 0.912,0.988 0.842,0.988 H0.158 C0.088,0.988 0.03,0.962 0.018,0.908 C0.006,0.836 0.006,0.164 0.018,0.092 Z",
+  );
+const mapPlane = svg
+  .append("g")
+  .attr("class", "map-plane")
+  .attr("clip-path", "url(#map-curvature-clip)");
+const baseStatesLayer = mapPlane.append("g").attr("class", "base-states-layer");
+const highlightedStatesLayer = mapPlane.append("g").attr("class", "highlighted-states-layer");
 const bordersLayer = mapPlane.append("g").attr("class", "borders-layer");
+const highlightBordersLayer = mapPlane.append("g").attr("class", "highlight-borders-layer");
 
 function normalizeName(value) {
   return value.trim().toLocaleLowerCase();
@@ -178,12 +192,6 @@ Promise.all([
     const stateFeatures = feature(statesTopo, statesTopo.objects.states).features.filter(
       (state) => !excludedStateIds.has(state.id),
     );
-    const stateMesh = mesh(
-      statesTopo,
-      statesTopo.objects.states,
-      (a, b) => a !== b && !excludedStateIds.has(a.id) && !excludedStateIds.has(b.id),
-    );
-
     const stateIndex = new Map(stateFeatures.map((state) => [state.id, state]));
     const projection = d3.geoAlbersUsa().fitExtent(
       [
@@ -194,17 +202,11 @@ Promise.all([
     );
     const path = d3.geoPath(projection);
 
-    statesLayer
+    baseStatesLayer
       .selectAll("path")
       .data(stateFeatures)
       .join("path")
-      .attr("class", "state-shape")
-      .attr("d", path);
-
-    bordersLayer
-      .append("path")
-      .datum(stateMesh)
-      .attr("class", "state-borders")
+      .attr("class", "base-state-shape")
       .attr("d", path);
 
     const lookup = new Map(
@@ -315,11 +317,32 @@ Promise.all([
       const focused = getFocusedRecord();
       const highlightedIds = new Set(focused?.mappedStateIds ?? []);
 
-      statesLayer
-        .selectAll(".state-shape")
-        .attr("class", (d) =>
-          highlightedIds.has(d.id) ? "state-shape is-highlighted" : "state-shape",
-        );
+      const highlightedStates = stateFeatures.filter((state) => highlightedIds.has(state.id));
+
+      highlightedStatesLayer
+        .selectAll(".highlighted-state-shape")
+        .data(highlightedStates, (d) => d.id)
+        .join("path")
+        .attr("class", "highlighted-state-shape")
+        .attr("d", path);
+
+      const visibleBorderMesh = mesh(
+        statesTopo,
+        statesTopo.objects.states,
+        (a, b) =>
+          Boolean(a) &&
+          !excludedStateIds.has(a.id) &&
+          (!b ||
+            (!excludedStateIds.has(b.id) &&
+              (!highlightedIds.has(a.id) || !highlightedIds.has(b.id)))),
+      );
+
+      bordersLayer
+        .selectAll(".state-borders")
+        .data(visibleBorderMesh ? [visibleBorderMesh] : [])
+        .join("path")
+        .attr("class", "state-borders")
+        .attr("d", path);
 
       const highlightedBorderMesh =
         highlightedIds.size > 1
@@ -343,16 +366,16 @@ Promise.all([
         .attr("class", "highlight-borders")
         .attr("d", path);
 
-      const highlightedStates = (focused?.mappedStateIds ?? [])
+      const labelData = (focused?.mappedStateIds ?? [])
         .map((stateId) => stateIndex.get(stateId))
         .filter(Boolean);
-      const labelData = highlightedStates
+      const sortedLabels = labelData
         .map((state) => ({ id: state.id, name: state.properties.name }))
         .sort((a, b) => a.name.localeCompare(b.name));
 
       stateLabels
         .selectAll(".state-label")
-        .data(labelData, (d) => d.id)
+        .data(sortedLabels, (d) => d.id)
         .join(
           (enter) =>
             enter
