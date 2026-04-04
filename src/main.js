@@ -19,6 +19,14 @@ const MAP_HEIGHT = 760;
 const SEARCH_DEFAULT = "Franklin";
 const ROW_TRANSITION_MS = 240;
 const JUMP_TRANSITION_MS = 520;
+const INITIAL_TYPING_STAGGER_MS = 18;
+const INITIAL_TYPING_MIN_DURATION_MS = 260;
+const INITIAL_TYPING_MAX_DURATION_MS = 620;
+const INITIAL_MAP_STAGGER_MS = 8;
+const INITIAL_MAP_STATE_DURATION_MS = 280;
+const INITIAL_HIGHLIGHT_REVEAL_DELAY_MS = 620;
+const INTRO_COPY = "Some city names appear again and again.";
+const TITLE_PREFIX_COPY = "How common is";
 
 const app = d3.select("#app");
 app.html(`
@@ -72,10 +80,11 @@ app.html(`
 
       <main class="main-column">
         <header class="intro">
-          <p class="intro-small">Some city names appear again and again.</p>
+          <p id="intro-small" class="intro-small"></p>
           <h1 class="title-line">
-            <span class="title-prefix">How common is </span>
+            <span id="title-prefix" class="title-prefix"></span>
             <span id="search-shell" class="search-shell">
+              <span id="search-entrance-text" class="search-entrance-text" aria-hidden="true"></span>
               <input
                 id="title-search"
                 class="title-search"
@@ -124,11 +133,15 @@ const railArrowDown = d3.select("#rail-arrow-down");
 const railArrowBottom = d3.select("#rail-arrow-bottom");
 const searchInput = d3.select("#title-search");
 const searchShell = d3.select("#search-shell");
+const introSmall = d3.select("#intro-small");
+const titlePrefix = d3.select("#title-prefix");
+const searchEntranceText = d3.select("#search-entrance-text");
 const svg = d3.select("#map-svg");
 const stateLabels = d3.select("#state-labels");
 const mapPlane = svg.append("g").attr("class", "map-plane");
 const baseStatesLayer = mapPlane.append("g").attr("class", "base-states-layer");
 const highlightedStatesLayer = mapPlane.append("g").attr("class", "highlighted-states-layer");
+const entranceBordersLayer = mapPlane.append("g").attr("class", "entrance-borders-layer");
 const bordersLayer = mapPlane.append("g").attr("class", "borders-layer");
 const highlightBordersLayer = mapPlane.append("g").attr("class", "highlight-borders-layer");
 const hoveredStateOverlayLayer = mapPlane.append("g").attr("class", "hovered-state-overlay-layer");
@@ -170,6 +183,55 @@ function pulseSelection(selection, className) {
   node.classList.remove(className);
   void node.offsetWidth;
   node.classList.add(className);
+}
+
+function getTypingDuration(text) {
+  return clamp(
+    text.length * INITIAL_TYPING_STAGGER_MS + 120,
+    INITIAL_TYPING_MIN_DURATION_MS,
+    INITIAL_TYPING_MAX_DURATION_MS,
+  );
+}
+
+function animateTypingText(selection, text, options = {}) {
+  const node = selection.node();
+  if (!node) {
+    return 0;
+  }
+
+  const delay = options.delay ?? 0;
+  const duration = options.duration ?? getTypingDuration(text);
+  const onComplete = options.onComplete ?? null;
+  const startAt = performance.now() + delay;
+
+  node.textContent = "";
+
+  function frame(now) {
+    if (now < startAt) {
+      window.requestAnimationFrame(frame);
+      return;
+    }
+
+    const progress = Math.min((now - startAt) / duration, 1);
+    const nextLength = Math.ceil(progress * text.length);
+    const nextText = text.slice(0, nextLength);
+
+    if (node.textContent !== nextText) {
+      node.textContent = nextText;
+    }
+
+    if (progress < 1) {
+      window.requestAnimationFrame(frame);
+      return;
+    }
+
+    if (onComplete) {
+      onComplete();
+    }
+  }
+
+  window.requestAnimationFrame(frame);
+  return delay + duration;
 }
 
 Promise.all([
@@ -214,6 +276,8 @@ Promise.all([
     let currentHighlightedStates = [];
     let inputValue = nameFrequency[focusedIndex]?.displayName ?? SEARCH_DEFAULT;
     let interactionLocked = false;
+    let initialEntranceActive = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let initialHighlightRevealPending = false;
     const longestDisplayName = nameFrequency.reduce(
       (longest, record) =>
         record.displayName.length > longest.length ? record.displayName : longest,
@@ -290,7 +354,7 @@ Promise.all([
             : "",
         )
         .on("click", (_, d) => {
-          if (!d.record) {
+          if (!d.record || interactionLocked) {
             return;
           }
           setFocusedIndex(d.recordIndex);
@@ -320,7 +384,31 @@ Promise.all([
       highlightedStatesLayer
         .selectAll(".highlighted-state-shape")
         .data(nonHoveredStates, (d) => d.id)
-        .join("path")
+        .join(
+          (enter) =>
+            enter
+              .append("path")
+              .attr("class", "highlighted-state-shape")
+              .attr("data-state-id", (d) => d.id)
+              .attr("d", path)
+              .call((selection) => {
+                if (!initialHighlightRevealPending) {
+                  return;
+                }
+
+                selection
+                  .style("opacity", 0)
+                  .attr("transform", "translate(0,-4)")
+                  .transition()
+                  .delay((_, index) => index * 24)
+                  .duration(220)
+                  .ease(d3.easeCubicOut)
+                  .style("opacity", 0.88)
+                  .attr("transform", "translate(0,0)");
+              }),
+          (update) => update,
+          (exit) => exit.remove(),
+        )
         .attr("class", "highlighted-state-shape")
         .attr("data-state-id", (d) => d.id)
         .attr("d", path)
@@ -417,7 +505,11 @@ Promise.all([
       }
 
       currentHighlightedStates = stateFeatures.filter((state) => currentHighlightedIds.has(state.id));
+      if (initialEntranceActive) {
+        currentHighlightedStates = [];
+      }
       syncHighlightedStateLayers();
+      const activeHighlightedIds = initialEntranceActive ? new Set() : currentHighlightedIds;
 
       const visibleBorderMesh = mesh(
         statesTopo,
@@ -429,7 +521,7 @@ Promise.all([
           (!b || b.id !== hoveredStateId) &&
           (!b ||
             (!excludedStateIds.has(b.id) &&
-              (!currentHighlightedIds.has(a.id) || !currentHighlightedIds.has(b.id)))),
+              (!activeHighlightedIds.has(a.id) || !activeHighlightedIds.has(b.id)))),
       );
 
       bordersLayer
@@ -440,7 +532,7 @@ Promise.all([
         .attr("d", path);
 
       const highlightedBorderMesh =
-        currentHighlightedIds.size > 1
+        activeHighlightedIds.size > 1
           ? mesh(
               statesTopo,
               statesTopo.objects.states,
@@ -449,8 +541,8 @@ Promise.all([
                 Boolean(b) &&
                 a.id !== hoveredStateId &&
                 b.id !== hoveredStateId &&
-                currentHighlightedIds.has(a.id) &&
-                currentHighlightedIds.has(b.id) &&
+                activeHighlightedIds.has(a.id) &&
+                activeHighlightedIds.has(b.id) &&
                 !excludedStateIds.has(a.id) &&
                 !excludedStateIds.has(b.id),
             )
@@ -472,7 +564,7 @@ Promise.all([
 
       stateLabels
         .selectAll(".state-label")
-        .data(sortedLabels, (d) => d.id)
+        .data(initialEntranceActive ? [] : sortedLabels, (d) => d.id)
         .join(
           (enter) =>
             enter
@@ -485,6 +577,17 @@ Promise.all([
                   .attr("class", "state-label-bullet")
                   .attr("aria-hidden", "true");
                 selection.append("span").attr("class", "state-label-text");
+                if (initialHighlightRevealPending) {
+                  selection
+                    .style("opacity", 0)
+                    .style("transform", "translateY(4px)")
+                    .transition()
+                    .delay((_, index) => 80 + index * 20)
+                    .duration(220)
+                    .ease(d3.easeCubicOut)
+                    .style("opacity", null)
+                    .style("transform", null);
+                }
               }),
           (update) => update,
           (exit) => exit.remove(),
@@ -509,10 +612,13 @@ Promise.all([
         })
         .select(".state-label-text")
         .text((d) => d.name);
+
+      initialHighlightRevealPending = false;
     }
 
     function updateHoverState() {
       syncHighlightedStateLayers();
+      const activeHighlightedIds = initialEntranceActive ? new Set() : currentHighlightedIds;
 
       const visibleBorderMesh = mesh(
         statesTopo,
@@ -524,7 +630,7 @@ Promise.all([
           (!b || b.id !== hoveredStateId) &&
           (!b ||
             (!excludedStateIds.has(b.id) &&
-              (!currentHighlightedIds.has(a.id) || !currentHighlightedIds.has(b.id)))),
+              (!activeHighlightedIds.has(a.id) || !activeHighlightedIds.has(b.id)))),
       );
 
       bordersLayer
@@ -535,7 +641,7 @@ Promise.all([
         .attr("d", path);
 
       const highlightedBorderMesh =
-        currentHighlightedIds.size > 1
+        activeHighlightedIds.size > 1
           ? mesh(
               statesTopo,
               statesTopo.objects.states,
@@ -544,8 +650,8 @@ Promise.all([
                 Boolean(b) &&
                 a.id !== hoveredStateId &&
                 b.id !== hoveredStateId &&
-                currentHighlightedIds.has(a.id) &&
-                currentHighlightedIds.has(b.id) &&
+                activeHighlightedIds.has(a.id) &&
+                activeHighlightedIds.has(b.id) &&
                 !excludedStateIds.has(a.id) &&
                 !excludedStateIds.has(b.id),
             )
@@ -633,6 +739,56 @@ Promise.all([
       }
 
       setFocusedIndex(matchedIndex);
+    }
+
+    function playInitialEntrance() {
+      const focused = getFocusedRecord();
+      const cityName = focused?.displayName ?? SEARCH_DEFAULT;
+      const stateEntranceOrder = [...stateFeatures]
+        .map((state) => ({ state, centroid: path.centroid(state) }))
+        .sort((a, b) => a.centroid[1] - b.centroid[1] || a.centroid[0] - b.centroid[0])
+        .map(({ state }) => state);
+
+      introSmall.attr("aria-label", INTRO_COPY);
+      titlePrefix.attr("aria-label", TITLE_PREFIX_COPY);
+      interactionLocked = true;
+      searchShell.classed("is-entrance-active", true);
+      searchInput.attr("disabled", true);
+
+      animateTypingText(introSmall, INTRO_COPY);
+      animateTypingText(titlePrefix, TITLE_PREFIX_COPY, { delay: 70 });
+      animateTypingText(searchEntranceText, cityName, { delay: 120 });
+
+      svg.classed("is-entrance-active", true);
+      entranceBordersLayer
+        .selectAll(".entrance-state-border")
+        .data(stateEntranceOrder, (d) => d.id)
+        .join("path")
+        .attr("class", "entrance-state-border")
+        .attr("d", path)
+        .attr("transform", "translate(0,-6)")
+        .style("opacity", 0)
+        .transition()
+        .delay((_, index) => index * INITIAL_MAP_STAGGER_MS)
+        .duration(INITIAL_MAP_STATE_DURATION_MS)
+        .ease(d3.easeCubicOut)
+        .attr("transform", "translate(0,0)")
+        .style("opacity", 1);
+
+      window.setTimeout(() => {
+        initialEntranceActive = false;
+        initialHighlightRevealPending = true;
+        svg.classed("is-entrance-active", false);
+        searchShell.classed("is-entrance-active", false);
+        searchEntranceText.text("");
+        searchInput.attr("disabled", null);
+        interactionLocked = false;
+        render(0);
+      }, INITIAL_HIGHLIGHT_REVEAL_DELAY_MS);
+
+      window.setTimeout(() => {
+        entranceBordersLayer.selectAll(".entrance-state-border").remove();
+      }, INITIAL_HIGHLIGHT_REVEAL_DELAY_MS + 180);
     }
 
     railWindow.on("wheel", (event) => {
@@ -754,6 +910,14 @@ Promise.all([
         handleSearchCommit();
       });
 
+    if (initialEntranceActive) {
+      render(0);
+      playInitialEntrance();
+      return;
+    }
+
+    introSmall.text(INTRO_COPY);
+    titlePrefix.text(TITLE_PREFIX_COPY);
     render(0);
   })
   .catch((error) => {

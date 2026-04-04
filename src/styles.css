@@ -289,6 +289,19 @@ button {
   max-width: 100%;
 }
 
+.search-entrance-text {
+  position: absolute;
+  inset: 0.07em 0.28em 0.17em 0.18em;
+  display: flex;
+  align-items: center;
+  max-width: calc(100% - 0.46em);
+  overflow: hidden;
+  color: var(--ink);
+  line-height: 1.14;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
 .title-search {
   flex: 0 1 auto;
   width: max(calc(var(--search-chars, 20) * 0.76ch), 17ch);
@@ -321,6 +334,15 @@ button {
   animation: search-settle 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.search-shell.is-entrance-active .title-search {
+  color: transparent;
+  pointer-events: none;
+}
+
+.search-shell.is-entrance-active .title-search::placeholder {
+  color: transparent;
+}
+
 .title-caret {
   position: absolute;
   top: 0.18em;
@@ -337,6 +359,10 @@ button {
 .search-shell:hover .title-caret,
 .search-shell:focus-within .title-caret {
   opacity: 1;
+}
+
+.search-shell.is-entrance-active .title-caret {
+  opacity: 0;
 }
 
 .title-search::-webkit-search-cancel-button {
@@ -387,6 +413,12 @@ button {
 
 .map-svg.is-settling {
   animation: content-settle 380ms cubic-bezier(0.2, 0.92, 0.32, 1);
+}
+
+.map-svg.is-entrance-active .highlighted-state-shape,
+.map-svg.is-entrance-active .state-borders,
+.map-svg.is-entrance-active .highlight-borders {
+  opacity: 0;
 }
 
 .state-labels {
@@ -443,6 +475,15 @@ button {
 
 .base-state-shape {
   fill: var(--bg);
+}
+
+.entrance-state-border {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 0.9;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center center;
 }
 
 .highlighted-state-shape {
