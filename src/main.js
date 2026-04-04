@@ -17,6 +17,8 @@ const RAIL_HEIGHT = VISIBLE_ROWS * ROW_HEIGHT;
 const MAP_WIDTH = 1120;
 const MAP_HEIGHT = 760;
 const SEARCH_DEFAULT = "Franklin";
+const ROW_TRANSITION_MS = 240;
+const JUMP_TRANSITION_MS = 520;
 
 const app = d3.select("#app");
 app.html(`
@@ -24,12 +26,22 @@ app.html(`
     <div class="layout">
       <aside class="rail-column">
         <div class="focus-rail-shell" aria-label="Focused place-name rail">
-          <button
-            id="rail-arrow-top"
-            class="rail-arrow rail-arrow-top"
-            type="button"
-            aria-label="Move focus up one row"
-          ></button>
+          <div class="rail-control-group rail-control-group-top">
+            <button
+              id="rail-arrow-up"
+              class="rail-arrow rail-arrow-up"
+              type="button"
+              aria-label="Move focus up one row"
+              data-arrow="up-single"
+            ></button>
+            <button
+              id="rail-arrow-top"
+              class="rail-arrow rail-arrow-top"
+              type="button"
+              aria-label="Jump to the top of the ranked list"
+              data-arrow="up-double"
+            ></button>
+          </div>
           <div
             id="focus-rail-window"
             class="focus-rail-window"
@@ -38,12 +50,22 @@ app.html(`
           >
             <div id="focus-rail-track" class="focus-rail-track"></div>
           </div>
-          <button
-            id="rail-arrow-bottom"
-            class="rail-arrow rail-arrow-bottom"
-            type="button"
-            aria-label="Move focus down one row"
-          ></button>
+          <div class="rail-control-group rail-control-group-bottom">
+            <button
+              id="rail-arrow-down"
+              class="rail-arrow rail-arrow-down"
+              type="button"
+              aria-label="Move focus down one row"
+              data-arrow="down-single"
+            ></button>
+            <button
+              id="rail-arrow-bottom"
+              class="rail-arrow rail-arrow-bottom"
+              type="button"
+              aria-label="Jump to the bottom of the ranked list"
+              data-arrow="down-double"
+            ></button>
+          </div>
         </div>
       </aside>
 
@@ -51,23 +73,26 @@ app.html(`
         <header class="intro">
           <p class="intro-small">Some city names appear again and again.</p>
           <h1 class="title-line">
-            <span>How common is </span>
-            <input
-              id="title-search"
-              class="title-search"
-              type="search"
-              autocomplete="off"
-              autocapitalize="words"
-              spellcheck="false"
-              aria-label="Search incorporated place name"
-            />
+            <span class="title-prefix">How common is </span>
+            <span id="search-shell" class="search-shell">
+              <input
+                id="title-search"
+                class="title-search"
+                type="search"
+                autocomplete="off"
+                autocapitalize="words"
+                spellcheck="false"
+                aria-label="Search incorporated place name"
+              />
+              <span class="title-caret" aria-hidden="true"></span>
+            </span>
             <span>?</span>
           </h1>
         </header>
 
         <section class="map-stage">
           <div class="map-figure">
-            <div class="map-tilt">
+            <div class="map-frame">
               <svg
                 id="map-svg"
                 class="map-svg"
@@ -76,14 +101,14 @@ app.html(`
                 aria-label="United States map highlighting states that share the focused place name"
               ></svg>
             </div>
-            <div
-              id="state-labels"
-              class="state-labels"
-              aria-live="polite"
-              aria-label="Highlighted states"
-            ></div>
           </div>
         </section>
+        <div
+          id="state-labels"
+          class="state-labels"
+          aria-live="polite"
+          aria-label="Highlighted states"
+        ></div>
       </main>
     </div>
   </div>
@@ -91,13 +116,17 @@ app.html(`
 
 const railWindow = d3.select("#focus-rail-window");
 const railTrack = d3.select("#focus-rail-track");
+const railArrowUp = d3.select("#rail-arrow-up");
 const railArrowTop = d3.select("#rail-arrow-top");
+const railArrowDown = d3.select("#rail-arrow-down");
 const railArrowBottom = d3.select("#rail-arrow-bottom");
 const searchInput = d3.select("#title-search");
+const searchShell = d3.select("#search-shell");
 const svg = d3.select("#map-svg");
 const stateLabels = d3.select("#state-labels");
 const mapPlane = svg.append("g").attr("class", "map-plane");
 const statesLayer = mapPlane.append("g").attr("class", "states-layer");
+const highlightBordersLayer = mapPlane.append("g").attr("class", "highlight-borders-layer");
 const bordersLayer = mapPlane.append("g").attr("class", "borders-layer");
 
 function normalizeName(value) {
@@ -125,6 +154,17 @@ function buildVisibleRows(records, focusedIndex) {
       isFocused: slot === CENTER_INDEX && Boolean(record),
     };
   });
+}
+
+function pulseSelection(selection, className) {
+  const node = selection.node();
+  if (!node) {
+    return;
+  }
+
+  node.classList.remove(className);
+  void node.offsetWidth;
+  node.classList.add(className);
 }
 
 Promise.all([
@@ -200,10 +240,14 @@ Promise.all([
 
     function updateRail(delta = 0) {
       const rows = buildVisibleRows(nameFrequency, focusedIndex);
-      const travel = Math.sign(delta) * Math.min(VISIBLE_ROWS, Math.abs(delta)) * ROW_HEIGHT;
-      const duration = Math.abs(delta) <= 1 ? 220 : 320;
+      const stepCount = Math.min(VISIBLE_ROWS, Math.abs(delta));
+      const travel = Math.sign(delta) * stepCount * ROW_HEIGHT;
+      const isJump = Math.abs(delta) > 1;
+      const duration = isJump ? JUMP_TRANSITION_MS : ROW_TRANSITION_MS;
+      const ease = isJump ? d3.easeCubicInOut : d3.easeCubicOut;
 
       railTrack.style("height", `${RAIL_HEIGHT}px`);
+      railTrack.classed("is-jumping", isJump);
 
       const rowSelection = railTrack
         .selectAll(".rail-row")
@@ -223,7 +267,7 @@ Promise.all([
                 selection
                   .transition()
                   .duration(duration)
-                  .ease(d3.easeCubicOut)
+                  .ease(ease)
                   .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT}px)`)
                   .style("opacity", 1),
               ),
@@ -232,7 +276,7 @@ Promise.all([
             exit
               .transition()
               .duration(duration)
-              .ease(d3.easeCubicIn)
+              .ease(isJump ? d3.easeCubicInOut : d3.easeCubicIn)
               .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT - travel}px)`)
               .style("opacity", 0)
               .remove(),
@@ -257,11 +301,13 @@ Promise.all([
         })
         .transition()
         .duration(duration)
-        .ease(d3.easeCubicOut)
+        .ease(ease)
         .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT}px)`)
         .style("opacity", (d) => (d.record ? 1 : 0));
 
+      railArrowUp.classed("is-dimmed", focusedIndex <= 0);
       railArrowTop.classed("is-dimmed", focusedIndex <= 0);
+      railArrowDown.classed("is-dimmed", focusedIndex >= nameFrequency.length - 1);
       railArrowBottom.classed("is-dimmed", focusedIndex >= nameFrequency.length - 1);
     }
 
@@ -274,6 +320,28 @@ Promise.all([
         .attr("class", (d) =>
           highlightedIds.has(d.id) ? "state-shape is-highlighted" : "state-shape",
         );
+
+      const highlightedBorderMesh =
+        highlightedIds.size > 1
+          ? mesh(
+              statesTopo,
+              statesTopo.objects.states,
+              (a, b) =>
+                Boolean(a) &&
+                Boolean(b) &&
+                highlightedIds.has(a.id) &&
+                highlightedIds.has(b.id) &&
+                !excludedStateIds.has(a.id) &&
+                !excludedStateIds.has(b.id),
+            )
+          : null;
+
+      highlightBordersLayer
+        .selectAll(".highlight-borders")
+        .data(highlightedBorderMesh ? [highlightedBorderMesh] : [])
+        .join("path")
+        .attr("class", "highlight-borders")
+        .attr("d", path);
 
       const highlightedStates = (focused?.mappedStateIds ?? [])
         .map((stateId) => stateIndex.get(stateId))
@@ -323,7 +391,13 @@ Promise.all([
         syncSearchValue();
       }
 
+      pulseSelection(searchShell, "is-settling");
+      pulseSelection(stateLabels, "is-settling");
+      svg.classed("is-settling", true);
       render(focusedIndex - previousIndex);
+      window.setTimeout(() => {
+        svg.classed("is-settling", false);
+      }, JUMP_TRANSITION_MS);
     }
 
     function moveFocus(step) {
@@ -340,7 +414,19 @@ Promise.all([
       setFocusedIndex(nextIndex);
       window.setTimeout(() => {
         interactionLocked = false;
-      }, 230);
+      }, ROW_TRANSITION_MS + 40);
+    }
+
+    function jumpFocus(targetIndex) {
+      if (interactionLocked || targetIndex === focusedIndex) {
+        return;
+      }
+
+      interactionLocked = true;
+      setFocusedIndex(targetIndex);
+      window.setTimeout(() => {
+        interactionLocked = false;
+      }, JUMP_TRANSITION_MS + 60);
     }
 
     function handleSearchCommit() {
@@ -361,13 +447,23 @@ Promise.all([
       moveFocus(event.deltaY > 0 ? 1 : -1);
     });
 
-    railArrowTop.on("click", () => {
+    railArrowUp.on("click", () => {
       moveFocus(-1);
       railWindow.node()?.focus();
     });
 
-    railArrowBottom.on("click", () => {
+    railArrowTop.on("click", () => {
+      jumpFocus(0);
+      railWindow.node()?.focus();
+    });
+
+    railArrowDown.on("click", () => {
       moveFocus(1);
+      railWindow.node()?.focus();
+    });
+
+    railArrowBottom.on("click", () => {
+      jumpFocus(nameFrequency.length - 1);
       railWindow.node()?.focus();
     });
 
@@ -379,6 +475,22 @@ Promise.all([
       if (event.key === "ArrowUp") {
         event.preventDefault();
         moveFocus(-1);
+      }
+      if (event.key === "PageDown") {
+        event.preventDefault();
+        jumpFocus(nameFrequency.length - 1);
+      }
+      if (event.key === "PageUp") {
+        event.preventDefault();
+        jumpFocus(0);
+      }
+      if (event.key === "Home") {
+        event.preventDefault();
+        jumpFocus(0);
+      }
+      if (event.key === "End") {
+        event.preventDefault();
+        jumpFocus(nameFrequency.length - 1);
       }
     });
 
@@ -396,6 +508,14 @@ Promise.all([
       if (event.key === "ArrowUp") {
         event.preventDefault();
         moveFocus(-1);
+      }
+      if (event.key === "Home") {
+        event.preventDefault();
+        jumpFocus(0);
+      }
+      if (event.key === "End") {
+        event.preventDefault();
+        jumpFocus(nameFrequency.length - 1);
       }
     });
 

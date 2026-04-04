@@ -13,6 +13,16 @@
     "Liberation Mono",
     "Menlo",
     monospace;
+  --map-panel-height: minmax(360px, 1fr);
+  --state-list-height: 144px;
+  --screen-glow: radial-gradient(circle at 50% 42%, rgba(0, 0, 0, 0.035), transparent 58%);
+  --scanlines: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.018) 0,
+    rgba(0, 0, 0, 0.018) 1px,
+    transparent 1px,
+    transparent 4px
+  );
 }
 
 * {
@@ -49,6 +59,26 @@ button {
   height: 100vh;
   margin: 0 auto;
   padding: 26px 28px 24px;
+  position: relative;
+}
+
+.page-shell::before,
+.page-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.page-shell::before {
+  background: var(--screen-glow);
+  opacity: 0.8;
+}
+
+.page-shell::after {
+  background: var(--scanlines);
+  opacity: 0.18;
+  mix-blend-mode: multiply;
 }
 
 .layout {
@@ -68,14 +98,20 @@ button {
   width: 100%;
   display: grid;
   justify-items: center;
-  gap: 16px;
+  gap: 14px;
+}
+
+.rail-control-group {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
 }
 
 .rail-arrow {
   display: block;
   position: relative;
   width: 30px;
-  height: 22px;
+  height: 26px;
   padding: 0;
   border: 0;
   transition:
@@ -96,13 +132,45 @@ button {
   transform: translateX(-50%);
 }
 
-.rail-arrow-top::before {
-  top: 4px;
+.rail-arrow[data-arrow="up-single"]::before {
+  top: 5px;
   border-bottom: 12px solid var(--ink);
 }
 
+.rail-arrow-top::before {
+  top: 3px;
+  border-bottom: 12px solid var(--ink);
+}
+
+.rail-arrow-top::after,
+.rail-arrow-bottom::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  transform: translateX(-50%);
+}
+
+.rail-arrow-top::after {
+  top: 11px;
+  border-bottom: 12px solid var(--ink);
+}
+
+.rail-arrow[data-arrow="down-single"]::before {
+  bottom: 5px;
+  border-top: 12px solid var(--ink);
+}
+
 .rail-arrow-bottom::before {
-  bottom: 4px;
+  bottom: 3px;
+  border-top: 12px solid var(--ink);
+}
+
+.rail-arrow-bottom::after {
+  bottom: 11px;
   border-top: 12px solid var(--ink);
 }
 
@@ -128,6 +196,11 @@ button {
 .focus-rail-track {
   position: relative;
   width: 100%;
+  transition: filter 320ms ease;
+}
+
+.focus-rail-track.is-jumping {
+  filter: blur(0.12px);
 }
 
 .rail-row {
@@ -177,8 +250,9 @@ button {
 
 .main-column {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto var(--map-panel-height) var(--state-list-height);
   min-height: 0;
+  row-gap: 10px;
 }
 
 .intro {
@@ -197,32 +271,70 @@ button {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.18em;
-  font-size: clamp(2rem, 4.35vw, 4.55rem);
+  font-size: clamp(1.55rem, 3vw, 2.95rem);
   font-weight: 400;
   line-height: 1.06;
   letter-spacing: -0.03em;
 }
 
+.title-prefix {
+  font-size: 0.86em;
+}
+
+.search-shell {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  max-width: 100%;
+}
+
 .title-search {
   flex: 0 1 auto;
-  width: max(calc(var(--search-chars, 20) * 0.72ch), 17ch);
-  min-width: min(100%, calc(var(--search-chars, 20) * 0.72ch));
+  width: max(calc(var(--search-chars, 20) * 0.76ch), 17ch);
+  min-width: min(100%, calc(var(--search-chars, 20) * 0.76ch));
   max-width: 100%;
-  padding: 0 0.18em 0.08em;
+  padding: 0 0.28em 0.08em 0.18em;
   border: 0;
   border-bottom: 2px solid var(--ink);
   background: rgba(0, 0, 0, 0.03);
   color: var(--ink);
   font-size: inherit;
+  font-weight: 400;
   line-height: inherit;
   outline: none;
   vertical-align: baseline;
-  caret-color: var(--ink);
+  caret-color: transparent;
+  transition:
+    background-color 180ms ease,
+    box-shadow 220ms ease,
+    transform 260ms ease;
 }
 
 .title-search:hover,
 .title-search:focus {
   background: rgba(0, 0, 0, 0.08);
+}
+
+.search-shell.is-settling .title-search {
+  animation: search-settle 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.title-caret {
+  position: absolute;
+  top: 0.12em;
+  bottom: 0.18em;
+  right: 0.22em;
+  width: 1.5px;
+  background: var(--ink);
+  opacity: 0.75;
+  pointer-events: none;
+  animation: phosphor-caret 1.05s steps(1, end) infinite;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.18);
+}
+
+.search-shell:hover .title-caret,
+.search-shell:focus-within .title-caret {
+  opacity: 1;
 }
 
 .title-search::-webkit-search-cancel-button {
@@ -234,57 +346,75 @@ button {
   display: flex;
   align-items: stretch;
   justify-content: stretch;
-  padding-top: 12px;
+  padding-top: 4px;
 }
 
 .map-figure {
   width: 100%;
   min-height: 0;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: 18px;
 }
 
-.map-tilt {
+.map-frame {
   width: 100%;
   height: 100%;
   min-height: 0;
-  transform-origin: 54% 28%;
-  transform: perspective(1800px) rotateX(11deg) rotateY(9deg) rotateZ(-1.35deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.map-frame::before {
+  content: "";
+  position: absolute;
+  inset: 8% 9% 12%;
+  background: radial-gradient(circle at 50% 48%, rgba(0, 0, 0, 0.03), transparent 68%);
+  pointer-events: none;
 }
 
 .map-svg {
-  width: 100%;
+  width: min(100%, 1120px);
   height: 100%;
+  max-height: 100%;
   display: block;
   overflow: visible;
+  transform: translateZ(0);
+  transition:
+    opacity 280ms ease,
+    transform 420ms ease;
+}
+
+.map-svg.is-settling {
+  animation: content-settle 380ms cubic-bezier(0.2, 0.92, 0.32, 1);
 }
 
 .state-labels {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-content: flex-start;
-  gap: 10px 18px;
-  margin-left: auto;
-  max-width: min(100%, 780px);
-  min-height: 30px;
+  width: 100%;
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 5px;
+  padding-top: 10px;
+  overflow: hidden;
+}
+
+.state-labels.is-settling {
+  animation: content-settle 320ms cubic-bezier(0.2, 0.92, 0.32, 1);
 }
 
 .state-label {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   white-space: nowrap;
-  font-size: 1rem;
-  line-height: 1.2;
+  font-size: 0.84rem;
+  line-height: 1.06;
 }
 
 .state-label-bullet {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
+  width: 6px;
+  height: 6px;
   background: var(--ink);
   flex: 0 0 auto;
 }
@@ -301,6 +431,15 @@ button {
   fill: var(--ink);
 }
 
+.highlight-borders {
+  fill: none;
+  stroke: var(--bg);
+  stroke-width: 2.4;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
 .state-borders {
   fill: none;
   stroke: var(--ink);
@@ -313,6 +452,43 @@ button {
   padding: 12px 0;
   border-top: 1px solid var(--ink);
   font-size: 0.9rem;
+}
+
+@keyframes phosphor-caret {
+  0%,
+  46% {
+    opacity: 0.9;
+  }
+  47%,
+  100% {
+    opacity: 0.16;
+  }
+}
+
+@keyframes search-settle {
+  0% {
+    transform: translateY(1px) scaleX(0.996);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+  45% {
+    transform: translateY(0) scaleX(1.002);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.06);
+  }
+  100% {
+    transform: translateY(0) scaleX(1);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+@keyframes content-settle {
+  0% {
+    opacity: 0.76;
+    transform: translateY(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 980px) {
@@ -336,7 +512,7 @@ button {
   }
 
   .focus-rail-shell {
-    gap: 12px;
+    gap: 10px;
   }
 
   .focus-rail-window {
@@ -344,12 +520,12 @@ button {
   }
 
   .main-column {
-    grid-template-rows: auto auto;
+    grid-template-rows: auto minmax(320px, 46vh) auto;
   }
 
   .title-line {
     gap: 0.12em 0.18em;
-    font-size: clamp(1.8rem, 9vw, 3.15rem);
+    font-size: clamp(1.4rem, 8vw, 2.4rem);
   }
 
   .title-search {
@@ -357,25 +533,22 @@ button {
   }
 
   .map-stage {
-    min-height: 620px;
+    min-height: 0;
     padding-top: 10px;
   }
 
-  .map-tilt {
-    transform: perspective(1600px) rotateX(7deg) rotateY(5deg) rotateZ(-0.9deg);
-  }
-
-  .map-figure {
-    gap: 14px;
+  .map-frame {
+    min-height: 320px;
   }
 
   .state-labels {
     max-width: 100%;
-    justify-content: flex-start;
-    gap: 10px 14px;
+    gap: 4px;
+    padding-top: 6px;
+    overflow: visible;
   }
 
   .state-label {
-    font-size: 0.92rem;
+    font-size: 0.8rem;
   }
 }
