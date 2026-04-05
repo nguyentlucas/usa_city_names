@@ -243,6 +243,8 @@ button {
   left: 0;
   width: 100%;
   height: 40px;
+  overflow: hidden;
+  isolation: isolate;
   display: grid;
   grid-template-columns: 58px minmax(0, 1fr);
   align-items: center;
@@ -252,8 +254,36 @@ button {
   cursor: pointer;
   text-align: left;
   transition:
-    background-color 180ms ease,
     color 180ms ease;
+}
+
+.rail-row::before,
+.rail-row::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.rail-row::before {
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 0;
+  z-index: 0;
+}
+
+.rail-row::after {
+  width: 16px;
+  right: auto;
+  background: var(--ink);
+  opacity: 0;
+  z-index: 0;
+}
+
+.rail-row > * {
+  position: relative;
+  z-index: 1;
 }
 
 .rail-row.is-intro-hidden {
@@ -276,8 +306,28 @@ button {
 }
 
 .rail-row.is-focused {
-  background: var(--ink);
   color: var(--bg);
+}
+
+.rail-row.is-focused::before {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.rail-row.is-intro-swiping {
+  color: var(--bg);
+}
+
+.rail-row.is-intro-swiping::before {
+  opacity: 1;
+  animation: rail-row-select-swipe var(--rail-selection-swipe-ms, 320ms)
+    cubic-bezier(0.22, 0.9, 0.32, 1) forwards;
+}
+
+.rail-row.is-intro-swiping::after {
+  opacity: 1;
+  animation: rail-row-cursor-sweep var(--rail-selection-swipe-ms, 320ms)
+    cubic-bezier(0.22, 0.9, 0.32, 1) forwards;
 }
 
 .rail-row:not(.is-focused):hover,
@@ -492,7 +542,7 @@ button {
   animation: content-settle 380ms cubic-bezier(0.2, 0.92, 0.32, 1);
 }
 
-.map-svg.is-entrance-active .highlighted-state-shape,
+.map-svg.is-entrance-active .highlighted-state,
 .map-svg.is-entrance-active .state-borders,
 .map-svg.is-entrance-active .highlight-borders {
   opacity: 0;
@@ -566,20 +616,23 @@ button {
   transform-origin: center center;
 }
 
-.highlighted-state-shape {
+.highlighted-state-fill {
   fill: var(--ink);
   fill-opacity: 0.88;
-  stroke: var(--ink);
-  stroke-width: 0.9;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-  paint-order: stroke fill;
   filter:
     drop-shadow(0 1px 0 rgba(0, 0, 0, 0.06))
     drop-shadow(0 4px 6px rgba(0, 0, 0, 0));
   transition:
     fill-opacity 180ms ease,
     filter 220ms ease;
+}
+
+.highlighted-state-outline {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 0.9;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
 }
 
 .hovered-state-overlay {
@@ -756,6 +809,36 @@ button {
   100% {
     transform: translateY(0) scaleX(1);
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+@keyframes rail-row-select-swipe {
+  0% {
+    transform: scaleX(0.045);
+    opacity: 1;
+  }
+  26% {
+    transform: scaleX(0.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rail-row-cursor-sweep {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  82% {
+    transform: translateX(calc(100% - 16px));
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(calc(100% - 16px));
+    opacity: 0;
   }
 }
 

@@ -33,8 +33,11 @@ const INITIAL_MAP_STAGGER_MS = 22;
 const INITIAL_MAP_STATE_DURATION_MS = 680;
 const INITIAL_MAP_SETTLE_MS = 340;
 const INITIAL_HIGHLIGHT_REVEAL_DELAY_MS = 220;
-const INITIAL_HIGHLIGHT_TOTAL_WINDOW_MS = 980;
-const INITIAL_HIGHLIGHT_DROP_MS = 220;
+const INITIAL_HIGHLIGHT_FILL_MS = 380;
+const INITIAL_HIGHLIGHT_GROUP_OVERLAP_MS = 132;
+const INITIAL_HIGHLIGHT_WITHIN_GROUP_MS = 62;
+const INITIAL_HIGHLIGHT_GROUP_MIN = 2;
+const INITIAL_HIGHLIGHT_GROUP_MAX = 3;
 const STATE_LABEL_TYPING_STAGGER_MS = 28;
 const STATE_LABEL_TYPING_MIN_DURATION_MS = 220;
 const STATE_LABEL_TYPING_MAX_DURATION_MS = 640;
@@ -44,6 +47,7 @@ const INTRO_RAIL_ROW_CASCADE_GAP_MS = 96;
 const INTRO_RAIL_ROW_TYPING_STAGGER_MS = 20;
 const INTRO_RAIL_ROW_MIN_DURATION_MS = 340;
 const INTRO_RAIL_ROW_MAX_DURATION_MS = 720;
+const INTRO_RAIL_SELECTION_SWIPE_MS = 320;
 const INTRO_COPY = "Some city names appear again and again.";
 const TITLE_PREFIX_COPY = "How common is";
 
@@ -161,6 +165,7 @@ const stateLabels = d3.select("#state-labels");
 const railShell = d3.select(".focus-rail-shell");
 const mapStage = d3.select(".map-stage");
 const mapPlane = svg.append("g").attr("class", "map-plane");
+const defs = svg.append("defs");
 const baseStatesLayer = mapPlane.append("g").attr("class", "base-states-layer");
 const highlightedStatesLayer = mapPlane.append("g").attr("class", "highlighted-states-layer");
 const entranceBordersLayer = mapPlane.append("g").attr("class", "entrance-borders-layer");
@@ -370,6 +375,65 @@ function animateStateLabelText(labelSelection, label) {
   });
 }
 
+function getHighlightClipId(stateId) {
+  return `intro-highlight-clip-${String(stateId).replace(/[^a-zA-Z0-9_-]/g, "-")}`;
+}
+
+function ensureHighlightClipRect(stateId) {
+  const clipId = getHighlightClipId(stateId);
+  let clipPath = defs.select(`clipPath#${clipId}`);
+
+  if (clipPath.empty()) {
+    clipPath = defs
+      .append("clipPath")
+      .attr("id", clipId)
+      .attr("clipPathUnits", "objectBoundingBox");
+
+    clipPath
+      .append("rect")
+      .attr("class", "highlight-fill-clip-rect")
+      .attr("x", -0.02)
+      .attr("y", -0.02)
+      .attr("width", 0)
+      .attr("height", 1.04);
+  }
+
+  return clipPath.select("rect");
+}
+
+function buildHighlightClusters(states) {
+  const clusters = [];
+  let index = 0;
+
+  while (index < states.length) {
+    const remaining = states.length - index;
+    let size = INITIAL_HIGHLIGHT_GROUP_MIN + (clusters.length % 2);
+    size = Math.min(size, INITIAL_HIGHLIGHT_GROUP_MAX, remaining);
+
+    if (remaining > INITIAL_HIGHLIGHT_GROUP_MAX && remaining - size < INITIAL_HIGHLIGHT_GROUP_MIN) {
+      size = remaining - INITIAL_HIGHLIGHT_GROUP_MIN;
+    }
+
+    clusters.push(states.slice(index, index + size));
+    index += size;
+  }
+
+  return clusters;
+}
+
+function animateRailSelectionSwipe(rowSelection) {
+  const node = rowSelection.node();
+  if (!node) {
+    return Promise.resolve();
+  }
+
+  rowSelection.classed("is-intro-swiping", false);
+  void node.offsetWidth;
+  rowSelection.classed("is-intro-swiping", true);
+
+  return wait(INTRO_RAIL_SELECTION_SWIPE_MS);
+}
+
 function shuffle(items) {
   const shuffled = [...items];
 
@@ -414,6 +478,7 @@ Promise.all([
     let hoveredStateId = null;
     let currentHighlightedIds = new Set();
     let introActivatedStateIds = new Set();
+    let introAnimatingStateIds = new Set();
     let currentHighlightedStates = [];
     let inputValue = nameFrequency[focusedIndex]?.displayName ?? SEARCH_DEFAULT;
     let interactionLocked = false;
@@ -557,37 +622,27 @@ Promise.all([
           : currentHighlightedStates.filter((state) => state.id === hoveredStateId);
 
       highlightedStatesLayer
-        .selectAll(".highlighted-state-shape")
+        .selectAll(".highlighted-state")
         .data(nonHoveredStates, (d) => d.id)
         .join(
           (enter) =>
             enter
-              .append("path")
-              .attr("class", "highlighted-state-shape")
+              .append("g")
+              .attr("class", "highlighted-state")
               .attr("data-state-id", (d) => d.id)
-              .attr("d", path)
               .call((selection) => {
-                if (!initialHighlightRevealPending) {
-                  return;
-                }
-
                 selection
-                  .style("opacity", 1)
-                  .style("fill-opacity", 0)
-                  .attr("transform", "translate(0,-4)")
-                  .transition()
-                  .duration(INITIAL_HIGHLIGHT_DROP_MS)
-                  .ease(d3.easeCubicOut)
-                  .style("fill-opacity", 0.88)
-                  .attr("transform", "translate(0,0)");
+                  .append("path")
+                  .attr("class", "highlighted-state-fill");
+                selection
+                  .append("path")
+                  .attr("class", "highlighted-state-outline");
               }),
           (update) => update,
           (exit) => exit.remove(),
         )
-        .attr("class", "highlighted-state-shape")
+        .attr("class", "highlighted-state")
         .attr("data-state-id", (d) => d.id)
-        .attr("d", path)
-        .style("fill-opacity", 0.88)
         .on("mouseenter", (_, d) => {
           hoveredStateId = d.id;
           updateHoverState();
@@ -596,6 +651,23 @@ Promise.all([
           hoveredStateId = null;
           updateHoverState();
         });
+
+      highlightedStatesLayer.selectAll(".highlighted-state").each(function (d) {
+        const group = d3.select(this);
+        const fill = group.select(".highlighted-state-fill");
+        const outline = group.select(".highlighted-state-outline");
+        const isAnimating = introAnimatingStateIds.has(d.id);
+
+        fill.attr("d", path).style("fill-opacity", 0.88);
+        outline.attr("d", path);
+
+        if (isAnimating) {
+          ensureHighlightClipRect(d.id);
+          fill.attr("clip-path", `url(#${getHighlightClipId(d.id)})`);
+        } else {
+          fill.attr("clip-path", null);
+        }
+      });
 
       const hoveredSelection = hoveredStateOverlayLayer
         .selectAll(".hovered-state-overlay")
@@ -670,12 +742,12 @@ Promise.all([
       });
 
       hoveredSelection.select(".hovered-state-fill").attr("d", path);
-      hoveredSelection.select(".hovered-state-outline").attr("d", path);
+      hoveredSelection.selectAll(".hovered-state-outline").attr("d", path);
     }
 
     function updateMap() {
       if (initialMapRevealPending) {
-        highlightedStatesLayer.selectAll(".highlighted-state-shape").remove();
+        highlightedStatesLayer.selectAll(".highlighted-state").remove();
         hoveredStateOverlayLayer.selectAll(".hovered-state-overlay").remove();
         bordersLayer.selectAll(".state-borders").remove();
         highlightBordersLayer.selectAll(".highlight-borders").remove();
@@ -791,8 +863,6 @@ Promise.all([
         })
         .select(".state-label-text")
         .text((d) => (initialLabelRevealPending ? "" : d.name));
-
-      initialHighlightRevealPending = false;
     }
 
     function updateHoverState() {
@@ -1001,33 +1071,57 @@ Promise.all([
       revealPristineNode(stateLabels);
       updateMap();
 
-      const stateActivationStart = performance.now();
-      const stateActivationPromises = focusedStateOrder.map((state, index) => {
-        const remainingWindow = Math.max(
-          0,
-          INITIAL_HIGHLIGHT_TOTAL_WINDOW_MS - INITIAL_HIGHLIGHT_DROP_MS,
-        );
-        const targetDelay =
-          focusedStateOrder.length <= 1
-            ? 0
-            : Math.round((index / (focusedStateOrder.length - 1)) * remainingWindow);
+      const stateClusters = buildHighlightClusters(focusedStateOrder);
+      const stateActivationPromises = [];
 
-        return (async () => {
-          const elapsed = performance.now() - stateActivationStart;
-          await wait(Math.max(0, targetDelay - elapsed));
-          introActivatedStateIds = new Set([...introActivatedStateIds, state.id]);
-          updateMap();
-          const label = stateLabels
-            .selectAll(".state-label")
-            .filter((d) => d.id === state.id);
-          await animateStateLabelText(label, { id: state.id, name: state.properties.name });
-        })();
+      stateClusters.forEach((cluster, clusterIndex) => {
+        const clusterStartDelay = clusterIndex * INITIAL_HIGHLIGHT_GROUP_OVERLAP_MS;
+
+        cluster.forEach((state, stateIndex) => {
+          stateActivationPromises.push(
+            (async () => {
+              await wait(clusterStartDelay + stateIndex * INITIAL_HIGHLIGHT_WITHIN_GROUP_MS);
+              introActivatedStateIds = new Set([...introActivatedStateIds, state.id]);
+              introAnimatingStateIds = new Set([...introAnimatingStateIds, state.id]);
+              const clipRect = ensureHighlightClipRect(state.id);
+
+              clipRect.interrupt();
+              clipRect.attr("x", -0.02).attr("width", 0.06);
+              updateMap();
+
+              const label = stateLabels
+                .selectAll(".state-label")
+                .filter((d) => d.id === state.id);
+
+              const fillPromise = new Promise((resolve) => {
+                clipRect
+                  .transition()
+                  .duration(INITIAL_HIGHLIGHT_FILL_MS)
+                  .ease(d3.easeCubicOut)
+                  .attr("width", 1.08)
+                  .on("end", () => {
+                    introAnimatingStateIds = new Set(
+                      [...introAnimatingStateIds].filter((id) => id !== state.id),
+                    );
+                    updateMap();
+                    resolve();
+                  });
+              });
+
+              await Promise.all([
+                fillPromise,
+                animateStateLabelText(label, { id: state.id, name: state.properties.name }),
+              ]);
+            })(),
+          );
+        });
       });
 
       await Promise.all(stateActivationPromises);
       initialLabelRevealPending = false;
       initialHighlightRevealPending = false;
       introActivatedStateIds = new Set(currentHighlightedIds);
+      introAnimatingStateIds = new Set();
       updateMap();
       entranceBordersLayer.selectAll(".entrance-state-border").remove();
       await wait(INTRO_GAP_BEFORE_RAIL_MS);
@@ -1073,6 +1167,9 @@ Promise.all([
       await wait(INTRO_RAIL_ARROW_REVEAL_MS * 0.7);
 
       introRailTextPending = false;
+      await animateRailSelectionSwipe(
+        railTrack.selectAll(".rail-row").filter((d) => d.isFocused && d.record),
+      );
       introRailSelectionPending = false;
       railShell.classed("is-intro-ready", false);
       interactionLocked = false;
