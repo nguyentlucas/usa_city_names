@@ -33,20 +33,17 @@ const INITIAL_MAP_STAGGER_MS = 22;
 const INITIAL_MAP_STATE_DURATION_MS = 680;
 const INITIAL_MAP_SETTLE_MS = 340;
 const INITIAL_HIGHLIGHT_REVEAL_DELAY_MS = 220;
+const INITIAL_HIGHLIGHT_TOTAL_WINDOW_MS = 980;
 const INITIAL_HIGHLIGHT_DROP_MS = 220;
-const INITIAL_HIGHLIGHT_STAGGER_MS = 24;
 const STATE_LABEL_TYPING_STAGGER_MS = 28;
 const STATE_LABEL_TYPING_MIN_DURATION_MS = 220;
 const STATE_LABEL_TYPING_MAX_DURATION_MS = 640;
-const STATE_LABEL_REVEAL_GAP_MS = 28;
 const INTRO_GAP_BEFORE_RAIL_MS = 260;
-const INTRO_RAIL_ARROW_REVEAL_MS = 360;
-const INTRO_RAIL_ROW_INITIAL_GAP_MS = 340;
-const INTRO_RAIL_ROW_GAP_DECAY_MS = 30;
-const INTRO_RAIL_ROW_MIN_GAP_MS = 120;
-const INTRO_RAIL_ROW_TYPING_STAGGER_MS = 28;
-const INTRO_RAIL_ROW_MIN_DURATION_MS = 520;
-const INTRO_RAIL_ROW_MAX_DURATION_MS = 1100;
+const INTRO_RAIL_ARROW_REVEAL_MS = 240;
+const INTRO_RAIL_ROW_CASCADE_GAP_MS = 96;
+const INTRO_RAIL_ROW_TYPING_STAGGER_MS = 20;
+const INTRO_RAIL_ROW_MIN_DURATION_MS = 340;
+const INTRO_RAIL_ROW_MAX_DURATION_MS = 720;
 const INTRO_COPY = "Some city names appear again and again.";
 const TITLE_PREFIX_COPY = "How common is";
 
@@ -373,6 +370,17 @@ function animateStateLabelText(labelSelection, label) {
   });
 }
 
+function shuffle(items) {
+  const shuffled = [...items];
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
+
+  return shuffled;
+}
+
 Promise.all([
   d3.json(DATA_URLS.nameFrequency),
   d3.json(DATA_URLS.nameLookup),
@@ -405,6 +413,7 @@ Promise.all([
     let previousIndex = focusedIndex;
     let hoveredStateId = null;
     let currentHighlightedIds = new Set();
+    let introActivatedStateIds = new Set();
     let currentHighlightedStates = [];
     let inputValue = nameFrequency[focusedIndex]?.displayName ?? SEARCH_DEFAULT;
     let interactionLocked = false;
@@ -567,7 +576,6 @@ Promise.all([
                   .style("fill-opacity", 0)
                   .attr("transform", "translate(0,-4)")
                   .transition()
-                  .delay((_, index) => index * INITIAL_HIGHLIGHT_STAGGER_MS)
                   .duration(INITIAL_HIGHLIGHT_DROP_MS)
                   .ease(d3.easeCubicOut)
                   .style("fill-opacity", 0.88)
@@ -678,28 +686,32 @@ Promise.all([
       ensureBaseMapRendered();
       const focused = getFocusedRecord();
       currentHighlightedIds = new Set(focused?.mappedStateIds ?? []);
-      if (hoveredStateId != null && !currentHighlightedIds.has(hoveredStateId)) {
+      const activeHighlightedIds = initialHighlightRevealPending
+        ? introActivatedStateIds
+        : currentHighlightedIds;
+
+      if (hoveredStateId != null && !activeHighlightedIds.has(hoveredStateId)) {
         hoveredStateId = null;
       }
 
-      currentHighlightedStates = stateFeatures.filter((state) => currentHighlightedIds.has(state.id));
+      currentHighlightedStates = stateFeatures.filter((state) => activeHighlightedIds.has(state.id));
       if (initialEntranceActive) {
         currentHighlightedStates = [];
       }
       syncHighlightedStateLayers();
-      const activeHighlightedIds = initialEntranceActive ? new Set() : currentHighlightedIds;
+      const visibleHighlightedIds = initialEntranceActive ? new Set() : activeHighlightedIds;
 
       const visibleBorderMesh = mesh(
         statesTopo,
         statesTopo.objects.states,
         (a, b) =>
-          Boolean(a) &&
-          a.id !== hoveredStateId &&
-          !excludedStateIds.has(a.id) &&
-          (!b || b.id !== hoveredStateId) &&
-          (!b ||
-            (!excludedStateIds.has(b.id) &&
-              (!activeHighlightedIds.has(a.id) || !activeHighlightedIds.has(b.id)))),
+              Boolean(a) &&
+              a.id !== hoveredStateId &&
+              !excludedStateIds.has(a.id) &&
+              (!b || b.id !== hoveredStateId) &&
+              (!b ||
+                (!excludedStateIds.has(b.id) &&
+                  (!visibleHighlightedIds.has(a.id) || !visibleHighlightedIds.has(b.id)))),
       );
 
       bordersLayer
@@ -710,7 +722,7 @@ Promise.all([
         .attr("d", path);
 
       const highlightedBorderMesh =
-        activeHighlightedIds.size > 1
+        visibleHighlightedIds.size > 1
           ? mesh(
               statesTopo,
               statesTopo.objects.states,
@@ -719,8 +731,8 @@ Promise.all([
                 Boolean(b) &&
                 a.id !== hoveredStateId &&
                 b.id !== hoveredStateId &&
-                activeHighlightedIds.has(a.id) &&
-                activeHighlightedIds.has(b.id) &&
+                visibleHighlightedIds.has(a.id) &&
+                visibleHighlightedIds.has(b.id) &&
                 !excludedStateIds.has(a.id) &&
                 !excludedStateIds.has(b.id),
             )
@@ -785,7 +797,11 @@ Promise.all([
 
     function updateHoverState() {
       syncHighlightedStateLayers();
-      const activeHighlightedIds = initialEntranceActive ? new Set() : currentHighlightedIds;
+      const activeHighlightedIds = initialEntranceActive
+        ? new Set()
+        : initialHighlightRevealPending
+          ? introActivatedStateIds
+          : currentHighlightedIds;
 
       const visibleBorderMesh = mesh(
         statesTopo,
@@ -911,6 +927,11 @@ Promise.all([
     async function playInitialEntrance() {
       const focused = getFocusedRecord();
       const cityName = focused?.displayName ?? SEARCH_DEFAULT;
+      const focusedStateOrder = shuffle(
+        (focused?.mappedStateIds ?? [])
+          .map((stateId) => stateIndex.get(stateId))
+          .filter(Boolean),
+      );
       const stateEntranceOrder = [...stateFeatures]
         .map((state) => ({ state, centroid: path.centroid(state) }))
         .sort((a, b) => a.centroid[1] - b.centroid[1] || a.centroid[0] - b.centroid[0])
@@ -968,6 +989,7 @@ Promise.all([
       initialEntranceActive = false;
       initialMapRevealPending = false;
       initialHighlightRevealPending = true;
+      introActivatedStateIds = new Set();
       svg.classed("is-entrance-active", false);
       searchShell.classed("is-entrance-active", false);
       searchEntranceText.text("");
@@ -979,19 +1001,34 @@ Promise.all([
       revealPristineNode(stateLabels);
       updateMap();
 
-      const labelAnimations = [];
-      stateLabels.selectAll(".state-label").each(function (d, index) {
-        const label = d3.select(this);
-        labelAnimations.push(
-          (async () => {
-            await wait(index * STATE_LABEL_REVEAL_GAP_MS);
-            await animateStateLabelText(label, d);
-          })(),
+      const stateActivationStart = performance.now();
+      const stateActivationPromises = focusedStateOrder.map((state, index) => {
+        const remainingWindow = Math.max(
+          0,
+          INITIAL_HIGHLIGHT_TOTAL_WINDOW_MS - INITIAL_HIGHLIGHT_DROP_MS,
         );
+        const targetDelay =
+          focusedStateOrder.length <= 1
+            ? 0
+            : Math.round((index / (focusedStateOrder.length - 1)) * remainingWindow);
+
+        return (async () => {
+          const elapsed = performance.now() - stateActivationStart;
+          await wait(Math.max(0, targetDelay - elapsed));
+          introActivatedStateIds = new Set([...introActivatedStateIds, state.id]);
+          updateMap();
+          const label = stateLabels
+            .selectAll(".state-label")
+            .filter((d) => d.id === state.id);
+          await animateStateLabelText(label, { id: state.id, name: state.properties.name });
+        })();
       });
 
-      await Promise.all(labelAnimations);
+      await Promise.all(stateActivationPromises);
       initialLabelRevealPending = false;
+      initialHighlightRevealPending = false;
+      introActivatedStateIds = new Set(currentHighlightedIds);
+      updateMap();
       entranceBordersLayer.selectAll(".entrance-state-border").remove();
       await wait(INTRO_GAP_BEFORE_RAIL_MS);
 
@@ -1009,27 +1046,27 @@ Promise.all([
       revealIntroNode(railArrowTop);
       await wait(INTRO_RAIL_ARROW_REVEAL_MS * 0.75);
       revealIntroNode(railArrowUp);
-      await wait(INTRO_RAIL_ARROW_REVEAL_MS);
+      await wait(INTRO_RAIL_ARROW_REVEAL_MS * 0.65);
 
       const introRailRowQueue = [];
       introRailRows.each(function (d, index) {
-        const row = d3.select(this);
-        const gapDelay =
-          index === 0
-            ? 0
-            : Math.max(
-                INTRO_RAIL_ROW_MIN_GAP_MS,
-                INTRO_RAIL_ROW_INITIAL_GAP_MS - (index - 1) * INTRO_RAIL_ROW_GAP_DECAY_MS,
-              );
-
-        introRailRowQueue.push({ row, slot: d.slot, record: d.record, gapDelay });
+        introRailRowQueue.push({
+          row: d3.select(this),
+          slot: d.slot,
+          record: d.record,
+          delay: index * INTRO_RAIL_ROW_CASCADE_GAP_MS,
+        });
       });
 
-      for (const { row, slot, record, gapDelay } of introRailRowQueue) {
-        await wait(gapDelay);
-        revealRailRow(row, slot);
-        await animateRailRowText(row, record);
-      }
+      const railRowAnimations = introRailRowQueue.map(({ row, slot, record, delay }) =>
+        (async () => {
+          await wait(delay);
+          revealRailRow(row, slot);
+          await animateRailRowText(row, record);
+        })(),
+      );
+
+      await Promise.all(railRowAnimations);
       revealIntroNode(railArrowDown);
       await wait(INTRO_RAIL_ARROW_REVEAL_MS * 0.75);
       revealIntroNode(railArrowBottom);
