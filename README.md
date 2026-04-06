@@ -1,6 +1,6 @@
-# Repeated Incorporated Place Names in the United States
+# Repeated Place Names in the United States
 
-An interactive static website that maps and ranks repeated incorporated place names across U.S. Census TIGER/Line PLACE boundaries.
+An interactive static website that maps and ranks repeated place names across U.S. Census TIGER/Line PLACE boundaries.
 
 Live site after deployment: [https://nguyentlucas.github.io/usa_city_names/](https://nguyentlucas.github.io/usa_city_names/)
 
@@ -33,19 +33,7 @@ npm run dev
 
 ## Data build
 
-The preprocessing pipeline starts directly from `working_data/tl_2025_*_place.zip` files. It programmatically extracts each shapefile bundle to a temporary directory, reads the geometries, merges all states and territories, filters to incorporated places only, simplifies geometry for the browser, and writes web-ready assets to `public/data/`.
-
-Included `CLASSFP` values:
-
-- `C1`
-- `C2`
-- `C3`
-- `C4`
-- `C5`
-
-Excluded non-incorporated examples:
-
-- `U1`
+The preprocessing pipeline starts directly from `working_data/tl_2025_*_place.zip` files. It programmatically extracts each shapefile bundle to a temporary directory, reads all Census `PLACE` records, merges all states and territories, normalizes names for case-insensitive matching, and writes web-ready JSON assets to `public/data/`.
 
 Name matching is exact after light normalization:
 
@@ -55,17 +43,9 @@ Name matching is exact after light normalization:
 
 Generated assets:
 
-- `public/data/places.topo.json`
 - `public/data/name_frequency.json`
-- `public/data/top_names.json`
 - `public/data/name_lookup.json`
 - `public/data/metadata.json`
-
-Optional build flags:
-
-```bash
-python3 scripts/build_data.py --simplify-tolerance 250 --top-n 40
-```
 
 ## Project structure
 
@@ -145,4 +125,4 @@ jobs:
 
 Source data: U.S. Census TIGER/Line PLACE shapefiles.
 
-Analysis in the site is restricted to incorporated places only, using `CLASSFP` values `C1` through `C5`.
+The site now includes all Census places, including incorporated places and census-designated places, while keeping the same frontend data shape.

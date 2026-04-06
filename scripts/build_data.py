@@ -20,7 +20,6 @@ except ModuleNotFoundError as exc:
     ) from exc
 
 
-VALID_CLASSFP = {"C1", "C2", "C3", "C4", "C5"}
 NAME_COLUMNS = ["GEOID", "NAME", "CLASSFP", "STATEFP"]
 MAP_EXCLUDED_STATE_IDS = {"15", "60", "66", "69", "72", "78"}
 STATE_INFO = {
@@ -119,7 +118,7 @@ def load_place_zip(zip_path: Path) -> gpd.GeoDataFrame:
     if state_meta is None:
         raise ValueError(f"Unknown state code in {zip_path.name}: {state_code}")
 
-    gdf = gdf.loc[gdf["CLASSFP"].isin(VALID_CLASSFP), NAME_COLUMNS].copy()
+    gdf = gdf.loc[:, NAME_COLUMNS].copy()
     if gdf.empty:
         gdf["display_name"] = pd.Series(dtype="string")
         gdf["normalized_name"] = pd.Series(dtype="string")
@@ -174,7 +173,7 @@ def build_name_assets(df: pd.DataFrame, output_dir: Path) -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build ranked incorporated place-name assets from TIGER/Line PLACE zip bundles."
+        description="Build ranked place-name assets from TIGER/Line PLACE zip bundles."
     )
     parser.add_argument(
         "--input-dir",
@@ -217,7 +216,8 @@ def main() -> None:
     metadata = {
         "source": "U.S. Census TIGER/Line PLACE shapefiles",
         "year": 2025,
-        "includedClassfp": sorted(VALID_CLASSFP),
+        "placeRecordScope": "all PLACE records",
+        "classfpValues": sorted(combined["CLASSFP"].dropna().unique().tolist()),
         "placeCount": int(len(combined)),
         "nameCount": int(combined["normalized_name"].nunique()),
         "stateCount": int(combined["STATEFP"].nunique()),
@@ -234,7 +234,7 @@ def main() -> None:
 
     print(
         f"Built assets in {output_dir}: "
-        f"{metadata['placeCount']} incorporated places, "
+        f"{metadata['placeCount']} places, "
         f"{metadata['nameCount']} distinct names."
     )
 

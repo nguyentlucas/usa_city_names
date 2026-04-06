@@ -48,7 +48,69 @@ const INTRO_RAIL_ROW_TYPING_STAGGER_MS = 20;
 const INTRO_RAIL_ROW_MIN_DURATION_MS = 340;
 const INTRO_RAIL_ROW_MAX_DURATION_MS = 720;
 const INTRO_RAIL_SELECTION_SWIPE_MS = 320;
-const INTRO_COPY = "Some city names appear again and again.";
+const SPRITE_MIN_LIFETIME_MS = 500;
+const SPRITE_MAX_LIFETIME_MS = 900;
+const SPRITE_COOLDOWN_MS = 320;
+const SPRITE_MAX_ACTIVE = 5;
+const SPRITE_TYPES = [
+  {
+    name: "bird",
+    weight: 0.35,
+    viewBox: "0 0 16 16",
+    markup:
+      '<path d="M1 8H4V7H6V6H7V5H8V4H9V5H10V6H12V7H15V8H12V9H10V10H8V9H7V10H5V9H4V8H1Z" />',
+  },
+  {
+    name: "plane",
+    weight: 0.35,
+    viewBox: "0 0 16 16",
+    markup:
+      '<path d="M1 8H6V5H9V3H11V5H15V6H12V8H15V9H11V11H9V9H6V8H1Z" />',
+  },
+  {
+    name: "spark",
+    weight: 0.3,
+    viewBox: "0 0 16 16",
+    markup:
+      '<path d="M8 1H9V3H11V5H13V6H11V8H9V10H11V12H13V13H11V15H9V13H7V11H5V13H3V12H5V10H7V8H5V6H3V5H5V3H7V1H8Z" />',
+  },
+];
+const BACKGROUND_SPRITE_ALLOWED_TARGETS = new Set([
+  "page-shell",
+  "composition-layer",
+  "layout",
+  "main-column",
+  "rail-column",
+  "map-stage",
+  "map-figure",
+  "map-frame",
+  "map-svg",
+]);
+const BACKGROUND_SPRITE_BLOCKED_SELECTOR = [
+  "button",
+  "input",
+  ".intro",
+  ".title-line",
+  ".search-shell",
+  ".rail-row",
+  ".rail-arrow",
+  ".focus-rail-shell",
+  ".focus-rail-window",
+  ".focus-rail-track",
+  ".base-state-shape",
+  ".highlighted-state",
+  ".highlighted-state-fill",
+  ".highlighted-state-outline",
+  ".hovered-state-overlay",
+  ".hovered-state-fill",
+  ".hovered-state-outline",
+  ".state-borders",
+  ".highlight-borders",
+  ".entrance-state-border",
+  ".state-label",
+  "[data-state-id]",
+].join(", ");
+const INTRO_COPY = "Some place names appear again and again.";
 const TITLE_PREFIX_COPY = "How common is";
 
 const app = d3.select("#app");
@@ -115,7 +177,7 @@ app.html(`
                 autocomplete="off"
                 autocapitalize="words"
                 spellcheck="false"
-                aria-label="Search incorporated place name"
+                aria-label="Search place name"
               />
               <span class="title-caret" aria-hidden="true"></span>
             </span>
@@ -144,10 +206,12 @@ app.html(`
         ></div>
       </main>
     </div>
+    <div id="sprite-layer" class="sprite-layer" aria-hidden="true"></div>
     </div>
   </div>
 `);
 
+const pageShell = d3.select(".page-shell");
 const railWindow = d3.select("#focus-rail-window");
 const railTrack = d3.select("#focus-rail-track");
 const railArrowUp = d3.select("#rail-arrow-up");
@@ -164,6 +228,7 @@ const svg = d3.select("#map-svg");
 const stateLabels = d3.select("#state-labels");
 const railShell = d3.select(".focus-rail-shell");
 const mapStage = d3.select(".map-stage");
+const spriteLayer = d3.select("#sprite-layer");
 const mapPlane = svg.append("g").attr("class", "map-plane");
 const defs = svg.append("defs");
 const baseStatesLayer = mapPlane.append("g").attr("class", "base-states-layer");
@@ -445,6 +510,40 @@ function shuffle(items) {
   return shuffled;
 }
 
+function randomBetween(min, max) {
+  return min + Math.random() * (max - min);
+}
+
+function chooseSpriteType() {
+  const roll = Math.random();
+  let threshold = 0;
+
+  for (const spriteType of SPRITE_TYPES) {
+    threshold += spriteType.weight;
+    if (roll <= threshold) {
+      return spriteType;
+    }
+  }
+
+  return SPRITE_TYPES[SPRITE_TYPES.length - 1];
+}
+
+function getBackgroundClickTarget(target) {
+  if (!(target instanceof Element)) {
+    return null;
+  }
+
+  if (target.closest(BACKGROUND_SPRITE_BLOCKED_SELECTOR)) {
+    return null;
+  }
+
+  return Array.from(BACKGROUND_SPRITE_ALLOWED_TARGETS).some((className) =>
+    target.classList.contains(className),
+  )
+    ? target
+    : null;
+}
+
 Promise.all([
   d3.json(DATA_URLS.nameFrequency),
   d3.json(DATA_URLS.nameLookup),
@@ -470,6 +569,7 @@ Promise.all([
       Object.entries(nameLookup).map(([normalizedName, index]) => [normalizedName, Number(index)]),
     );
 
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let focusedIndex =
       lookup.get(normalizeName(metadata.defaultFocusedName ?? SEARCH_DEFAULT)) ??
       lookup.get(normalizeName(SEARCH_DEFAULT)) ??
@@ -482,7 +582,7 @@ Promise.all([
     let currentHighlightedStates = [];
     let inputValue = nameFrequency[focusedIndex]?.displayName ?? SEARCH_DEFAULT;
     let interactionLocked = false;
-    let initialEntranceActive = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let initialEntranceActive = !prefersReducedMotion;
     let initialMapRevealPending = initialEntranceActive;
     let initialHighlightRevealPending = false;
     let initialLabelRevealPending = initialEntranceActive;
@@ -490,6 +590,8 @@ Promise.all([
     let introRailTextPending = initialEntranceActive;
     let introRailSelectionPending = initialEntranceActive;
     let baseMapReady = false;
+    let activeSpriteCount = 0;
+    let lastSpriteAt = -Infinity;
     const longestDisplayName = nameFrequency.reduce(
       (longest, record) =>
         record.displayName.length > longest.length ? record.displayName : longest,
@@ -499,6 +601,98 @@ Promise.all([
     searchInput.property("value", inputValue);
     searchInput.property("size", longestDisplayName.length + 2);
     searchInput.style("--search-chars", longestDisplayName.length + 2);
+
+    function spawnBackgroundSprite(event) {
+      if (prefersReducedMotion || initialEntranceActive || activeSpriteCount >= SPRITE_MAX_ACTIVE) {
+        return;
+      }
+
+      const now = performance.now();
+      if (now - lastSpriteAt < SPRITE_COOLDOWN_MS) {
+        return;
+      }
+
+      const backgroundTarget = getBackgroundClickTarget(event.target);
+      if (!backgroundTarget) {
+        return;
+      }
+
+      const shellNode = pageShell.node();
+      const layerNode = spriteLayer.node();
+      if (!shellNode || !layerNode) {
+        return;
+      }
+
+      const shellRect = shellNode.getBoundingClientRect();
+      const x = event.clientX - shellRect.left;
+      const y = event.clientY - shellRect.top;
+
+      if (x < 0 || x > shellRect.width || y < 0 || y > shellRect.height) {
+        return;
+      }
+
+      lastSpriteAt = now;
+      activeSpriteCount += 1;
+
+      const spriteType = chooseSpriteType();
+      const duration = randomBetween(SPRITE_MIN_LIFETIME_MS, SPRITE_MAX_LIFETIME_MS);
+      const travelX = randomBetween(-44, 44);
+      const travelY = randomBetween(-72, -34);
+      const popX = travelX * randomBetween(0.14, 0.22);
+      const popY = travelY * randomBetween(0.12, 0.2);
+      const startRotation = randomBetween(-12, 12);
+      const endRotation = startRotation + randomBetween(-28, 28);
+      const size = randomBetween(11, 17);
+
+      const sprite = spriteLayer
+        .append("div")
+        .attr("class", `click-sprite click-sprite-${spriteType.name}`)
+        .style("left", `${x}px`)
+        .style("top", `${y}px`)
+        .style("--sprite-size", `${size}px`);
+
+      sprite.html(`
+        <svg
+          class="click-sprite-glyph"
+          viewBox="${spriteType.viewBox}"
+          aria-hidden="true"
+          focusable="false"
+        >
+          ${spriteType.markup}
+        </svg>
+      `);
+
+      const node = sprite.node();
+      window.setTimeout(() => {
+        if (node?.isConnected) {
+          node.remove();
+        }
+        activeSpriteCount = Math.max(0, activeSpriteCount - 1);
+      }, duration + 80);
+
+      node?.animate(
+        [
+          {
+            transform: `translate(-50%, -50%) translate(0px, 0px) scale(0.72) rotate(${startRotation}deg)`,
+            opacity: 0,
+          },
+          {
+            transform: `translate(-50%, -50%) translate(${popX}px, ${popY}px) scale(1) rotate(${startRotation}deg)`,
+            opacity: 0.92,
+            offset: 0.18,
+          },
+          {
+            transform: `translate(-50%, -50%) translate(${travelX}px, ${travelY}px) scale(0.16) rotate(${endRotation}deg)`,
+            opacity: 0,
+          },
+        ],
+        {
+          duration,
+          easing: "cubic-bezier(0.22, 0.74, 0.2, 1)",
+          fill: "forwards",
+        },
+      );
+    }
 
     function getFocusedRecord() {
       return nameFrequency[focusedIndex] ?? null;
@@ -1294,6 +1488,21 @@ Promise.all([
       .on("blur", () => {
         handleSearchCommit();
       });
+
+    pageShell.on("click.background-sprite", (event) => {
+      if (
+        event.button !== 0 ||
+        event.defaultPrevented ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.altKey ||
+        event.shiftKey
+      ) {
+        return;
+      }
+
+      spawnBackgroundSprite(event);
+    });
 
     if (initialEntranceActive) {
       playInitialEntrance();

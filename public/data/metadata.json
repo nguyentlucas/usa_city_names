@@ -1,16 +1,22 @@
 {
   "source": "U.S. Census TIGER/Line PLACE shapefiles",
   "year": 2025,
-  "includedClassfp": [
+  "placeRecordScope": "all PLACE records",
+  "classfpValues": [
     "C1",
     "C2",
-    "C3",
-    "C4",
-    "C5"
+    "C5",
+    "C6",
+    "C7",
+    "C8",
+    "C9",
+    "M2",
+    "U1",
+    "U2"
   ],
-  "placeCount": 19491,
-  "nameCount": 12723,
-  "stateCount": 51,
+  "placeCount": 32629,
+  "nameCount": 21587,
+  "stateCount": 56,
   "mappedStateCount": 50,
   "defaultFocusedName": "Franklin",
   "excludedMapStateIds": [

@@ -53,11 +53,40 @@ button {
   margin: 0 auto;
   padding: 26px 28px 24px;
   position: relative;
+  overflow: hidden;
 }
 
 .composition-layer {
   width: 100%;
   height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.sprite-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.click-sprite {
+  position: absolute;
+  width: var(--sprite-size, 14px);
+  height: var(--sprite-size, 14px);
+  color: var(--ink);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.click-sprite-glyph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  shape-rendering: crispEdges;
+  image-rendering: pixelated;
 }
 
 .layout {
