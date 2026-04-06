@@ -254,10 +254,10 @@ const bordersLayer = mapPlane.append("g").attr("class", "borders-layer");
 const highlightBordersLayer = mapPlane.append("g").attr("class", "highlight-borders-layer");
 const hoveredStateOverlayLayer = mapPlane.append("g").attr("class", "hovered-state-overlay-layer");
 const HOVERED_STATE_FALL_DURATION_MS = 220;
-const MAP_FIT_TOP_INSET = 16;
-const MAP_FIT_RIGHT_INSET = 12;
-const MAP_FIT_BOTTOM_INSET = 18;
-const MAP_FIT_LEFT_INSET = 12;
+const MAP_FIT_TOP_INSET = 4;
+const MAP_FIT_RIGHT_INSET = 4;
+const MAP_FIT_BOTTOM_INSET = 6;
+const MAP_FIT_LEFT_INSET = 4;
 
 function normalizeName(value) {
   return value.trim().toLocaleLowerCase();
@@ -753,17 +753,16 @@ Promise.all([
         return;
       }
 
-      const shellNode = pageShell.node();
       const layerNode = spriteLayer.node();
-      if (!shellNode || !layerNode) {
+      if (!layerNode) {
         return;
       }
 
-      const shellRect = shellNode.getBoundingClientRect();
-      const x = event.clientX - shellRect.left;
-      const y = event.clientY - shellRect.top;
+      const layerRect = layerNode.getBoundingClientRect();
+      const x = event.clientX - layerRect.left;
+      const y = event.clientY - layerRect.top;
 
-      if (x < 0 || x > shellRect.width || y < 0 || y > shellRect.height) {
+      if (x < 0 || x > layerRect.width || y < 0 || y > layerRect.height) {
         return;
       }
 
@@ -778,15 +777,13 @@ Promise.all([
       const popY = travelY * randomBetween(0.12, 0.2);
       const startRotation = randomBetween(-12, 12);
       const endRotation = startRotation + randomBetween(-28, 28);
-      const size = randomBetween(33, 51);
-      const originX = x - size / 2;
-      const originY = y - size / 2;
+      const size = randomBetween(49.5, 76.5);
 
       const sprite = spriteLayer
         .append("div")
         .attr("class", `click-sprite click-sprite-${spriteType.name}`)
-        .style("left", `${originX}px`)
-        .style("top", `${originY}px`)
+        .style("left", `${x}px`)
+        .style("top", `${y}px`)
         .style("--sprite-size", `${size}px`);
 
       sprite.html(`

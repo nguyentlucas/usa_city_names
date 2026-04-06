@@ -84,6 +84,8 @@ button {
   height: var(--sprite-size, 14px);
   color: var(--ink);
   opacity: 0;
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
   will-change: transform, opacity;
 }
 
@@ -643,7 +645,7 @@ button {
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 2.1% 1.2%;
+  padding: 0.5% 0.35%;
   overflow: visible;
 }
 
