@@ -17,8 +17,10 @@ const RAIL_HEIGHT = VISIBLE_ROWS * ROW_HEIGHT;
 const MAP_WIDTH = 1120;
 const MAP_HEIGHT = 760;
 const SEARCH_DEFAULT = "Franklin";
-const ROW_TRANSITION_MS = 240;
+const LOCAL_TRANSITION_MS = 220;
+const PAGE_TRANSITION_MS = 340;
 const JUMP_TRANSITION_MS = 520;
+const PAGE_STEP = VISIBLE_ROWS;
 const INTRO_TYPING_STAGGER_MS = 42;
 const INTRO_TYPING_MIN_DURATION_MS = 760;
 const INTRO_TYPING_MAX_DURATION_MS = 1600;
@@ -110,7 +112,7 @@ const BACKGROUND_SPRITE_BLOCKED_SELECTOR = [
   ".state-label",
   "[data-state-id]",
 ].join(", ");
-const INTRO_COPY = "Some place names appear again and again.";
+const INTRO_COPY = "Some city's name appear again and again.";
 const TITLE_PREFIX_COPY = "How common is";
 
 const app = d3.select("#app");
@@ -132,7 +134,7 @@ app.html(`
               id="rail-arrow-up"
               class="rail-arrow rail-arrow-up"
               type="button"
-              aria-label="Move focus up one row"
+              aria-label="Move focus up by the previous visible set"
               data-arrow="up-single"
             ></button>
           </div>
@@ -149,7 +151,7 @@ app.html(`
               id="rail-arrow-down"
               class="rail-arrow rail-arrow-down"
               type="button"
-              aria-label="Move focus down one row"
+              aria-label="Move focus down by the next visible set"
               data-arrow="down-single"
             ></button>
             <button
@@ -184,6 +186,17 @@ app.html(`
             <span id="title-question" class="title-question is-intro-hidden">?</span>
           </h1>
         </header>
+        <section
+          id="state-summary"
+          class="state-summary is-pristine-hidden"
+          aria-live="polite"
+          aria-label="Number of states represented"
+        >
+          <div id="state-summary-card" class="state-summary-card">
+            <div id="state-summary-count" class="state-summary-count"></div>
+            <div id="state-summary-label" class="state-summary-label"></div>
+          </div>
+        </section>
 
         <section class="map-stage is-pristine-hidden">
           <div class="map-figure">
@@ -224,6 +237,10 @@ const introSmall = d3.select("#intro-small");
 const titlePrefix = d3.select("#title-prefix");
 const searchEntranceText = d3.select("#search-entrance-text");
 const titleQuestion = d3.select("#title-question");
+const stateSummary = d3.select("#state-summary");
+const stateSummaryCard = d3.select("#state-summary-card");
+const stateSummaryCount = d3.select("#state-summary-count");
+const stateSummaryLabel = d3.select("#state-summary-label");
 const svg = d3.select("#map-svg");
 const stateLabels = d3.select("#state-labels");
 const railShell = d3.select(".focus-rail-shell");
@@ -362,6 +379,14 @@ function revealRailRow(rowSelection, slot) {
 
 function revealPristineNode(selection) {
   selection.classed("is-pristine-hidden", false).classed("is-pristine-entered", true);
+}
+
+function getStateSummaryCopy(record) {
+  const stateCount = record?.stateCount ?? 0;
+  return {
+    count: String(stateCount),
+    label: stateCount === 1 ? "state" : "states",
+  };
 }
 
 function animateRailRowText(rowSelection, record) {
@@ -596,6 +621,7 @@ Promise.all([
     let baseMapReady = false;
     let activeSpriteCount = 0;
     let lastSpriteAt = -Infinity;
+    let railMotionTimer = null;
     const longestDisplayName = nameFrequency.reduce(
       (longest, record) =>
         record.displayName.length > longest.length ? record.displayName : longest,
@@ -605,6 +631,51 @@ Promise.all([
     searchInput.property("value", inputValue);
     searchInput.property("size", longestDisplayName.length + 2);
     searchInput.style("--search-chars", longestDisplayName.length + 2);
+
+    function getRailMotion(delta, mode = "local") {
+      if (mode === "jump") {
+        return {
+          mode,
+          duration: JUMP_TRANSITION_MS,
+          ease: d3.easeCubicInOut,
+          travel: RAIL_HEIGHT,
+          lockMs: JUMP_TRANSITION_MS + 60,
+        };
+      }
+
+      if (mode === "page") {
+        return {
+          mode,
+          duration: PAGE_TRANSITION_MS,
+          ease: d3.easePolyOut.exponent(3.2),
+          travel: Math.min(Math.abs(delta), PAGE_STEP) * ROW_HEIGHT,
+          lockMs: PAGE_TRANSITION_MS + 50,
+        };
+      }
+
+      return {
+        mode: "local",
+        duration: LOCAL_TRANSITION_MS,
+        ease: d3.easeCubicOut,
+        travel: Math.min(Math.abs(delta), VISIBLE_ROWS - 1) * ROW_HEIGHT,
+        lockMs: LOCAL_TRANSITION_MS + 40,
+      };
+    }
+
+    function setRailMotion(mode, duration) {
+      if (railMotionTimer != null) {
+        window.clearTimeout(railMotionTimer);
+      }
+
+      railTrack.attr("data-motion", mode);
+      railTrack.classed("is-jumping", mode === "jump");
+
+      railMotionTimer = window.setTimeout(() => {
+        railTrack.attr("data-motion", null);
+        railTrack.classed("is-jumping", false);
+        railMotionTimer = null;
+      }, duration + 40);
+    }
 
     function buildVisibleBorderMesh(activeHighlightedIds) {
       return mesh(
@@ -758,16 +829,28 @@ Promise.all([
       baseMapReady = true;
     }
 
-    function updateRail(delta = 0) {
+    function updateStateSummary(options = {}) {
+      const focused = getFocusedRecord();
+      const { count, label } = getStateSummaryCopy(focused);
+
+      stateSummaryCount.text(count);
+      stateSummaryLabel.text(label);
+      stateSummaryCard.attr("aria-label", `${count} ${label}`);
+
+      if (options.animate) {
+        pulseSelection(stateSummaryCard, "is-refreshing");
+      }
+    }
+
+    function updateRail(delta = 0, motionMode = "local") {
       const rows = buildVisibleRows(nameFrequency, focusedIndex);
-      const stepCount = Math.min(VISIBLE_ROWS, Math.abs(delta));
-      const travel = Math.sign(delta) * stepCount * ROW_HEIGHT;
-      const isJump = Math.abs(delta) > 1;
-      const duration = isJump ? JUMP_TRANSITION_MS : ROW_TRANSITION_MS;
-      const ease = isJump ? d3.easeCubicInOut : d3.easeCubicOut;
+      const motion = getRailMotion(delta, motionMode);
+      const travel = Math.sign(delta) * motion.travel;
+      const duration = motion.duration;
+      const ease = motion.ease;
 
       railTrack.style("height", `${RAIL_HEIGHT}px`);
-      railTrack.classed("is-jumping", isJump);
+      setRailMotion(motion.mode, duration);
 
       const rowSelection = railTrack
         .selectAll(".rail-row")
@@ -800,7 +883,7 @@ Promise.all([
             exit
               .transition()
               .duration(duration)
-              .ease(isJump ? d3.easeCubicInOut : d3.easeCubicIn)
+              .ease(motion.mode === "jump" ? d3.easeCubicInOut : d3.easeCubicIn)
               .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT - travel}px)`)
               .style("opacity", 0)
               .remove(),
@@ -818,7 +901,7 @@ Promise.all([
           if (!d.record || interactionLocked) {
             return;
           }
-          setFocusedIndex(d.recordIndex);
+          setFocusedIndex(d.recordIndex, { motion: "local" });
         })
         .transition()
         .duration(duration)
@@ -1069,7 +1152,9 @@ Promise.all([
           updateHoverState();
         })
         .select(".state-label-text")
-        .text((d) => (initialLabelRevealPending ? "" : d.name));
+        .text((d) =>
+          initialLabelRevealPending && !introActivatedStateIds.has(d.id) ? "" : d.name,
+        );
     }
 
     function updateHoverState() {
@@ -1103,8 +1188,9 @@ Promise.all([
         .classed("is-hovered", (d) => d.id === hoveredStateId);
     }
 
-    function render(delta = 0) {
-      updateRail(delta);
+    function render(delta = 0, motionMode = "local") {
+      updateRail(delta, motionMode);
+      updateStateSummary();
       updateMap();
     }
 
@@ -1114,7 +1200,7 @@ Promise.all([
         if (!options.preserveInput) {
           syncSearchValue();
         }
-        render(0);
+        render(0, options.motion ?? "local");
         return;
       }
 
@@ -1125,16 +1211,22 @@ Promise.all([
         syncSearchValue();
       }
 
+      const delta = focusedIndex - previousIndex;
+      const motion =
+        options.motion ??
+        (Math.abs(delta) >= PAGE_STEP ? "jump" : Math.abs(delta) > 1 ? "page" : "local");
+
       pulseSelection(searchShell, "is-settling");
+      pulseSelection(stateSummaryCard, "is-refreshing");
       pulseSelection(stateLabels, "is-settling");
       svg.classed("is-settling", true);
-      render(focusedIndex - previousIndex);
+      render(delta, motion);
       window.setTimeout(() => {
         svg.classed("is-settling", false);
       }, JUMP_TRANSITION_MS);
     }
 
-    function moveFocus(step) {
+    function moveFocus(step, options = {}) {
       if (interactionLocked) {
         return;
       }
@@ -1145,10 +1237,12 @@ Promise.all([
       }
 
       interactionLocked = true;
-      setFocusedIndex(nextIndex);
+      const motion = options.motion ?? (Math.abs(step) >= PAGE_STEP ? "page" : "local");
+      const lockMs = getRailMotion(step, motion).lockMs;
+      setFocusedIndex(nextIndex, { motion });
       window.setTimeout(() => {
         interactionLocked = false;
-      }, ROW_TRANSITION_MS + 40);
+      }, lockMs);
     }
 
     function jumpFocus(targetIndex) {
@@ -1157,7 +1251,7 @@ Promise.all([
       }
 
       interactionLocked = true;
-      setFocusedIndex(targetIndex);
+      setFocusedIndex(targetIndex, { motion: "jump" });
       window.setTimeout(() => {
         interactionLocked = false;
       }, JUMP_TRANSITION_MS + 60);
@@ -1215,6 +1309,7 @@ Promise.all([
       await wait(INTRO_QUESTION_REVEAL_MS + INTRO_GAP_BEFORE_MAP_MS);
 
       revealPristineNode(mapStage);
+      revealPristineNode(stateSummary);
       svg.classed("is-entrance-active", true);
       entranceBordersLayer
         .selectAll(".entrance-state-border")
@@ -1246,6 +1341,7 @@ Promise.all([
       searchEntranceText.text("");
       searchInput.property("value", cityName);
       searchInput.attr("disabled", null);
+      updateStateSummary();
       updateMap();
 
       await wait(INITIAL_HIGHLIGHT_REVEAL_DELAY_MS);
@@ -1309,7 +1405,7 @@ Promise.all([
 
       initialRailRevealPending = false;
       introRailTextPending = true;
-      updateRail(0);
+      updateRail(0, "local");
       revealPristineNode(railShell);
       const introRailRows = railTrack
         .selectAll(".rail-row")
@@ -1354,7 +1450,7 @@ Promise.all([
       introRailSelectionPending = false;
       railShell.classed("is-intro-ready", false);
       interactionLocked = false;
-      render(0);
+      render(0, "local");
     }
 
     railWindow.on("wheel", (event) => {
@@ -1364,7 +1460,7 @@ Promise.all([
     });
 
     railArrowUp.on("click", () => {
-      moveFocus(-1);
+      moveFocus(-PAGE_STEP, { motion: "page" });
       railWindow.node()?.focus();
     });
 
@@ -1374,7 +1470,7 @@ Promise.all([
     });
 
     railArrowDown.on("click", () => {
-      moveFocus(1);
+      moveFocus(PAGE_STEP, { motion: "page" });
       railWindow.node()?.focus();
     });
 
@@ -1394,11 +1490,11 @@ Promise.all([
       }
       if (event.key === "PageDown") {
         event.preventDefault();
-        jumpFocus(nameFrequency.length - 1);
+        moveFocus(PAGE_STEP, { motion: "page" });
       }
       if (event.key === "PageUp") {
         event.preventDefault();
-        jumpFocus(0);
+        moveFocus(-PAGE_STEP, { motion: "page" });
       }
       if (event.key === "Home") {
         event.preventDefault();
@@ -1499,6 +1595,7 @@ Promise.all([
     introSmall.text(INTRO_COPY);
     titlePrefix.text(TITLE_PREFIX_COPY);
     revealPristineNode(mapStage);
+    revealPristineNode(stateSummary);
     revealPristineNode(stateLabels);
     revealPristineNode(railShell);
     initialMapRevealPending = false;
@@ -1506,7 +1603,7 @@ Promise.all([
     initialRailRevealPending = false;
     introRailTextPending = false;
     introRailSelectionPending = false;
-    render(0);
+    render(0, "local");
   })
   .catch((error) => {
     console.error(error);
