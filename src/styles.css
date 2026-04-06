@@ -538,13 +538,13 @@ button {
 
 .state-summary-card {
   display: inline-grid;
-  grid-template-rows: 1fr auto;
-  flex-direction: column;
+  grid-template-rows: auto auto;
   align-items: center;
+  align-content: center;
   justify-content: center;
-  width: clamp(92px, 8.3vw, 126px);
+  width: clamp(72px, 6.4vw, 94px);
   aspect-ratio: 1 / 1;
-  padding: 10px 8px 9px;
+  padding: 6px 7px 5px;
   background: var(--ink);
   color: var(--bg);
   line-height: 0.94;
@@ -559,15 +559,15 @@ button {
 
 .state-summary-count {
   align-self: end;
-  font-size: clamp(1.48rem, 2.5vw, 2.5rem);
-  line-height: 0.86;
+  font-size: clamp(1.28rem, 2.18vw, 2.12rem);
+  line-height: 0.84;
   font-variant-numeric: tabular-nums;
 }
 
 .state-summary-label {
   align-self: start;
-  margin-top: 2px;
-  font-size: clamp(0.56rem, 0.82vw, 0.74rem);
+  margin-top: 1px;
+  font-size: clamp(0.5rem, 0.68vw, 0.64rem);
   letter-spacing: 0.08em;
   text-transform: lowercase;
 }
@@ -643,7 +643,7 @@ button {
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 2.5% 1.5%;
+  padding: 2.1% 1.2%;
   overflow: visible;
 }
 

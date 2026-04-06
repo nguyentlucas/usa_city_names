@@ -254,10 +254,10 @@ const bordersLayer = mapPlane.append("g").attr("class", "borders-layer");
 const highlightBordersLayer = mapPlane.append("g").attr("class", "highlight-borders-layer");
 const hoveredStateOverlayLayer = mapPlane.append("g").attr("class", "hovered-state-overlay-layer");
 const HOVERED_STATE_FALL_DURATION_MS = 220;
-const MAP_FIT_TOP_INSET = 24;
-const MAP_FIT_RIGHT_INSET = 18;
-const MAP_FIT_BOTTOM_INSET = 26;
-const MAP_FIT_LEFT_INSET = 18;
+const MAP_FIT_TOP_INSET = 16;
+const MAP_FIT_RIGHT_INSET = 12;
+const MAP_FIT_BOTTOM_INSET = 18;
+const MAP_FIT_LEFT_INSET = 12;
 
 function normalizeName(value) {
   return value.trim().toLocaleLowerCase();
