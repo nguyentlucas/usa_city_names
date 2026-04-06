@@ -54,6 +54,8 @@ const SPRITE_MIN_LIFETIME_MS = 1500;
 const SPRITE_MAX_LIFETIME_MS = 2700;
 const SPRITE_COOLDOWN_MS = 320;
 const SPRITE_MAX_ACTIVE = 5;
+const SPRITE_ORIGIN_OFFSET_X = -6;
+const SPRITE_ORIGIN_OFFSET_Y = -5;
 const SPRITE_TYPES = [
   {
     name: "bird",
@@ -77,20 +79,14 @@ const SPRITE_TYPES = [
       '<path d="M8 1H9V3H11V5H13V6H11V8H9V10H11V12H13V13H11V15H9V13H7V11H5V13H3V12H5V10H7V8H5V6H3V5H5V3H7V1H8Z" />',
   },
 ];
-const BACKGROUND_SPRITE_ALLOWED_TARGETS = new Set([
-  "page-shell",
-  "composition-layer",
-  "layout",
-  "main-column",
-  "rail-column",
-  "map-stage",
-  "map-figure",
-  "map-frame",
-  "map-svg",
-]);
 const BACKGROUND_SPRITE_BLOCKED_SELECTOR = [
   "button",
+  "a",
   "input",
+  "select",
+  "textarea",
+  "[role='button']",
+  "[role='link']",
   ".intro",
   ".title-line",
   ".search-shell",
@@ -99,6 +95,10 @@ const BACKGROUND_SPRITE_BLOCKED_SELECTOR = [
   ".focus-rail-shell",
   ".focus-rail-window",
   ".focus-rail-track",
+  ".state-summary",
+  ".state-summary-card",
+  ".state-summary-count",
+  ".state-summary-label",
   ".base-state-shape",
   ".highlighted-state",
   ".highlighted-state-fill",
@@ -584,19 +584,16 @@ function chooseSpriteType() {
 }
 
 function getBackgroundClickTarget(target) {
-  if (!(target instanceof Element)) {
+  const element = target instanceof Element ? target : target?.parentElement;
+  if (!(element instanceof Element)) {
     return null;
   }
 
-  if (target.closest(BACKGROUND_SPRITE_BLOCKED_SELECTOR)) {
+  if (element.closest(BACKGROUND_SPRITE_BLOCKED_SELECTOR)) {
     return null;
   }
 
-  return Array.from(BACKGROUND_SPRITE_ALLOWED_TARGETS).some((className) =>
-    target.classList.contains(className),
-  )
-    ? target
-    : null;
+  return element.closest(".page-shell");
 }
 
 Promise.all([
@@ -759,8 +756,8 @@ Promise.all([
       }
 
       const layerRect = layerNode.getBoundingClientRect();
-      const x = event.clientX - layerRect.left;
-      const y = event.clientY - layerRect.top;
+      const x = event.clientX - layerRect.left + SPRITE_ORIGIN_OFFSET_X;
+      const y = event.clientY - layerRect.top + SPRITE_ORIGIN_OFFSET_Y;
 
       if (x < 0 || x > layerRect.width || y < 0 || y > layerRect.height) {
         return;
