@@ -14,8 +14,13 @@
     "Liberation Mono",
     "Menlo",
     monospace;
-  --map-panel-height: minmax(420px, 1.16fr);
-  --state-list-height: 88px;
+  --layout-margin-x: 10vw;
+  --layout-margin-y: 5vh;
+  --rail-column-width: 15vw;
+  --main-column-width: 65vw;
+  --title-area-height: 7.5vh;
+  --map-area-height: 75vh;
+  --legend-area-height: 7.5vh;
 }
 
 * {
@@ -48,10 +53,9 @@ button {
 }
 
 .page-shell {
-  width: min(100vw, 1600px);
+  width: 100vw;
   height: 100vh;
-  margin: 0 auto;
-  padding: 26px 28px 24px;
+  padding: var(--layout-margin-y) var(--layout-margin-x);
   position: relative;
   overflow: hidden;
 }
@@ -91,20 +95,24 @@ button {
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(220px, 20%) minmax(0, 80%);
-  gap: 40px;
+  grid-template-columns: var(--rail-column-width) var(--main-column-width);
+  column-gap: 0;
   height: 100%;
+  width: 100%;
 }
 
 .rail-column {
   display: flex;
-  align-items: center;
+  align-items: stretch;
+  justify-content: center;
   min-height: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .focus-rail-shell {
-  width: min(100%, 270px);
-  min-height: 0;
+  width: 100%;
+  height: 100%;
   display: grid;
   grid-template-rows: auto auto auto;
   justify-items: stretch;
@@ -252,7 +260,7 @@ button {
 .focus-rail-window {
   position: relative;
   width: 100%;
-  height: 484px;
+  height: min(484px, 62vh);
   overflow: hidden;
   outline: none;
 }
@@ -378,13 +386,22 @@ button {
 
 .main-column {
   display: grid;
-  grid-template-rows: auto var(--map-panel-height) var(--state-list-height);
+  grid-template-rows:
+    minmax(0, var(--title-area-height))
+    minmax(0, var(--map-area-height))
+    minmax(0, var(--legend-area-height));
   min-height: 0;
-  row-gap: 6px;
+  width: 100%;
+  height: 100%;
+  row-gap: 0;
 }
 
 .intro {
-  padding-top: 4px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0 0 2.2%;
 }
 
 .intro-small {
@@ -425,7 +442,7 @@ button {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.18em;
-  font-size: clamp(1.55rem, 3vw, 2.95rem);
+  font-size: clamp(1.3rem, 2.3vw, 2.6rem);
   font-weight: 400;
   line-height: 1.06;
   letter-spacing: -0.03em;
@@ -527,7 +544,7 @@ button {
   display: flex;
   align-items: stretch;
   justify-content: stretch;
-  padding: 0 20px;
+  padding: 0;
   transition:
     opacity 420ms cubic-bezier(0.2, 0.92, 0.32, 1),
     transform 420ms cubic-bezier(0.2, 0.92, 0.32, 1);
@@ -542,20 +559,21 @@ button {
 }
 
 .map-frame {
-  width: min(100%, 1240px);
+  width: 100%;
   height: 100%;
   min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 10px 30px 12px;
+  padding: 2.5% 1.5%;
   overflow: visible;
 }
 
 .map-svg {
-  width: calc(100% + 7.5%);
-  height: calc(100% + 7.5%);
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
   max-height: 100%;
   display: block;
   overflow: visible;
@@ -578,16 +596,17 @@ button {
 }
 
 .state-labels {
-  width: min(34rem, 100%);
+  width: 100%;
+  min-width: 0;
   min-height: 0;
   display: flex;
   flex-wrap: wrap;
-  align-content: start;
-  justify-content: flex-start;
+  align-content: center;
+  justify-content: center;
   justify-self: center;
-  column-gap: 14px;
-  row-gap: 4px;
-  padding-top: 2px;
+  column-gap: 1.1vw;
+  row-gap: 0.35vh;
+  padding: 0 2.2%;
   overflow: hidden;
   transition:
     opacity 320ms cubic-bezier(0.2, 0.92, 0.32, 1),
@@ -648,6 +667,10 @@ button {
 .highlighted-state-fill {
   fill: var(--ink);
   fill-opacity: 0.88;
+  stroke: var(--ink);
+  stroke-width: 1.15;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
   filter:
     drop-shadow(0 1px 0 rgba(0, 0, 0, 0.06))
     drop-shadow(0 4px 6px rgba(0, 0, 0, 0));
@@ -759,7 +782,7 @@ button {
   stroke-width: 1.2;
   vector-effect: non-scaling-stroke;
   stroke-linejoin: round;
-  stroke-linecap: round;
+  stroke-linecap: butt;
 }
 
 .state-borders {
@@ -883,77 +906,30 @@ button {
 }
 
 @media (max-width: 980px) {
-  body {
-    overflow: auto;
-  }
-
-  .page-shell {
-    height: auto;
-    min-height: 100vh;
-    padding: 18px 16px 24px;
-  }
-
-  .layout {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-
-  .rail-column {
-    align-items: start;
-  }
-
-  .focus-rail-shell {
-    width: 100%;
-  }
-
   .focus-rail-window {
-    max-width: 420px;
-  }
-
-  .main-column {
-    grid-template-rows: auto minmax(320px, 46vh) auto;
-    row-gap: 10px;
+    height: min(484px, 62vh);
   }
 
   .title-line {
     gap: 0.12em 0.18em;
-    font-size: clamp(1.4rem, 8vw, 2.4rem);
+    font-size: clamp(1rem, 2vw, 1.7rem);
   }
 
   .intro-small {
-    font-size: 0.9rem;
+    margin-bottom: 0.8vh;
+    font-size: clamp(0.7rem, 1.05vw, 0.9rem);
   }
 
   .title-search {
     width: min(100%, calc(var(--search-chars, 20) * 0.68ch));
   }
 
-  .map-stage {
-    min-height: 0;
-    padding: 10px 8px 0;
-  }
-
-  .map-frame {
-    min-height: 320px;
-    width: 100%;
-    padding: 18px 18px 22px;
-  }
-
-  .map-svg {
-    width: calc(100% + 4.5%);
-    height: calc(100% + 4.5%);
-  }
-
   .state-labels {
-    width: min(30rem, 100%);
-    max-width: 100%;
-    column-gap: 12px;
-    row-gap: 2px;
-    padding-top: 6px;
-    overflow: visible;
+    column-gap: 1vw;
+    row-gap: 0.2vh;
   }
 
   .state-label {
-    font-size: 0.8rem;
+    font-size: clamp(0.6rem, 0.9vw, 0.76rem);
   }
 }

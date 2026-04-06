@@ -48,8 +48,8 @@ const INTRO_RAIL_ROW_TYPING_STAGGER_MS = 20;
 const INTRO_RAIL_ROW_MIN_DURATION_MS = 340;
 const INTRO_RAIL_ROW_MAX_DURATION_MS = 720;
 const INTRO_RAIL_SELECTION_SWIPE_MS = 320;
-const SPRITE_MIN_LIFETIME_MS = 500;
-const SPRITE_MAX_LIFETIME_MS = 900;
+const SPRITE_MIN_LIFETIME_MS = 1500;
+const SPRITE_MAX_LIFETIME_MS = 2700;
 const SPRITE_COOLDOWN_MS = 320;
 const SPRITE_MAX_ACTIVE = 5;
 const SPRITE_TYPES = [
@@ -238,6 +238,10 @@ const bordersLayer = mapPlane.append("g").attr("class", "borders-layer");
 const highlightBordersLayer = mapPlane.append("g").attr("class", "highlight-borders-layer");
 const hoveredStateOverlayLayer = mapPlane.append("g").attr("class", "hovered-state-overlay-layer");
 const HOVERED_STATE_FALL_DURATION_MS = 220;
+const MAP_FIT_TOP_INSET = 24;
+const MAP_FIT_RIGHT_INSET = 18;
+const MAP_FIT_BOTTOM_INSET = 26;
+const MAP_FIT_LEFT_INSET = 18;
 
 function normalizeName(value) {
   return value.trim().toLocaleLowerCase();
@@ -558,8 +562,8 @@ Promise.all([
     const stateIndex = new Map(stateFeatures.map((state) => [state.id, state]));
     const projection = d3.geoAlbersUsa().fitExtent(
       [
-        [8, 16],
-        [MAP_WIDTH - 8, MAP_HEIGHT - 18],
+        [MAP_FIT_LEFT_INSET, MAP_FIT_TOP_INSET],
+        [MAP_WIDTH - MAP_FIT_RIGHT_INSET, MAP_HEIGHT - MAP_FIT_BOTTOM_INSET],
       ],
       { type: "FeatureCollection", features: stateFeatures },
     );
@@ -602,6 +606,41 @@ Promise.all([
     searchInput.property("size", longestDisplayName.length + 2);
     searchInput.style("--search-chars", longestDisplayName.length + 2);
 
+    function buildVisibleBorderMesh(activeHighlightedIds) {
+      return mesh(
+        statesTopo,
+        statesTopo.objects.states,
+        (a, b) =>
+          Boolean(a) &&
+          a.id !== hoveredStateId &&
+          !excludedStateIds.has(a.id) &&
+          Boolean(b) &&
+          b.id !== hoveredStateId &&
+          !excludedStateIds.has(b.id) &&
+          (!activeHighlightedIds.has(a.id) || !activeHighlightedIds.has(b.id)),
+      );
+    }
+
+    function buildHighlightedBorderMesh(activeHighlightedIds) {
+      if (activeHighlightedIds.size <= 1) {
+        return null;
+      }
+
+      return mesh(
+        statesTopo,
+        statesTopo.objects.states,
+        (a, b) =>
+          Boolean(a) &&
+          Boolean(b) &&
+          a.id !== hoveredStateId &&
+          b.id !== hoveredStateId &&
+          activeHighlightedIds.has(a.id) &&
+          activeHighlightedIds.has(b.id) &&
+          !excludedStateIds.has(a.id) &&
+          !excludedStateIds.has(b.id),
+      );
+    }
+
     function spawnBackgroundSprite(event) {
       if (prefersReducedMotion || initialEntranceActive || activeSpriteCount >= SPRITE_MAX_ACTIVE) {
         return;
@@ -642,7 +681,7 @@ Promise.all([
       const popY = travelY * randomBetween(0.12, 0.2);
       const startRotation = randomBetween(-12, 12);
       const endRotation = startRotation + randomBetween(-28, 28);
-      const size = randomBetween(11, 17);
+      const size = randomBetween(33, 51);
 
       const sprite = spriteLayer
         .append("div")
@@ -673,16 +712,16 @@ Promise.all([
       node?.animate(
         [
           {
-            transform: `translate(-50%, -50%) translate(0px, 0px) scale(0.72) rotate(${startRotation}deg)`,
+            transform: `translate(0px, 0px) scale(0.72) rotate(${startRotation}deg)`,
             opacity: 0,
           },
           {
-            transform: `translate(-50%, -50%) translate(${popX}px, ${popY}px) scale(1) rotate(${startRotation}deg)`,
+            transform: `translate(${popX}px, ${popY}px) scale(1) rotate(${startRotation}deg)`,
             opacity: 0.92,
             offset: 0.18,
           },
           {
-            transform: `translate(-50%, -50%) translate(${travelX}px, ${travelY}px) scale(0.16) rotate(${endRotation}deg)`,
+            transform: `translate(${travelX}px, ${travelY}px) scale(0.16) rotate(${endRotation}deg)`,
             opacity: 0,
           },
         ],
@@ -967,18 +1006,7 @@ Promise.all([
       syncHighlightedStateLayers();
       const visibleHighlightedIds = initialEntranceActive ? new Set() : activeHighlightedIds;
 
-      const visibleBorderMesh = mesh(
-        statesTopo,
-        statesTopo.objects.states,
-        (a, b) =>
-              Boolean(a) &&
-              a.id !== hoveredStateId &&
-              !excludedStateIds.has(a.id) &&
-              (!b || b.id !== hoveredStateId) &&
-              (!b ||
-                (!excludedStateIds.has(b.id) &&
-                  (!visibleHighlightedIds.has(a.id) || !visibleHighlightedIds.has(b.id)))),
-      );
+      const visibleBorderMesh = buildVisibleBorderMesh(visibleHighlightedIds);
 
       bordersLayer
         .selectAll(".state-borders")
@@ -987,22 +1015,7 @@ Promise.all([
         .attr("class", "state-borders")
         .attr("d", path);
 
-      const highlightedBorderMesh =
-        visibleHighlightedIds.size > 1
-          ? mesh(
-              statesTopo,
-              statesTopo.objects.states,
-              (a, b) =>
-                Boolean(a) &&
-                Boolean(b) &&
-                a.id !== hoveredStateId &&
-                b.id !== hoveredStateId &&
-                visibleHighlightedIds.has(a.id) &&
-                visibleHighlightedIds.has(b.id) &&
-                !excludedStateIds.has(a.id) &&
-                !excludedStateIds.has(b.id),
-            )
-          : null;
+      const highlightedBorderMesh = buildHighlightedBorderMesh(visibleHighlightedIds);
 
       highlightBordersLayer
         .selectAll(".highlight-borders")
@@ -1067,18 +1080,7 @@ Promise.all([
           ? introActivatedStateIds
           : currentHighlightedIds;
 
-      const visibleBorderMesh = mesh(
-        statesTopo,
-        statesTopo.objects.states,
-        (a, b) =>
-          Boolean(a) &&
-          a.id !== hoveredStateId &&
-          !excludedStateIds.has(a.id) &&
-          (!b || b.id !== hoveredStateId) &&
-          (!b ||
-            (!excludedStateIds.has(b.id) &&
-              (!activeHighlightedIds.has(a.id) || !activeHighlightedIds.has(b.id)))),
-      );
+      const visibleBorderMesh = buildVisibleBorderMesh(activeHighlightedIds);
 
       bordersLayer
         .selectAll(".state-borders")
@@ -1087,22 +1089,7 @@ Promise.all([
         .attr("class", "state-borders")
         .attr("d", path);
 
-      const highlightedBorderMesh =
-        activeHighlightedIds.size > 1
-          ? mesh(
-              statesTopo,
-              statesTopo.objects.states,
-              (a, b) =>
-                Boolean(a) &&
-                Boolean(b) &&
-                a.id !== hoveredStateId &&
-                b.id !== hoveredStateId &&
-                activeHighlightedIds.has(a.id) &&
-                activeHighlightedIds.has(b.id) &&
-                !excludedStateIds.has(a.id) &&
-                !excludedStateIds.has(b.id),
-            )
-          : null;
+      const highlightedBorderMesh = buildHighlightedBorderMesh(activeHighlightedIds);
 
       highlightBordersLayer
         .selectAll(".highlight-borders")
