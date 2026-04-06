@@ -186,21 +186,20 @@ app.html(`
             <span id="title-question" class="title-question is-intro-hidden">?</span>
           </h1>
         </header>
-        <section
-          id="state-summary"
-          class="state-summary is-pristine-hidden"
-          aria-live="polite"
-          aria-label="Number of states represented"
-        >
-          <div id="state-summary-card" class="state-summary-card">
-            <div id="state-summary-count" class="state-summary-count"></div>
-            <div id="state-summary-label" class="state-summary-label"></div>
-          </div>
-        </section>
-
         <section class="map-stage is-pristine-hidden">
           <div class="map-figure">
             <div class="map-frame">
+              <section
+                id="state-summary"
+                class="state-summary is-pristine-hidden"
+                aria-live="polite"
+                aria-label="Number of states represented"
+              >
+                <div id="state-summary-card" class="state-summary-card">
+                  <div id="state-summary-count" class="state-summary-count"></div>
+                  <div id="state-summary-label" class="state-summary-label"></div>
+                </div>
+              </section>
               <svg
                 id="map-svg"
                 class="map-svg"
@@ -387,6 +386,33 @@ function getStateSummaryCopy(record) {
     count: String(stateCount),
     label: stateCount === 1 ? "state" : "states",
   };
+}
+
+function prepareStateSummaryIntro() {
+  stateSummaryCard.classed("is-intro-hidden", true).classed("is-intro-entered", false);
+  stateSummaryCount.classed("is-intro-hidden", true).classed("is-intro-entered", false).text("");
+  stateSummaryLabel.classed("is-intro-hidden", true).classed("is-intro-entered", false).text("");
+}
+
+function revealStateSummaryInstant(record) {
+  const { count, label } = getStateSummaryCopy(record);
+  stateSummaryCard.classed("is-intro-hidden", false).classed("is-intro-entered", true);
+  stateSummaryCount.classed("is-intro-hidden", false).classed("is-intro-entered", true).text(count);
+  stateSummaryLabel.classed("is-intro-hidden", false).classed("is-intro-entered", true).text(label);
+  stateSummaryCard.attr("aria-label", `${count} ${label}`);
+}
+
+function animateStateSummaryIntro(record) {
+  const { count, label } = getStateSummaryCopy(record);
+  revealIntroNode(stateSummaryCard);
+  revealIntroNode(stateSummaryCount);
+  revealIntroNode(stateSummaryLabel);
+  stateSummaryCard.attr("aria-label", `${count} ${label}`);
+
+  return Promise.all([
+    animateTypingTextAsync(stateSummaryCount, count),
+    animateTypingTextAsync(stateSummaryLabel, label),
+  ]);
 }
 
 function animateRailRowText(rowSelection, record) {
@@ -753,12 +779,14 @@ Promise.all([
       const startRotation = randomBetween(-12, 12);
       const endRotation = startRotation + randomBetween(-28, 28);
       const size = randomBetween(33, 51);
+      const originX = x - size / 2;
+      const originY = y - size / 2;
 
       const sprite = spriteLayer
         .append("div")
         .attr("class", `click-sprite click-sprite-${spriteType.name}`)
-        .style("left", `${x}px`)
-        .style("top", `${y}px`)
+        .style("left", `${originX}px`)
+        .style("top", `${originY}px`)
         .style("--sprite-size", `${size}px`);
 
       sprite.html(`
@@ -833,6 +861,11 @@ Promise.all([
       const focused = getFocusedRecord();
       const { count, label } = getStateSummaryCopy(focused);
 
+      if (options.skipTextUpdate) {
+        stateSummaryCard.attr("aria-label", `${count} ${label}`);
+        return;
+      }
+
       stateSummaryCount.text(count);
       stateSummaryLabel.text(label);
       stateSummaryCard.attr("aria-label", `${count} ${label}`);
@@ -848,6 +881,10 @@ Promise.all([
       const travel = Math.sign(delta) * motion.travel;
       const duration = motion.duration;
       const ease = motion.ease;
+      const isPageMotion = motion.mode === "page";
+      const exitDuration = isPageMotion ? Math.round(duration * 0.42) : duration;
+      const enterDelay = isPageMotion ? Math.round(duration * 0.46) : 0;
+      const enterDuration = isPageMotion ? duration - enterDelay : duration;
 
       railTrack.style("height", `${RAIL_HEIGHT}px`);
       setRailMotion(motion.mode, duration);
@@ -866,15 +903,18 @@ Promise.all([
                 selection.append("span").attr("class", "rail-name");
               })
               .style("transform", (d) => {
-                const startY = d.slot * ROW_HEIGHT + travel;
+                const startY = isPageMotion
+                  ? d.slot * ROW_HEIGHT + Math.sign(delta || 1) * 24
+                  : d.slot * ROW_HEIGHT + travel;
                 return `translateY(${startY}px)`;
               })
               .style("opacity", 0)
               .call((selection) =>
                 selection
                   .transition()
-                  .duration(duration)
-                  .ease(ease)
+                  .delay(enterDelay)
+                  .duration(enterDuration)
+                  .ease(isPageMotion ? d3.easeLinear : ease)
                   .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT}px)`)
                   .style("opacity", 1),
               ),
@@ -882,9 +922,19 @@ Promise.all([
           (exit) =>
             exit
               .transition()
-              .duration(duration)
-              .ease(motion.mode === "jump" ? d3.easeCubicInOut : d3.easeCubicIn)
-              .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT - travel}px)`)
+              .duration(exitDuration)
+              .ease(
+                isPageMotion
+                  ? d3.easeLinear
+                  : motion.mode === "jump"
+                    ? d3.easeCubicInOut
+                    : d3.easeCubicIn,
+              )
+              .style("transform", (d) =>
+                isPageMotion
+                  ? `translateY(${d.slot * ROW_HEIGHT - Math.sign(delta || 1) * 20}px)`
+                  : `translateY(${d.slot * ROW_HEIGHT - travel}px)`,
+              )
               .style("opacity", 0)
               .remove(),
         );
@@ -904,8 +954,9 @@ Promise.all([
           setFocusedIndex(d.recordIndex, { motion: "local" });
         })
         .transition()
-        .duration(duration)
-        .ease(ease)
+        .delay(enterDelay)
+        .duration(enterDuration)
+        .ease(isPageMotion ? d3.easeLinear : ease)
         .style("transform", (d) => `translateY(${d.slot * ROW_HEIGHT}px)`)
         .style("opacity", (d) => (d.record ? 1 : 0));
 
@@ -1310,7 +1361,9 @@ Promise.all([
 
       revealPristineNode(mapStage);
       revealPristineNode(stateSummary);
+      prepareStateSummaryIntro();
       svg.classed("is-entrance-active", true);
+      const summaryIntroPromise = animateStateSummaryIntro(focused);
       entranceBordersLayer
         .selectAll(".entrance-state-border")
         .data(stateEntranceOrder, (d) => d.id)
@@ -1331,6 +1384,7 @@ Promise.all([
           INITIAL_MAP_STATE_DURATION_MS +
           INITIAL_MAP_SETTLE_MS,
       );
+      await summaryIntroPromise;
 
       initialEntranceActive = false;
       initialMapRevealPending = false;
@@ -1341,7 +1395,7 @@ Promise.all([
       searchEntranceText.text("");
       searchInput.property("value", cityName);
       searchInput.attr("disabled", null);
-      updateStateSummary();
+      updateStateSummary({ skipTextUpdate: true });
       updateMap();
 
       await wait(INITIAL_HIGHLIGHT_REVEAL_DELAY_MS);
@@ -1596,6 +1650,7 @@ Promise.all([
     titlePrefix.text(TITLE_PREFIX_COPY);
     revealPristineNode(mapStage);
     revealPristineNode(stateSummary);
+    revealStateSummaryInstant(getFocusedRecord());
     revealPristineNode(stateLabels);
     revealPristineNode(railShell);
     initialMapRevealPending = false;
